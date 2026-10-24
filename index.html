@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MIRAS · Udaipur, India</title>
+  <meta name="description" content="MIRAS is a slow-travel guide to Udaipur, India: palaces, lakes, old-city walks, food and folk evenings, with itineraries and trip planning.">
+  <meta name="theme-color" content="#FFF6EA">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="MIRAS · Udaipur, India">
+  <meta property="og:description" content="A slow-travel guide to the city of lakes.">
+  <meta property="og:image" content="/img/og.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400&family=Mukta:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="/hero/original@2k.webp">
+</head>
+<body>
+  <a class="skip" href="#about">Skip to content</a>
+
+  <!-- sticky header: appears after the hero -->
+  <header class="site-header" id="header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="MIRAS, back to top">MIRAS</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#places">Places</a>
+        <a href="#experiences">Experiences</a>
+        <a href="#itineraries">Itineraries</a>
+        <a class="btn btn-sm" href="#plan">Plan your trip</a>
+      </nav>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span class="sr">Menu</span>
+      </button>
+    </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <a href="#about">About</a>
+      <a href="#places">Places</a>
+      <a href="#experiences">Experiences</a>
+      <a href="#itineraries">Itineraries</a>
+      <a href="#plan">Plan your trip</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top" aria-label="MIRAS, Udaipur">
+      <div class="hero-pin">
+        <div class="hero-media" id="heroMedia">
+          <canvas id="heroGL" aria-hidden="true"></canvas>
+          <canvas id="heroBirds" aria-hidden="true"></canvas>
+        </div>
+        <div class="hero-veil" aria-hidden="true"></div>
+
+        <div class="hero-title" id="heroTitle">
+          <h1 class="lockup">
+            <span class="miras" aria-label="MIRAS"><span>M</span><span>I</span><span>R</span><span>A</span><span>S</span></span>
+            <span class="city">UDAIPUR</span>
+            <span class="sub"><span class="hi" lang="hi">उदयपुर</span><span class="country">INDIA</span></span>
+          </h1>
+          <div class="divider" aria-hidden="true"><span class="ln l"></span><i class="star"></i><span class="ln r"></span></div>
+          <p class="tagline">Lakes, palaces and slow golden evenings in the old city of Mewar.</p>
+          <a class="btn" href="#plan">Plan your journey</a>
+        </div>
+
+        <a class="scroll-cue" href="#about" aria-label="Scroll to content">
+          <span>Scroll</span><i></i>
+        </a>
+        <div class="hero-fade" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="section about" id="about">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">01 · About Udaipur</p>
+          <h2>The city of lakes</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+        </header>
+
+        <div class="about-grid">
+          <div class="about-copy">
+            <p class="lead" data-reveal>Founded in 1559 by Maharana Udai Singh II, Udaipur grew up around its lakes. Palaces sit on the water, and white havelis climb the hills behind the ghats.</p>
+            <p data-reveal>The old city is best explored on foot: temple bells at Jagdish Chowk, shops selling miniature paintings, chai on a rooftop above Lake Pichola. Mornings are for the lanes and the ghats; evenings for the water, when the light turns the palace gold.</p>
+          </div>
+          <figure class="about-art ink-reveal">
+            <img src="/img/palace.webp" alt="Ink drawing of the City Palace rising above the old city" width="1200" height="740" loading="lazy">
+          </figure>
+        </div>
+
+        <dl class="facts">
+          <div class="fact" data-reveal>
+            <dt>Best time to visit</dt>
+            <dd><strong>October to March</strong>Clear days and cool evenings. The monsoon (July to September) fills the lakes and turns the hills green.</dd>
+          </div>
+          <div class="fact" data-reveal>
+            <dt>How to reach</dt>
+            <dd><strong>Fly, rail or road</strong>Maharana Pratap Airport (UDR) is about 22&nbsp;km from the old city. Trains run to Udaipur City station, and Jaipur is about 6–7 hours by road.</dd>
+          </div>
+          <div class="fact" data-reveal>
+            <dt>Trip length</dt>
+            <dd><strong>3 to 4 days</strong>Enough for the palaces, the lakes and a slow evening or two. Add a day for Kumbhalgarh and Ranakpur.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============ PLACES ============ -->
+    <section class="section places" id="places">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">02 · Places to explore</p>
+          <h2>Six places, one old city</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+        </header>
+
+        <div class="cards">
+          <article class="card">
+            <div class="card-art" data-art="palace"></div>
+            <div class="card-body">
+              <p class="card-tag">Palace · Old City</p>
+              <h3>City Palace <span lang="hi">सिटी पैलेस</span></h3>
+              <p>Begun in 1559 and added to by later Maharanas for centuries: courtyards, mirror-work rooms and balconies over Lake Pichola.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art" data-art="pichola"></div>
+            <div class="card-body">
+              <p class="card-tag">Lake · Sunset</p>
+              <h3>Lake Pichola <span lang="hi">पिछोला झील</span></h3>
+              <p>The city's oldest lake, with island palaces on its water. Best seen from a boat as the sun goes down behind the hills.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art" data-art="jagdish"></div>
+            <div class="card-body">
+              <p class="card-tag">Temple · 1651</p>
+              <h3>Jagdish Temple <span lang="hi">जगदीश मंदिर</span></h3>
+              <p>A carved temple to Vishnu at the top of a steep flight of steps, right in the middle of the busy old-city chowk.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art" data-art="bagore"></div>
+            <div class="card-body">
+              <p class="card-tag">Haveli · Gangaur Ghat</p>
+              <h3>Bagore Ki Haveli <span lang="hi">बागोर की हवेली</span></h3>
+              <p>An 18th-century mansion on the ghats, now a museum. The Dharohar folk dance show is held in its courtyard each evening.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art" data-art="fateh"></div>
+            <div class="card-body">
+              <p class="card-tag">Lake · Promenade</p>
+              <h3>Fateh Sagar <span lang="hi">फतेह सागर</span></h3>
+              <p>A wide lake north of the old city with an island garden. Locals walk its embankment in the evening for snacks and the breeze.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art" data-art="sajjangarh"></div>
+            <div class="card-body">
+              <p class="card-tag">Hilltop · 1884</p>
+              <h3>Sajjangarh <span lang="hi">सज्जनगढ़</span></h3>
+              <p>The Monsoon Palace, high on a hill west of the city. Go for sunset: the lakes and the old city spread out below.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCES ============ -->
+    <section class="section experiences" id="experiences">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">03 · Experiences</p>
+          <h2>Ways to spend a day</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+        </header>
+
+        <ol class="exp-list">
+          <li class="exp" data-reveal>
+            <div class="exp-icon" data-icon="boat"></div>
+            <div class="exp-main"><h3>Boat ride on Pichola</h3><p>Glide past the ghats, the City Palace and the island palaces as the light fades.</p></div>
+            <p class="exp-meta">Sunset<br>1 hour</p>
+          </li>
+          <li class="exp" data-reveal>
+            <div class="exp-icon" data-icon="walk"></div>
+            <div class="exp-main"><h3>Heritage walk</h3><p>Old-city lanes at dawn: carved haveli doorways, neighbourhood temples and the ghats before the crowds.</p></div>
+            <p class="exp-meta">Early morning<br>2–3 hours</p>
+          </li>
+          <li class="exp" data-reveal>
+            <div class="exp-icon" data-icon="food"></div>
+            <div class="exp-main"><h3>Food trail</h3><p>Kachori and mirchi bada from street stalls, dal baati churma, and kulhad chai on a rooftop.</p></div>
+            <p class="exp-meta">Evening<br>3 hours</p>
+          </li>
+          <li class="exp" data-reveal>
+            <div class="exp-icon" data-icon="dance"></div>
+            <div class="exp-main"><h3>Folk dance evening</h3><p>Dharohar at Bagore Ki Haveli: ghoomar, puppetry and the famous pot dance, in a lamplit courtyard.</p></div>
+            <p class="exp-meta">7 pm<br>1 hour</p>
+          </li>
+          <li class="exp" data-reveal>
+            <div class="exp-icon" data-icon="market"></div>
+            <div class="exp-main"><h3>Markets</h3><p>Hathi Pol and Bada Bazaar for miniature paintings, silver, leheriya textiles and lac bangles.</p></div>
+            <p class="exp-meta">Afternoon<br>Any length</p>
+          </li>
+        </ol>
+      </div>
+      <div class="lake-band" aria-hidden="true"></div>
+    </section>
+
+    <!-- ============ ITINERARIES ============ -->
+    <section class="section itineraries" id="itineraries">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">04 · Suggested itineraries</p>
+          <h2>Pick your pace</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+        </header>
+
+        <div class="tabs" role="tablist" aria-label="Trip length" data-reveal>
+          <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="true">2 days</button>
+          <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">3 days</button>
+          <button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">5 days</button>
+        </div>
+
+        <div class="panels">
+          <div class="panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2">
+            <p class="panel-intro">The essentials: palace, temple, lake and one evening of music.</p>
+            <ol class="days">
+              <li><h3>Day 1 <span>Old City</span></h3><ul>
+                <li><b>Morning</b>City Palace and its museum, before the heat.</li>
+                <li><b>Afternoon</b>Jagdish Temple and the lanes around the chowk.</li>
+                <li><b>Evening</b>Sunset boat on Lake Pichola, then Dharohar at Bagore Ki Haveli.</li>
+              </ul></li>
+              <li><h3>Day 2 <span>Lakes &amp; hills</span></h3><ul>
+                <li><b>Morning</b>Saheliyon Ki Bari gardens and a walk along Fateh Sagar.</li>
+                <li><b>Afternoon</b>Shopping at Hathi Pol and Bada Bazaar.</li>
+                <li><b>Evening</b>Sunset at Sajjangarh, the Monsoon Palace.</li>
+              </ul></li>
+            </ol>
+          </div>
+          <div class="panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+            <p class="panel-intro">The essentials, plus a morning on foot and an evening of food.</p>
+            <ol class="days">
+              <li><h3>Day 1 <span>Old City</span></h3><ul>
+                <li><b>Morning</b>City Palace and its museum.</li>
+                <li><b>Afternoon</b>Jagdish Temple and Bagore Ki Haveli museum.</li>
+                <li><b>Evening</b>Sunset boat on Lake Pichola.</li>
+              </ul></li>
+              <li><h3>Day 2 <span>On foot</span></h3><ul>
+                <li><b>Morning</b>Heritage walk through the old city at dawn.</li>
+                <li><b>Afternoon</b>Rest, or a miniature-painting workshop.</li>
+                <li><b>Evening</b>Food trail, then the Dharohar dance show.</li>
+              </ul></li>
+              <li><h3>Day 3 <span>Lakes &amp; hills</span></h3><ul>
+                <li><b>Morning</b>Fateh Sagar and Saheliyon Ki Bari.</li>
+                <li><b>Afternoon</b>Markets at Hathi Pol and Bada Bazaar.</li>
+                <li><b>Evening</b>Sunset at Sajjangarh.</li>
+              </ul></li>
+            </ol>
+          </div>
+          <div class="panel" role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden>
+            <p class="panel-intro">Unhurried, with a day trip into the Aravalli hills.</p>
+            <ol class="days">
+              <li><h3>Day 1 <span>Arrive slowly</span></h3><ul>
+                <li><b>Afternoon</b>Settle in near the ghats; walk to Gangaur Ghat.</li>
+                <li><b>Evening</b>Sunset boat on Lake Pichola.</li>
+              </ul></li>
+              <li><h3>Day 2 <span>Old City</span></h3><ul>
+                <li><b>Morning</b>City Palace and museum.</li>
+                <li><b>Afternoon</b>Jagdish Temple and the chowk.</li>
+                <li><b>Evening</b>Dharohar at Bagore Ki Haveli.</li>
+              </ul></li>
+              <li><h3>Day 3 <span>On foot</span></h3><ul>
+                <li><b>Morning</b>Heritage walk at dawn.</li>
+                <li><b>Afternoon</b>Miniature-painting or block-print workshop.</li>
+                <li><b>Evening</b>Food trail through the old city.</li>
+              </ul></li>
+              <li><h3>Day 4 <span>Day trip</span></h3><ul>
+                <li><b>All day</b>Kumbhalgarh Fort and the Ranakpur Jain temple, about two hours' drive each way.</li>
+              </ul></li>
+              <li><h3>Day 5 <span>Lakes &amp; hills</span></h3><ul>
+                <li><b>Morning</b>Fateh Sagar and Saheliyon Ki Bari.</li>
+                <li><b>Afternoon</b>Markets, last gifts.</li>
+                <li><b>Evening</b>Farewell sunset at Sajjangarh.</li>
+              </ul></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLAN ============ -->
+    <section class="section plan" id="plan">
+      <div class="wrap plan-grid">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">05 · Plan your trip</p>
+          <h2>Tell us how you'd like to travel</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+          <p class="plan-note">Share a few details and we'll write back with a suggested plan, places to stay and the best season for what you want to see.</p>
+        </header>
+
+        <form class="form" id="planForm" novalidate data-reveal>
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="f-month">When</label>
+            <select id="f-month" name="month">
+              <option value="">Not sure yet</option>
+              <option>October</option><option>November</option><option>December</option>
+              <option>January</option><option>February</option><option>March</option>
+              <option>April – June</option><option>July – September (monsoon)</option>
+            </select>
+          </div>
+          <div class="field half">
+            <label for="f-days">Days</label>
+            <select id="f-days" name="days"><option>2</option><option selected>3</option><option>5</option><option>More than 5</option></select>
+          </div>
+          <div class="field half">
+            <label for="f-people">Travellers</label>
+            <input id="f-people" name="people" type="number" min="1" max="30" value="2" inputmode="numeric">
+          </div>
+          <fieldset class="field chips">
+            <legend>Interested in</legend>
+            <label><input type="checkbox" name="interest" value="Palaces"><span>Palaces</span></label>
+            <label><input type="checkbox" name="interest" value="Lakes"><span>Lakes</span></label>
+            <label><input type="checkbox" name="interest" value="Food"><span>Food</span></label>
+            <label><input type="checkbox" name="interest" value="Crafts"><span>Crafts</span></label>
+            <label><input type="checkbox" name="interest" value="Day trips"><span>Day trips</span></label>
+          </fieldset>
+          <div class="field">
+            <label for="f-msg">Anything else?</label>
+            <textarea id="f-msg" name="message" rows="4" placeholder="Celebrations, pace, places you've always wanted to see…"></textarea>
+          </div>
+          <div class="form-foot">
+            <button class="btn" type="submit">Send enquiry</button>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="foot-lockup">
+        <p class="foot-miras">MIRAS</p>
+        <p class="foot-sub"><span lang="hi">उदयपुर</span> · UDAIPUR · INDIA</p>
+        <div class="rule"><span></span><i class="star"></i><span></span></div>
+      </div>
+      <nav class="foot-nav" aria-label="Footer">
+        <a href="#about">About</a><a href="#places">Places</a><a href="#experiences">Experiences</a><a href="#itineraries">Itineraries</a><a href="#plan">Plan your trip</a>
+      </nav>
+      <p class="foot-small">© 2026 MIRAS. A slow-travel guide to Udaipur.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
