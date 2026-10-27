@@ -76,6 +76,7 @@ export const Artisan = z.object({
   id: nonEmpty,
   name: nonEmpty,
   craft: nonEmpty,
+  headline: z.string().optional(),
   description: nonEmpty,
   description_hi: z.string().optional(),
   materials: z.array(z.string()).default([]),
@@ -136,6 +137,8 @@ export const ListingDraft = z.object({
   category: z.string(),
   materials: z.array(z.string()),
   uncertain_fields: z.array(z.string()),
+  /** Safety flag, not listing content: true means the photo shows a person's face and must not be stored. */
+  photo_shows_face: z.boolean().optional(),
 });
 export type ListingDraft = z.infer<typeof ListingDraft>;
 

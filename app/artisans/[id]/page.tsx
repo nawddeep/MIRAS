@@ -25,6 +25,7 @@ export default async function ArtisanPage({ params }: PageProps<"/artisans/[id]"
         {artisan.isSample && <SampleBadge lang={lang} />}
         <h1 className="text-4xl">{artisan.name}</h1>
         <p className="text-lg text-ink-soft">{artisan.craft}</p>
+        {artisan.headline && <p className="font-display text-xl">{artisan.headline}</p>}
         <p className="leading-relaxed whitespace-pre-line">{pick(lang, artisan.description, artisan.description_hi)}</p>
       </header>
 

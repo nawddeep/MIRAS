@@ -12,6 +12,8 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     ...devices["Pixel 5"],
     viewport: { width: 360, height: 740 },
+    // Fake mic/camera that auto-accepts. Tests that need a denial stub getUserMedia to throw NotAllowedError.
+    launchOptions: { args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] },
   },
   webServer: {
     command: `npx next start -p ${PORT}`,
