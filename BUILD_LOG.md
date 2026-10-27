@@ -39,3 +39,14 @@ Times are IST.
 - Unit tests (`tests/unit/stories.test.ts`, 6 passing): live mode shows only verified non-sample stories, demo mode adds samples but never unverified non-sample ones, blank verifiedBy counts as unverified, search only returns visible stories, and a history story without sourceRef is rejected.
 - Test helper with temp-folder fixtures and an in-memory SQLite DB (`tests/unit/helpers.ts`). Vitest config renamed to `vitest.config.mts`.
 - Files: app/places/[slug]/page.tsx, app/search/page.tsx, tests/unit/helpers.ts, tests/unit/stories.test.ts, vitest.config.mts.
+
+## M4 Artisans and enquiries: 2026-10-28 00:42
+
+- `lib/services/publishing.ts` holds every publish gate. An artisan publishes only with `consent.given`, `consent.date` and `ownerConfirmedAt`. Sample listings never publish. A workshop publishes only with `confirmedByOwnerAt`. `saveArtisan` and `saveWorkshop` refuse to store a failing "published" record.
+- Visibility re-checks the gate, so a content file that claims "published" without consent stays hidden.
+- `/artisans` showcase, `/artisans/[id]` profile (with workshops if any, showing the updated date) and the enquiry form (question or appointment request).
+- `POST /api/enquiries`: Zod validation (1–1000 chars), sliding-window rate limit (3 per 10 min per client), duplicate-message block, stored in SQLite with a timestamp, counted per artisan.
+- `/owner/[token]`: private edit page (noindex, no-referrer). The owner edits fields, records in-app consent (docRef "in-app consent checkbox, wording v1"), publishes or unpublishes, and sees their enquiries. `POST /api/owner/[token]` only accepts whitelisted fields, so a save cannot set status or consent.
+- The place profile now links to local artisans.
+- Tests: `tests/unit/publishing.test.ts` (13) and `tests/unit/enquiries.test.ts` (7). All 26 unit tests pass.
+- Files: lib/services/{publishing,artisans,enquiries}.ts, lib/http.ts, app/api/enquiries/route.ts, app/api/owner/[token]/route.ts, app/artisans/page.tsx, app/artisans/[id]/page.tsx, app/owner/[token]/page.tsx, components/{EnquiryForm,OwnerEditor}.tsx, app/places/[slug]/page.tsx, tests/unit/{publishing,enquiries}.test.ts.

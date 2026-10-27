@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { IllustrativePhoto, MediaImage, PlaceHeader, StoryBlock } from "@/components/domain";
+import { ArtisanCard, IllustrativePhoto, MediaImage, PlaceHeader, StoryBlock } from "@/components/domain";
 import { Pano360 } from "@/components/Pano360";
 import { IDontKnow } from "@/components/ui";
 import { pick, t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
+import { getVisibleArtisans } from "@/lib/services/artisans";
 import { getVisiblePlaceBySlug, getVisibleStories } from "@/lib/services/content";
 
 export default async function PlacePage({ params }: PageProps<"/places/[slug]">) {
@@ -13,6 +14,8 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
   if (!place) notFound();
   const name = pick(lang, place.name, place.name_hi);
   const stories = getVisibleStories(place.id);
+  // No artisan-to-place link in the data model yet, so show a few makers from the city.
+  const artisans = getVisibleArtisans().slice(0, 3);
 
   return (
     <div className="space-y-6">
@@ -50,6 +53,19 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
           ))}
         </ul>
       </section>
+
+      {artisans.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-2xl">{t(lang, "meetArtisans")}</h2>
+          <ul className="grid gap-3">
+            {artisans.map((a) => (
+              <li key={a.id}>
+                <ArtisanCard artisan={a} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {place.photos.length > 1 && (
         <section>
