@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { IllustrativePhoto, MediaImage, PlaceHeader } from "@/components/domain";
+import { IllustrativePhoto, MediaImage, PlaceHeader, StoryBlock } from "@/components/domain";
 import { Pano360 } from "@/components/Pano360";
+import { IDontKnow } from "@/components/ui";
 import { pick, t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
-import { getVisiblePlaceBySlug } from "@/lib/services/content";
+import { getVisiblePlaceBySlug, getVisibleStories } from "@/lib/services/content";
 
 export default async function PlacePage({ params }: PageProps<"/places/[slug]">) {
   const { slug } = await params;
@@ -11,6 +12,7 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
   const place = getVisiblePlaceBySlug(slug);
   if (!place) notFound();
   const name = pick(lang, place.name, place.name_hi);
+  const stories = getVisibleStories(place.id);
 
   return (
     <div className="space-y-6">
@@ -33,6 +35,11 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
             {place.typicalVisitMinutes} {t(lang, "minutes")}
           </p>
         </div>
+      </section>
+
+      <section id="stories" className="space-y-3">
+        <h2 className="text-2xl">{t(lang, "stories")}</h2>
+        {stories.length ? stories.map((s) => <StoryBlock key={s.id} story={s} lang={lang} />) : <IDontKnow lang={lang} />}
       </section>
 
       <section>
