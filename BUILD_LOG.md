@@ -67,3 +67,11 @@ Times are IST.
 - `POST /api/camera/match` (3 MB limit, no-store). `/camera`: live camera with "What is this?", a "Choose a photo" fallback, a too-dark check in the browser before upload, and a camera-blocked message. In mock mode the visitor can pick a place by hand, labelled "Demo response". The server honours that pick only when the provider is the mock.
 - Tests: `tests/unit/camera.test.ts` (9): confident match shows only visible stories, low confidence, out-of-set (null or unknown id), person rejected, invalid or failed output, no story text in the AI input, frame zeroed with nothing written, mock never guesses, manual pick ignored with a real provider. `tests/e2e/camera.spec.ts` (4): dark photo blocked before upload, out-of-set gives I don't know with search, fake live camera, demo manual pick showing 3 badged stories.
 - Files: lib/services/camera.ts, app/api/camera/match/route.ts, app/camera/page.tsx, components/CameraMode.tsx, tests/unit/camera.test.ts, tests/e2e/camera.spec.ts.
+
+## M7 Phase 2 items: 2026-10-28 00:58
+
+- Workshops: owners add and edit workshops on their private page. Publishing needs an explicit "I confirm these details are correct" tick, which sets `confirmedByOwnerAt`. Any edit sends the workshop back to draft and clears the confirmation. Visitors see published workshops with their "Updated" date. `POST /api/owner/[token]/workshops` checks the workshop belongs to the token's artisan.
+- Narration: "Listen" uses the browser's built-in speech synthesis (hi-IN or en-IN) and always shows a "Synthetic voice" label. It is hidden when the browser has no speech synthesis.
+- Simple-language view: a "Simple version" toggle appears only when `simpleTextChecked` is true and `simpleText` is not empty. The schema refuses `simpleTextChecked: true` with an empty `simpleText`. All sample stories have `simpleTextChecked: false`, so the toggle is hidden now.
+- Tests: `tests/unit/workshops.test.ts` (6): no publish without the tick, publish records the confirmation, an edit clears it, new workshops start as drafts, another artisan's workshop is refused, samples never publish. All 52 unit tests pass.
+- Files: lib/services/workshops.ts, app/api/owner/[token]/workshops/route.ts, components/{OwnerWorkshops,StoryBody}.tsx, components/domain.tsx, app/owner/[token]/page.tsx, tests/unit/workshops.test.ts.

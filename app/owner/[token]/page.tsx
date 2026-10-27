@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OwnerEditor } from "@/components/OwnerEditor";
+import { OwnerWorkshops } from "@/components/OwnerWorkshops";
 import { Card, SampleBadge } from "@/components/ui";
 import { getRepos } from "@/lib/repos";
 import { artisanPublishBlockers } from "@/lib/services/publishing";
@@ -14,6 +15,7 @@ export default async function OwnerPage({ params }: PageProps<"/owner/[token]">)
   const artisan = repos.artisans.getByEditToken(token);
   if (!artisan) notFound();
   const enquiries = repos.enquiries.listByArtisan(artisan.id);
+  const workshops = repos.workshops.list().filter((w) => w.artisanId === artisan.id);
   const fmt = new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" });
 
   return (
@@ -25,6 +27,8 @@ export default async function OwnerPage({ params }: PageProps<"/owner/[token]">)
       </header>
 
       <OwnerEditor token={token} artisan={artisan} blockers={artisanPublishBlockers(artisan)} />
+
+      <OwnerWorkshops token={token} workshops={workshops} />
 
       <section className="space-y-3">
         <h2 className="text-2xl">Enquiries ({enquiries.length})</h2>

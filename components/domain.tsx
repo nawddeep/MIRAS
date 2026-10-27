@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { pick, t, type Lang } from "@/lib/i18n";
 import type { Artisan, Place, StoryEntry } from "@/lib/schemas";
+import { StoryBody } from "./StoryBody";
 import { Label, NotRealLabel, SampleBadge, SourceTypeLabel } from "./ui";
 
 /** Plain <img> on purpose: media is local SVG/JPEG and next/image adds nothing for the demo. */
@@ -41,11 +41,8 @@ export function PlaceCard({ place, lang }: { place: Place; lang: Lang }) {
   );
 }
 
-/**
- * One story with its source type label. Only ever rendered with stories from getVisibleStories.
- * `extra` is where client controls (narration, simple version) plug in.
- */
-export function StoryBlock({ story, lang, extra }: { story: StoryEntry; lang: Lang; extra?: ReactNode }) {
+/** One story with its source type label. Only ever rendered with stories from getVisibleStories. */
+export function StoryBlock({ story, lang }: { story: StoryEntry; lang: Lang }) {
   return (
     <article className="rounded-2xl border border-line bg-white/60 p-4" data-testid="story" data-story-id={story.id}>
       <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -53,7 +50,7 @@ export function StoryBlock({ story, lang, extra }: { story: StoryEntry; lang: La
         {story.isSample && <SampleBadge lang={lang} />}
       </div>
       <h3 className="text-2xl">{pick(lang, story.title, story.title_hi)}</h3>
-      {extra ?? <p className="mt-2 leading-relaxed whitespace-pre-line">{pick(lang, story.text, story.text_hi)}</p>}
+      <StoryBody story={story} lang={lang} />
       <dl className="mt-3 space-y-0.5 text-sm text-ink-soft">
         {story.sourceRef && (
           <div className="flex gap-1">
