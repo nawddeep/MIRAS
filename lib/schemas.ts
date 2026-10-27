@@ -1,0 +1,147 @@
+import { z } from "zod";
+
+const isoDate = z.iso.datetime({ offset: true });
+const nonEmpty = z.string().trim().min(1);
+
+export const SOURCE_TYPES = ["history", "oral_tradition", "legend"] as const;
+export const SourceType = z.enum(SOURCE_TYPES);
+export type SourceType = z.infer<typeof SourceType>;
+
+export const Rights = z.object({
+  owner: nonEmpty,
+  permittedUse: nonEmpty,
+});
+
+export const Place = z.object({
+  id: nonEmpty,
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  name: nonEmpty,
+  name_hi: z.string().optional(),
+  category: nonEmpty,
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  summary: nonEmpty,
+  summary_hi: z.string().optional(),
+  visitTips: z.array(nonEmpty),
+  openingHours: nonEmpty,
+  typicalVisitMinutes: z.number().int().positive(),
+  photos: z.array(nonEmpty),
+  preview360: z
+    .object({ path: nonEmpty, illustrative: z.boolean() })
+    .optional(),
+  status: z.enum(["draft", "published"]),
+  isSample: z.boolean(),
+});
+export type Place = z.infer<typeof Place>;
+
+export const StoryEntry = z
+  .object({
+    id: nonEmpty,
+    placeId: nonEmpty,
+    title: nonEmpty,
+    title_hi: z.string().optional(),
+    text: nonEmpty,
+    text_hi: z.string().optional(),
+    simpleText: z.string().optional(),
+    simpleTextChecked: z.boolean().default(false),
+    language: z.enum(["en", "hi"]),
+    sourceType: SourceType,
+    sourceRef: z.string().optional(),
+    verifiedBy: z.string().optional(),
+    verifiedAt: isoDate.optional(),
+    rights: Rights,
+    updatedAt: isoDate,
+    isSample: z.boolean(),
+  })
+  .superRefine((s, ctx) => {
+    if (s.sourceType === "history" && !s.sourceRef?.trim()) {
+      ctx.addIssue({ code: "custom", path: ["sourceRef"], message: "sourceRef is required when sourceType is history" });
+    }
+    if (s.verifiedBy?.trim() && !s.verifiedAt) {
+      ctx.addIssue({ code: "custom", path: ["verifiedAt"], message: "verifiedAt is required when verifiedBy is set" });
+    }
+    if (s.simpleTextChecked && !s.simpleText?.trim()) {
+      ctx.addIssue({ code: "custom", path: ["simpleText"], message: "simpleTextChecked is true but simpleText is empty" });
+    }
+  });
+export type StoryEntry = z.infer<typeof StoryEntry>;
+
+export const Consent = z.object({
+  given: z.boolean(),
+  date: isoDate.optional(),
+  docRef: z.string().optional(),
+});
+
+export const Artisan = z.object({
+  id: nonEmpty,
+  name: nonEmpty,
+  craft: nonEmpty,
+  description: nonEmpty,
+  description_hi: z.string().optional(),
+  materials: z.array(z.string()).default([]),
+  languages: z.array(nonEmpty),
+  photos: z.array(nonEmpty),
+  contact: nonEmpty,
+  locationText: nonEmpty,
+  status: z.enum(["draft", "published"]),
+  consent: Consent,
+  photoRights: nonEmpty,
+  ownerConfirmedAt: isoDate.optional(),
+  editToken: z.string().min(16),
+  isSample: z.boolean(),
+});
+export type Artisan = z.infer<typeof Artisan>;
+
+export const Workshop = z.object({
+  id: nonEmpty,
+  artisanId: nonEmpty,
+  title: nonEmpty,
+  description: nonEmpty,
+  language: nonEmpty,
+  durationMinutes: z.number().int().positive(),
+  cost: nonEmpty,
+  howToBook: nonEmpty,
+  status: z.enum(["draft", "published"]),
+  confirmedByOwnerAt: isoDate.optional(),
+  updatedAt: isoDate,
+  isSample: z.boolean(),
+});
+export type Workshop = z.infer<typeof Workshop>;
+
+export const ENQUIRY_MAX = 1000;
+export const EnquiryInput = z.object({
+  artisanId: nonEmpty,
+  message: z.string().trim().min(1, "Please write a message.").max(ENQUIRY_MAX, `Please keep it under ${ENQUIRY_MAX} characters.`),
+  contactBack: z.string().trim().min(3, "Please add a phone number or email.").max(200),
+  kind: z.enum(["question", "appointment"]),
+});
+export type EnquiryInput = z.infer<typeof EnquiryInput>;
+export type Enquiry = EnquiryInput & { id: string; createdAt: string };
+
+export const MediaAsset = z.object({
+  id: nonEmpty,
+  path: nonEmpty,
+  owner: nonEmpty,
+  permittedUse: nonEmpty,
+  licenceNote: z.string(),
+  containsPeople: z.boolean(),
+});
+export type MediaAsset = z.infer<typeof MediaAsset>;
+
+/** What the AI must return for voice onboarding. Validated before anything is shown. */
+export const ListingDraft = z.object({
+  title: z.string(),
+  description_hi: z.string(),
+  description_en: z.string(),
+  category: z.string(),
+  materials: z.array(z.string()),
+  uncertain_fields: z.array(z.string()),
+});
+export type ListingDraft = z.infer<typeof ListingDraft>;
+
+export const PlaceMatch = z.object({
+  placeId: z.string().nullable(),
+  confidence: z.number().min(0).max(1),
+  personIsMainSubject: z.boolean().default(false),
+});
+export type PlaceMatch = z.infer<typeof PlaceMatch>;

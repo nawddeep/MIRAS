@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
+/* MIRAS design tokens. Ink/lake/saffron/rose/paper from the team brief; sky and mist from the story page. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #131b31;
+  --ink-soft: #3a4260;
+  --lake: #8fb0d6;
+  --lake-deep: #4a5a82;
+  --saffron: #f0a140;
+  --rose: #d98a78;
+  --paper: #f5eee0;
+  --stone: #f1e6d6;
+  --mist: #f3e3d3;
+  --sky-top: #8c9cc0;
+  --sky-mid: #e8b9a2;
+  --sky-hor: #f5d7aa;
+  --hill: #3f6b50;
+  --line: rgba(19, 27, 49, 0.14);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-lake: var(--lake);
+  --color-lake-deep: var(--lake-deep);
+  --color-saffron: var(--saffron);
+  --color-rose: var(--rose);
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-mist: var(--mist);
+  --color-sky-top: var(--sky-top);
+  --color-sky-mid: var(--sky-mid);
+  --color-sky-hor: var(--sky-hor);
+  --color-hill: var(--hill);
+  --color-line: var(--line);
+  --font-sans: var(--font-hind), system-ui, sans-serif;
+  --font-display: var(--font-tiro), Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--paper);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 3px solid var(--lake-deep);
+  outline-offset: 2px;
+}
+
+.sky-gradient {
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-hor) 100%);
 }
