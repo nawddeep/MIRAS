@@ -1,0 +1,23 @@
+{
+  "id": "city-palace",
+  "slug": "city-palace",
+  "name": "City Palace",
+  "name_hi": "सिटी पैलेस",
+  "category": "Palace",
+  "lat": 24.5854,
+  "lng": 73.7125,
+  "summary": "SAMPLE: short summary for City Palace goes here.",
+  "summary_hi": "नमूना: सिटी पैलेस का छोटा परिचय यहाँ आएगा।",
+  "visitTips": [
+    "SAMPLE: visit tip 1 for City Palace goes here.",
+    "SAMPLE: visit tip 2 for City Palace goes here."
+  ],
+  "openingHours": "SAMPLE: opening hours go here.",
+  "typicalVisitMinutes": 60,
+  "photos": [
+    "/media/placeholders/city-palace-1.svg",
+    "/media/placeholders/city-palace-2.svg"
+  ],
+  "status": "published",
+  "isSample": true
+}

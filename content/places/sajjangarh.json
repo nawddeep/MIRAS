@@ -1,0 +1,23 @@
+{
+  "id": "sajjangarh",
+  "slug": "sajjangarh",
+  "name": "Sajjangarh",
+  "name_hi": "सज्जनगढ़",
+  "category": "Heritage site",
+  "lat": 24.5854,
+  "lng": 73.7125,
+  "summary": "SAMPLE: short summary for Sajjangarh goes here.",
+  "summary_hi": "नमूना: सज्जनगढ़ का छोटा परिचय यहाँ आएगा।",
+  "visitTips": [
+    "SAMPLE: visit tip 1 for Sajjangarh goes here.",
+    "SAMPLE: visit tip 2 for Sajjangarh goes here."
+  ],
+  "openingHours": "SAMPLE: opening hours go here.",
+  "typicalVisitMinutes": 60,
+  "photos": [
+    "/media/placeholders/sajjangarh-1.svg",
+    "/media/placeholders/sajjangarh-2.svg"
+  ],
+  "status": "published",
+  "isSample": true
+}

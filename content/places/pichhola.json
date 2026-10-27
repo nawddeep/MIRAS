@@ -1,0 +1,27 @@
+{
+  "id": "pichhola",
+  "slug": "pichhola",
+  "name": "Pichhola",
+  "name_hi": "पिछोला",
+  "category": "Lake",
+  "lat": 24.5854,
+  "lng": 73.7125,
+  "summary": "SAMPLE: short summary for Pichhola goes here.",
+  "summary_hi": "नमूना: पिछोला का छोटा परिचय यहाँ आएगा।",
+  "visitTips": [
+    "SAMPLE: visit tip 1 for Pichhola goes here.",
+    "SAMPLE: visit tip 2 for Pichhola goes here."
+  ],
+  "openingHours": "SAMPLE: opening hours go here.",
+  "typicalVisitMinutes": 60,
+  "photos": [
+    "/media/placeholders/pichhola-1.svg",
+    "/media/placeholders/pichhola-2.svg"
+  ],
+  "preview360": {
+    "path": "/media/placeholders/pano-placeholder.png",
+    "illustrative": true
+  },
+  "status": "published",
+  "isSample": true
+}

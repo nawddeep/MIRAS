@@ -1,0 +1,54 @@
+[
+  {
+    "id": "sajjangarh-sample-1",
+    "placeId": "sajjangarh",
+    "title": "SAMPLE: history story 1 for Sajjangarh",
+    "text": "SAMPLE: story text for Sajjangarh goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: सज्जनगढ़ की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Sajjangarh goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "history",
+    "sourceRef": "SAMPLE: source reference goes here.",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  },
+  {
+    "id": "sajjangarh-sample-2",
+    "placeId": "sajjangarh",
+    "title": "SAMPLE: oral tradition story 2 for Sajjangarh",
+    "text": "SAMPLE: story text for Sajjangarh goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: सज्जनगढ़ की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Sajjangarh goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "oral_tradition",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  },
+  {
+    "id": "sajjangarh-sample-3",
+    "placeId": "sajjangarh",
+    "title": "SAMPLE: legend story 3 for Sajjangarh",
+    "text": "SAMPLE: story text for Sajjangarh goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: सज्जनगढ़ की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Sajjangarh goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "legend",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  }
+]

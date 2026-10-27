@@ -1,0 +1,54 @@
+[
+  {
+    "id": "pichhola-sample-1",
+    "placeId": "pichhola",
+    "title": "SAMPLE: history story 1 for Pichhola",
+    "text": "SAMPLE: story text for Pichhola goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: पिछोला की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Pichhola goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "history",
+    "sourceRef": "SAMPLE: source reference goes here.",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  },
+  {
+    "id": "pichhola-sample-2",
+    "placeId": "pichhola",
+    "title": "SAMPLE: oral tradition story 2 for Pichhola",
+    "text": "SAMPLE: story text for Pichhola goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: पिछोला की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Pichhola goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "oral_tradition",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  },
+  {
+    "id": "pichhola-sample-3",
+    "placeId": "pichhola",
+    "title": "SAMPLE: legend story 3 for Pichhola",
+    "text": "SAMPLE: story text for Pichhola goes here. This is placeholder text, not a historical claim.",
+    "text_hi": "नमूना: पिछोला की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "simpleText": "SAMPLE: simple-language version for Pichhola goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "legend",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "id": "sample-artisan-1",
+  "name": "Sample Artisan 1",
+  "craft": "SAMPLE craft: pottery",
+  "description": "SAMPLE: description of Sample Artisan 1's work goes here.",
+  "description_hi": "नमूना: सैंपल कारीगर 1 के काम का विवरण यहाँ आएगा।",
+  "materials": [],
+  "languages": [
+    "Hindi",
+    "English"
+  ],
+  "photos": [
+    "/media/placeholders/artisan-1.svg"
+  ],
+  "contact": "sample-artisan-1@example.invalid",
+  "locationText": "SAMPLE: area in Udaipur",
+  "status": "draft",
+  "consent": {
+    "given": false
+  },
+  "photoRights": "Generated placeholder, owned by Team Impala",
+  "editToken": "sample-edit-token-1-40447317d2a18681",
+  "isSample": true
+}
