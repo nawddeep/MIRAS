@@ -3,7 +3,7 @@ import type { AiProvider } from "@/lib/ai";
 import { MockAiProvider } from "@/lib/ai/mock";
 import { createListing, draftFromVoice, type ListingSubmission } from "@/lib/services/onboarding";
 import type { StorageProvider } from "@/lib/storage";
-import { useFixture } from "./helpers";
+import { withFixture } from "./helpers";
 
 const audio = Buffer.alloc(5000, 1);
 const good = { title: "T", description_hi: "हि", description_en: "E", category: "C", materials: ["clay"], uncertain_fields: ["materials"] };
@@ -83,7 +83,7 @@ const fakeStorage = (): StorageProvider & { saveImage: ReturnType<typeof vi.fn> 
 
 describe("createListing", () => {
   it("saves a draft and never publishes without an explicit Publish tap", () => {
-    const { repos } = useFixture({});
+    const { repos } = withFixture({});
     const { artisan } = createListing(sub({ consentAgreed: true }), undefined, fakeStorage());
     expect(artisan.status).toBe("draft");
     expect(repos.artisans.get(artisan.id)?.status).toBe("draft");
@@ -91,28 +91,28 @@ describe("createListing", () => {
   });
 
   it("keeps the draft and reports blockers when Publish is tapped without consent", () => {
-    const { repos } = useFixture({});
+    const { repos } = withFixture({});
     const { artisan, publishBlockers } = createListing(sub({ publish: true }), undefined, fakeStorage());
     expect(publishBlockers).toContain("consent not given");
     expect(repos.artisans.get(artisan.id)?.status).toBe("draft");
   });
 
   it("publishes with consent and an explicit Publish tap", () => {
-    const { repos } = useFixture({});
+    const { repos } = withFixture({});
     const { artisan } = createListing(sub({ publish: true, consentAgreed: true }), undefined, fakeStorage());
     expect(repos.artisans.get(artisan.id)?.status).toBe("published");
     expect(repos.artisans.get(artisan.id)?.consent.date).toBeTruthy();
   });
 
   it("refuses to store a photo unless the owner confirms it shows no faces", () => {
-    useFixture({});
+    withFixture({});
     const storage = fakeStorage();
     expect(() => createListing(sub(), { data: Buffer.alloc(10), mime: "image/jpeg" }, storage)).toThrow(/face/);
     expect(storage.saveImage).not.toHaveBeenCalled();
   });
 
   it("records rights for a stored photo", () => {
-    useFixture({});
+    withFixture({});
     const storage = fakeStorage();
     const { artisan } = createListing(sub({ photoHasNoFaces: true }), { data: Buffer.alloc(10), mime: "image/jpeg" }, storage);
     expect(storage.saveImage).toHaveBeenCalledWith(expect.any(Buffer), "image/jpeg", expect.objectContaining({ owner: "Owner Name", containsPeople: false }));

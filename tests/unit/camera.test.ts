@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { AiProvider } from "@/lib/ai";
 import { MockAiProvider } from "@/lib/ai/mock";
 import { matchFrame } from "@/lib/services/camera";
-import { place, story, useFixture } from "./helpers";
+import { place, story, withFixture } from "./helpers";
 
 const places = [place({ id: "p1", slug: "p1", name: "Place One" }), place({ id: "p2", slug: "p2", name: "Place Two" })];
 const stories = [
@@ -18,7 +18,7 @@ const frame = () => Buffer.from("fake-jpeg-bytes-of-a-monument");
 
 describe("camera story mode", () => {
   it("returns only visible stories for a confident match", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const r = await matchFrame(vision({ placeId: "p1", confidence: 0.95 }), frame(), "image/jpeg", { mode: "live", threshold: 0.85 });
     expect(r.known).toBe(true);
     if (r.known) expect(r.stories.map((s) => s.id)).toEqual(["v1"]);
@@ -26,32 +26,32 @@ describe("camera story mode", () => {
   });
 
   it("says I don't know below the threshold", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const r = await matchFrame(vision({ placeId: "p1", confidence: 0.6 }), frame(), "image/jpeg", { mode: "live", threshold: 0.85 });
     expect(r).toMatchObject({ known: false, reason: "low_confidence" });
   });
 
   it("says I don't know for an out-of-set photo (null or unknown place id)", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     expect(await matchFrame(vision({ placeId: null, confidence: 0.99 }), frame(), "image/jpeg", { mode: "live", threshold: 0.85 })).toMatchObject({ known: false });
     expect(await matchFrame(vision({ placeId: "taj-mahal", confidence: 0.99 }), frame(), "image/jpeg", { mode: "live", threshold: 0.85 })).toMatchObject({ known: false });
   });
 
   it("rejects a photo where a person is the main subject", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const r = await matchFrame(vision({ placeId: "p1", confidence: 0.99, personIsMainSubject: true }), frame(), "image/jpeg", { mode: "live", threshold: 0.5 });
     expect(r).toMatchObject({ known: false, reason: "person" });
   });
 
   it("treats invalid model output or a failed call as unsure", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     expect(await matchFrame(vision("I think it's a fort, built in..."), frame(), "image/jpeg", { mode: "live" })).toMatchObject({ known: false, reason: "unsure" });
     const failing: AiProvider = { name: "gemini", draftListing: vi.fn(), matchPlace: vi.fn().mockRejectedValue(new Error("down")) };
     expect(await matchFrame(failing, frame(), "image/jpeg", { mode: "live" })).toMatchObject({ known: false, reason: "unsure" });
   });
 
   it("never sends story text to the AI, only place ids and names", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const ai = vision({ placeId: "p1", confidence: 0.95 });
     await matchFrame(ai, frame(), "image/jpeg", { mode: "demo", threshold: 0.85 });
     const input = ai.matchPlace.mock.calls[0][0];
@@ -65,7 +65,7 @@ describe("camera story mode", () => {
   });
 
   it("discards the frame: the buffer is zeroed and nothing is written to disk", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const writeSpy = vi.spyOn(fs, "writeFileSync");
     const buf = frame();
     await matchFrame(vision({ placeId: "p1", confidence: 0.95 }), buf, "image/jpeg", { mode: "live", threshold: 0.85 });
@@ -75,14 +75,14 @@ describe("camera story mode", () => {
   });
 
   it("mock mode never claims a match unless the visitor picks the place by hand", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     expect(await matchFrame(new MockAiProvider(), frame(), "image/jpeg", { mode: "demo" })).toMatchObject({ known: false, demo: true });
     const picked = await matchFrame(new MockAiProvider(), Buffer.alloc(0), "image/jpeg", { mode: "demo", demoPlaceId: "p1" });
     expect(picked).toMatchObject({ known: true, demo: true });
   });
 
   it("ignores a manual pick when a real provider is configured", async () => {
-    useFixture({ places, stories });
+    withFixture({ places, stories });
     const r = await matchFrame(vision({ placeId: null, confidence: 0 }), frame(), "image/jpeg", { mode: "live", demoPlaceId: "p1" });
     expect(r.known).toBe(false);
   });

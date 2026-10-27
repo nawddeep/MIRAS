@@ -83,7 +83,7 @@ type Fixture = {
 };
 
 /** Writes a throwaway content folder and installs repos backed by it and an in-memory DB. */
-export function useFixture(f: Fixture) {
+export function withFixture(f: Fixture) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "miras-test-"));
   const contentDir = path.join(root, "content");
   for (const key of ["places", "stories", "artisans", "workshops"] as const) {

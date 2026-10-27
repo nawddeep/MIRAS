@@ -75,3 +75,11 @@ Times are IST.
 - Simple-language view: a "Simple version" toggle appears only when `simpleTextChecked` is true and `simpleText` is not empty. The schema refuses `simpleTextChecked: true` with an empty `simpleText`. All sample stories have `simpleTextChecked: false`, so the toggle is hidden now.
 - Tests: `tests/unit/workshops.test.ts` (6): no publish without the tick, publish records the confirmation, an edit clears it, new workshops start as drafts, another artisan's workshop is refused, samples never publish. All 52 unit tests pass.
 - Files: lib/services/workshops.ts, app/api/owner/[token]/workshops/route.ts, components/{OwnerWorkshops,StoryBody}.tsx, components/domain.tsx, app/owner/[token]/page.tsx, tests/unit/workshops.test.ts.
+
+## Content check, admin and end-to-end tests: 2026-10-28 01:03
+
+- `npm run content:check` (`lib/content-check.ts`, `scripts/content-check.ts`) exits 1 on schema errors (with file, index and field), duplicate ids, stories pointing to unknown places, a published artisan without consent or owner confirmation, a published workshop without confirmation, any media file in `public/` with no rights entry, a rights entry for a missing file, a referenced photo with no rights entry, or an artisan photo marked as showing people. It lists every sample or unverified item and writes `CONTENT_TODO.md`.
+- `/admin`: AI configured or "AI not configured", demo or live mode, match threshold, content errors and to-do counts, enquiry counts per artisan. No keys or contact details are shown.
+- Tests: `tests/unit/content-check.test.ts` (9), `tests/unit/config.test.ts` (4: no-.env defaults, the model is never guessed). `tests/e2e/demo-path.spec.ts` (15): no horizontal scroll at 360 px on 9 routes, the full demo path including the 360 viewer, enquiry validation and duplicate block, slow-3G load, offline enquiry message, no-.env admin, and the Hindi switch.
+- Results: 65 unit tests pass. 22 e2e tests pass against a production build started with empty Gemini env vars. The demo-path spec passed 3 runs in a row (`--repeat-each=3`, 45/45).
+- The test helper was renamed to `withFixture` (lint rule).
