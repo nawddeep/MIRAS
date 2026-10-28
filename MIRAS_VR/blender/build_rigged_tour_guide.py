@@ -14,20 +14,27 @@ from mathutils import Vector, Euler, Matrix, Quaternion
 
 NAME = "Trump_Tour_Guide"
 
-# Official Indian Attire Turnaround Color Palette (Linear sRGB)
+# Exact 5-Swatch Turnaround Color Palette from Reference Image (Linear sRGB for glTF)
+# Reference: media_1793216423382_3bd6cfa0.jpg
 PALETTE = {
-    "vest": (0.114, 0.149, 0.231, 1.0),      # #1D263B Royal Navy Blue
-    "vest_shadow": (0.075, 0.102, 0.161, 1.0), # #131A29 Deep Navy Shadow
-    "kurta": (0.961, 0.937, 0.902, 1.0),     # #F5EFE6 Cream / Off-White Silk
-    "kurta_shade": (0.890, 0.843, 0.784, 1.0), # #E3D7C8 Fold Shadow
-    "stole": (0.533, 0.145, 0.173, 1.0),     # #88252C Deep Maroon
-    "stole_gold": (0.831, 0.659, 0.325, 1.0),# #D4A853 Golden Zari Trim & Tassels
-    "hair": (0.898, 0.722, 0.463, 1.0),      # #E5B876 Golden Blonde Hair
-    "skin": (0.949, 0.729, 0.576, 1.0),      # #F2BA93 Warm Natural Caucasian Skin
-    "lips": (0.831, 0.545, 0.467, 1.0),      # #D48B77 Natural Lip Tone
-    "shoes": (0.220, 0.137, 0.094, 1.0),     # #382318 Dark Brown Leather Mojari
-    "button": (0.898, 0.757, 0.345, 1.0),    # #E5C158 Brass Buttons
-    "watch": (0.220, 0.137, 0.094, 1.0),     # #382318 Watch Strap
+    # Swatch 1: Vest (Deep Midnight Navy / Charcoal Slate) - #22222E
+    "vest": (0.0160, 0.0160, 0.0273, 1.0),
+    "vest_shadow": (0.0095, 0.0095, 0.0165, 1.0),
+    # Swatch 2: Kurta & Churidar Pyjama (Warm Champagne Sand Cream) - #D9C3AC
+    "kurta": (0.6939, 0.5457, 0.4125, 1.0),
+    "kurta_shade": (0.5780, 0.4350, 0.3150, 1.0),
+    # Swatch 3: Stole / Angavastram (Rich Crimson Wine Maroon) - #6C2225
+    "stole": (0.1500, 0.0160, 0.0185, 1.0),
+    # Swatch 4: Stole Zari Trim & Hair (Antique Gold Ochre) - #987148
+    "stole_gold": (0.3140, 0.1651, 0.0648, 1.0),
+    "hair": (0.3140, 0.1651, 0.0648, 1.0),
+    # Swatch 5: Footwear / Mojari & Watch Strap (Espresso Dark Brown Leather) - #422C21
+    "shoes": (0.0545, 0.0252, 0.0152, 1.0),
+    "watch": (0.0545, 0.0252, 0.0152, 1.0),
+    # Character Facial Detail & Hardware
+    "skin": (0.7605, 0.2961, 0.1384, 1.0),     # #E29468 Warm Natural Caucasian Skin
+    "lips": (0.4578, 0.1195, 0.0513, 1.0),     # #B46240 Natural Lip Tone
+    "button": (0.6038, 0.3564, 0.1022, 1.0),   # #CDA05A Brass Buttons
 }
 
 

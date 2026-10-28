@@ -813,16 +813,17 @@ function applyTrumpIndianAttireColors(geometry) {
   const count = pos.count;
   const colors = new Float32Array(count * 3);
 
-  const cNavy = new THREE.Color('#1D263B');
-  const cCream = new THREE.Color('#F5EFE6');
-  const cCreamShade = new THREE.Color('#E3D7C8');
-  const cMaroon = new THREE.Color('#88252C');
-  const cGoldTrim = new THREE.Color('#D4A853');
-  const cHair = new THREE.Color('#E5B876');
-  const cSkin = new THREE.Color('#F2BA93');
-  const cLips = new THREE.Color('#D48B77');
-  const cShoes = new THREE.Color('#382318');
-  const cButton = new THREE.Color('#E5C158');
+  // Exact 5-Swatch Turnaround Color Palette from Reference Image
+  const cNavy = new THREE.Color('#22222E');
+  const cCream = new THREE.Color('#D9C3AC');
+  const cCreamShade = new THREE.Color('#C7B29B');
+  const cMaroon = new THREE.Color('#6C2225');
+  const cGoldTrim = new THREE.Color('#987148');
+  const cHair = new THREE.Color('#987148');
+  const cSkin = new THREE.Color('#E29468');
+  const cLips = new THREE.Color('#B46240');
+  const cShoes = new THREE.Color('#422C21');
+  const cButton = new THREE.Color('#CDA05A');
 
   const c = new THREE.Color();
 
