@@ -26,12 +26,9 @@ export const CONFIG = {
     dragSensitivity: 0.12, // degrees per pixel
   },
 
-  // Contextual guide (blender/build_heritage_guide.py -> heritage_guide.glb). Hidden until a
-  // hotspot in src/data/hotspots.json is looked at; a missing file just leaves the caption.
+  // Contextual Donald Trump tour guide (loaded from trump_tour_guide.stl)
   guide: {
-    url: 'assets/models/heritage_guide.glb',
-    // Off while the character model is reworked: the card shows the caption alone and the
-    // GLB is not downloaded. Set to true to bring back the chest-up portrait beside the caption.
-    character: false,
+    url: 'assets/models/trump_tour_guide.stl',
+    character: true,
   },
 };

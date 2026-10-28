@@ -68,6 +68,44 @@ export class GuideOverlay {
   async load() {
     if (!this.character) return false;
     try {
+      if (this.url.endsWith('.stl')) {
+        const { STLLoader } = await import('three/addons/loaders/STLLoader.js');
+        const geometry = await new STLLoader().loadAsync(this.url);
+
+        // Orient the STL model: Z-up to Y-up
+        geometry.rotateX(-Math.PI / 2);
+        // Face the viewer (+Z)
+        geometry.rotateY(Math.PI);
+        geometry.computeVertexNormals();
+        geometry.computeBoundingBox();
+
+        // Translate so bottom sits at y = 0 and horizontally centered
+        const bb = geometry.boundingBox;
+        const centerX = (bb.max.x + bb.min.x) / 2;
+        const centerZ = (bb.max.z + bb.min.z) / 2;
+        geometry.translate(-centerX, -bb.min.y, -centerZ);
+
+        const material = new THREE.MeshStandardMaterial({
+          color: 0xE8A86C, // Warm golden sandstone finish
+          roughness: 0.38,
+          metalness: 0.15,
+          transparent: true,
+          depthWrite: true,
+          clippingPlanes: this.planes,
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.frustumCulled = false;
+        mesh.renderOrder = 5;
+        this.materials.push(material);
+
+        this.model = new THREE.Group();
+        this.model.add(mesh);
+        this.bust.add(this.model);
+        console.info('[MIRAS] Donald Trump Tour Guide STL model loaded successfully.');
+        return true;
+      }
+
       const gltf = await new GLTFLoader().loadAsync(this.url);
       this.model = gltf.scene;
       this.model.traverse((o) => {
@@ -100,9 +138,22 @@ export class GuideOverlay {
     this.shownAt = now;
     this.root.visible = true;
     this._first = true;
+
+    // Donald Trump Audio Narration
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const narrative = hotspot.voiceText || `${hotspot.title}. ${hotspot.caption}`;
+      const utterance = new SpeechSynthesisUtterance(narrative);
+      utterance.rate = 1.02;
+      utterance.pitch = 0.95;
+      window.speechSynthesis.speak(utterance);
+    }
   }
 
   dismiss() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     if (this.state === 'in' || this.state === 'shown') this.state = 'out';
   }
 
@@ -141,6 +192,11 @@ export class GuideOverlay {
     // so only his front is seen. Tilting would pivot about the feet and swing the head away.
     const x = this.card.position.x + this.bust.position.x;
     this.bust.rotation.set(0, Math.atan2(-x, -this.card.position.z), 0);
+    if (this.model && this.state === 'shown') {
+      const talkTime = (now - this.shownAt) * 0.003;
+      this.model.rotation.y = Math.sin(talkTime * 1.5) * 0.04;
+      this.model.rotation.z = Math.cos(talkTime * 2.0) * 0.015;
+    }
     this.updateClipping();
   }
 
@@ -264,7 +320,7 @@ class CaptionPanel {
 
     ctx.font = bodyFont;
     const lines = wrap(ctx, caption, textW);
-    const textH = pad + (placeholder ? 38 : 0) + 60 + 26 + lines.length * lineH + pad - 10;
+    const textH = pad + 34 + (placeholder ? 38 : 0) + 60 + 26 + lines.length * lineH + pad - 10;
     const H = P > 0 ? Math.max(300, textH) : textH; // the portrait needs some height to stand in
     if (canvas.height !== H) {
       canvas.height = H;
@@ -295,6 +351,11 @@ class CaptionPanel {
 
     ctx.textBaseline = 'top';
     let y = pad;
+    ctx.font = '600 20px "Helvetica Neue", system-ui, sans-serif';
+    ctx.fillStyle = ACCENT;
+    ctx.fillText('[TOUR GUIDE: DONALD TRUMP · HERITAGE CHRONICLE]', pad, y);
+    y += 34;
+
     if (placeholder) {
       ctx.font = '600 21px "Helvetica Neue", system-ui, sans-serif';
       ctx.fillStyle = ACCENT;
