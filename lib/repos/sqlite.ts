@@ -35,6 +35,12 @@ export function openDb(dataDir: string | ":memory:"): Db {
       created_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS enquiries_artisan ON enquiries (artisan_id, created_at);
+    CREATE TABLE IF NOT EXISTS picks (
+      id TEXT PRIMARY KEY,
+      status TEXT NOT NULL,
+      data TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
     CREATE TABLE IF NOT EXISTS media_assets (
       id TEXT PRIMARY KEY,
       data TEXT NOT NULL

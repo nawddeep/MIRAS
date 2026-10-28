@@ -1,6 +1,6 @@
 import path from "node:path";
 import { getConfig } from "@/lib/config";
-import { Artisan, MediaAsset, Phrase, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
+import { Artisan, MediaAsset, Phrase, Pick, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
 import { readEntities, readEntityFile } from "./json";
 import { openDb, type Db } from "./sqlite";
 import type { Repos } from "./types";
@@ -92,6 +92,17 @@ export function createRepos(contentDir: string, db: Db): Repos {
             (r) => [r.artisan_id, r.n],
           ),
         ),
+    },
+    picks: {
+      list: () => dbRows("picks", Pick).sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+      get: (id) => dbRows("picks", Pick).find((p) => p.id === id),
+      save: (p) => {
+        const valid = Pick.parse(p);
+        db.prepare(
+          `INSERT INTO picks (id, status, data, created_at) VALUES (?, ?, ?, ?)
+           ON CONFLICT(id) DO UPDATE SET status = excluded.status, data = excluded.data`,
+        ).run(valid.id, valid.status, JSON.stringify(valid), valid.createdAt);
+      },
     },
     media: {
       list: () => layered(readEntityFile(path.join(contentDir, "media.json"), MediaAsset).items, dbRows("media_assets", MediaAsset)),

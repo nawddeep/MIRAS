@@ -1,4 +1,4 @@
-import type { Artisan, Enquiry, MediaAsset, Phrase, Place, StoryEntry, Trail, Workshop } from "@/lib/schemas";
+import type { Artisan, Enquiry, MediaAsset, Phrase, Pick, Place, StoryEntry, Trail, Workshop } from "@/lib/schemas";
 
 // Repository interfaces. The JSON + SQLite implementations can be swapped for a hosted DB later.
 
@@ -42,6 +42,12 @@ export interface TrailRepo {
   get(id: string): Trail | undefined;
 }
 
+export interface PickRepo {
+  list(): Pick[];
+  get(id: string): Pick | undefined;
+  save(pick: Pick): void;
+}
+
 export interface Repos {
   places: PlaceRepo;
   trails: TrailRepo;
@@ -51,4 +57,5 @@ export interface Repos {
   workshops: WorkshopRepo;
   enquiries: EnquiryRepo;
   media: MediaRepo;
+  picks: PickRepo;
 }

@@ -139,3 +139,10 @@ Times are IST.
 - "Save for offline" on each place page (`components/SaveOffline.tsx`) stores the place data with its visible stories, the visitor's plan and the phrase list in IndexedDB, and shows "Offline copy saved on {date}". `/offline` reads only from IndexedDB, with a delete button per copy.
 - Tests: `tests/unit/sw.test.ts` (7, runs the real sw.js in a sandbox): versioned pre-cache, an existing cached `/api/*` copy is never served, navigations are not cached, offline fallback, static cache-first, POST and other files untouched, old caches deleted. `tests/e2e/tier2.spec.ts` (10): trail order, walk without location, walk with location denied, passport stamp, a real offline run (service worker active, network off, saved plan and place shown, other pages fall back to `/offline`), and 360 px checks. 111 unit tests pass and 10 of 10 e2e pass.
 - Not verified: offline behaviour on real phones (Android Chrome, iPhone Safari).
+
+## 4.6 Hidden Udaipur local picks: 2026-10-28 10:33
+
+- `/picks`: visitors submit name, description, why it matters and a "sensitive" checkbox (`POST /api/picks`, validated, rate-limited at 5 per 10 minutes). Picks are stored in SQLite as `pending`, and only approved picks are listed.
+- `/admin/moderation`: disabled with a clear message when `ADMIN_PASSCODE` is unset. With a passcode, sign-in sets an httpOnly, SameSite=Strict cookie holding a hash of the passcode (never the passcode), checked with a timing-safe compare. Approve or reject records `moderatedBy` and `moderatedAt` (named this way so it covers rejections too). Approval needs a moderator name and a `sourcedBy` note. Sensitive picks never carry coordinates in the public list.
+- `.env.example` adds `ADMIN_PASSCODE`.
+- Tests: `tests/unit/picks.test.ts` (7). 118 unit tests pass.

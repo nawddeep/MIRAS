@@ -191,6 +191,25 @@ export type Trail = z.infer<typeof Trail>;
 export const Phrase = z.object({ id: nonEmpty, en: nonEmpty, hi: nonEmpty, transliteration: z.string().optional(), isSample: z.boolean() });
 export type Phrase = z.infer<typeof Phrase>;
 
+/** A visitor's "Hidden Udaipur" suggestion. Always pending until a named moderator approves it. */
+export const PickInput = z.object({
+  name: z.string().trim().min(1, "Please add a name.").max(80),
+  description: z.string().trim().min(1, "Please describe it.").max(600),
+  whyItMatters: z.string().trim().min(1, "Please say why it matters.").max(400),
+  sensitive: z.boolean(),
+  lat: z.number().min(-90).max(90).optional(),
+  lng: z.number().min(-180).max(180).optional(),
+});
+export const Pick = PickInput.extend({
+  id: nonEmpty,
+  status: z.enum(["pending", "approved", "rejected"]),
+  createdAt: isoDate,
+  moderatedBy: z.string().optional(),
+  moderatedAt: isoDate.optional(),
+  sourcedBy: z.string().optional(),
+});
+export type Pick = z.infer<typeof Pick>;
+
 /** Slot for licensed music in Memories. Empty until the team has a track with a rights entry. */
 export const MusicTrack = z.object({ id: nonEmpty, title: nonEmpty, path: nonEmpty, owner: nonEmpty, permittedUse: nonEmpty, licenceNote: nonEmpty });
 
