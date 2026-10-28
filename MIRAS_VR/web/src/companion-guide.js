@@ -366,7 +366,6 @@ function applyTrumpIndianAttireColors(geometry) {
   const cSkin = new THREE.Color('#F2BA93');
   const cSkinRosy = new THREE.Color('#EAA082');
   const cLips = new THREE.Color('#D48B77');
-  const cEyes = new THREE.Color('#3B6B8E');
   const cShoes = new THREE.Color('#382318');
   const cShoesToe = new THREE.Color('#7A5232');
   const cButton = new THREE.Color('#E5C158');
@@ -479,25 +478,15 @@ function applyTrumpIndianAttireColors(geometry) {
       const isForeheadHair = (y >= 1.745 && z < 0.09) || y >= 1.76;
 
       if (isFront && !isForeheadHair) {
-        // Lips
+        // Natural Lips
         if (y >= 1.635 && y <= 1.655 && ax < 0.032 && z > 0.09) {
           c.copy(cLips);
         }
-        // Piercing Eyes
-        else if (
-          y >= 1.695 &&
-          y <= 1.72 &&
-          ax > 0.022 &&
-          ax < 0.058 &&
-          z > 0.08
-        ) {
-          c.copy(cEyes);
-        }
-        // Cheeks
-        else if (y >= 1.66 && y <= 1.71 && ax > 0.038) {
+        // Subtle cheek warmth
+        else if (y >= 1.66 && y <= 1.70 && ax > 0.045 && ax < 0.08) {
           c.copy(cSkinRosy);
         }
-        // Face skin
+        // Natural face skin tone across eyes, nose, and brow
         else {
           c.copy(cSkin);
         }
