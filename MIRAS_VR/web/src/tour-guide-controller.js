@@ -122,6 +122,8 @@ export class TourGuideController {
     this._moveDir = new THREE.Vector3();
     this._up = new THREE.Vector3(0, 1, 0);
     this._lookTarget = new THREE.Vector3();
+    this._charForward = new THREE.Vector3();
+    this._charRight = new THREE.Vector3();
     this._first = true;
     this.lastPos = new THREE.Vector3();
     this.hasLastPos = false;
@@ -465,9 +467,10 @@ export class TourGuideController {
           }, 800);
         }
       } else {
-        // Free companion follow mode
-        const followSpeed = Math.min(1.0, delta * 4.2);
-        this.characterGroup.position.lerp(this._targetPos, followSpeed);
+        // Free companion follow mode (simultaneous directional tracking with user)
+        const dx = this._targetPos.x - this.characterGroup.position.x;
+        const dz = this._targetPos.z - this.characterGroup.position.z;
+        const horizDist = Math.sqrt(dx * dx + dz * dz);
 
         // Turn to look at user
         const eyeLevelTarget = new THREE.Vector3(
@@ -476,6 +479,49 @@ export class TourGuideController {
           this._headPos.z
         );
         this.characterGroup.lookAt(eyeLevelTarget);
+
+        // Character local orientation vectors
+        this.characterGroup.getWorldDirection(this._charForward);
+        this._charForward.y = 0;
+        if (this._charForward.lengthSq() < 0.001) this._charForward.set(0, 0, -1);
+        this._charForward.normalize();
+        this._charRight.crossVectors(this._charForward, this._up).normalize();
+
+        // Project displacement onto character's right vector:
+        // positive = moving right, negative = moving left
+        const lateralMoveX = dx * this._charRight.x + dz * this._charRight.z;
+
+        // Follow speed: responsive and simultaneous with user's head & body motion
+        const followSpeed = Math.min(1.0, delta * 7.5);
+        this.characterGroup.position.lerp(this._targetPos, followSpeed);
+
+        // State & animation management during user movement:
+        // Only override state if not in an active presentation (pointing / explaining)
+        const isPresenting =
+          this.state === TOUR_STATES.EXPLAINING ||
+          this.state === TOUR_STATES.POINTING;
+
+        if (!isPresenting) {
+          if (horizDist > 0.07) {
+            // User is moving or turning! Switch to Walk
+            if (this.state !== TOUR_STATES.WALKING) {
+              this.setState(TOUR_STATES.WALKING);
+            }
+            // Bank into the turn when moving right or left
+            if (this.model) {
+              const bankTarget = -Math.max(-0.1, Math.min(0.1, lateralMoveX * 0.22));
+              this.model.rotation.z += (bankTarget - this.model.rotation.z) * Math.min(1.0, delta * 8.0);
+            }
+          } else {
+            // User stopped moving! Immediately stop and stand in Idle
+            if (this.state === TOUR_STATES.WALKING) {
+              this.setState(TOUR_STATES.IDLE);
+            }
+            if (this.model) {
+              this.model.rotation.z *= Math.max(0.0, 1.0 - delta * 8.0);
+            }
+          }
+        }
       }
     }
 

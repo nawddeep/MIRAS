@@ -368,11 +368,11 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         pose.bones["pelvis"].location = Vector((0, 0, math.sin(phase) * 0.005))
         # Subtle weight shift
         pose.bones["pelvis"].rotation_euler = Euler((0, math.sin(phase * 0.5) * 0.015, 0), "XYZ")
-        # Relaxed arm sway
-        pose.bones["upper_arm.L"].rotation_euler = Euler((math.sin(phase) * 0.02, 0, 0.02), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((math.sin(phase) * 0.02, 0, -0.02), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
+        # Relaxed arm sway with natural forward resting elbow flex
+        pose.bones["upper_arm.L"].rotation_euler = Euler((-0.08 + math.sin(phase) * 0.02, 0, 0.02), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((-0.08 + math.sin(phase) * 0.02, 0, -0.02), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
         # Head gentle gaze
         pose.bones["head"].rotation_euler = Euler((math.sin(phase * 0.8) * 0.02, math.cos(phase * 0.6) * 0.03, 0), "XYZ")
 
@@ -399,11 +399,11 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         pose.bones["foot.L"].rotation_euler = Euler((-stride_l * 0.15, 0, 0), "XYZ")
         pose.bones["foot.R"].rotation_euler = Euler((-stride_r * 0.15, 0, 0), "XYZ")
 
-        # Counter arm swings with elbow flex
-        pose.bones["upper_arm.L"].rotation_euler = Euler((stride_l * 0.28, 0, 0.04), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((stride_r * 0.28, 0, -0.04), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.15 + max(0.0, -stride_l) * 0.22, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.15 + max(0.0, -stride_r) * 0.22, 0, 0), "XYZ")
+        # Counter arm swings with forward elbow flex (negative X swings forward)
+        pose.bones["upper_arm.L"].rotation_euler = Euler((-stride_l * 0.28 - 0.10, 0, 0.04), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((stride_l * 0.28 - 0.10, 0, -0.04), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.20 - max(0.0, -stride_l) * 0.25, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.20 - max(0.0, stride_l) * 0.25, 0, 0), "XYZ")
 
         # Head stability
         pose.bones["head"].rotation_euler = Euler((math.sin(phase * 2) * 0.02, 0, 0), "XYZ")
@@ -420,12 +420,12 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         # Step planting
         pose.bones["thigh.L"].rotation_euler = Euler((-decel * 0.15, 0, 0), "XYZ")
         pose.bones["thigh.R"].rotation_euler = Euler((decel * 0.15, 0, 0), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.12 * decel + 0.08, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.12 * decel + 0.08, 0, 0), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.15 * decel - 0.08, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.15 * decel - 0.08, 0, 0), "XYZ")
 
     actions.append(make_action("StopAndTurn", 45, kf_stop_turn))
 
-    # 4. EXPLAIN (0..72 frames, 2.4s loop: Trumpian Accordion & Palm Gestures)
+    # 4. EXPLAIN (0..72 frames, 2.4s loop: Trumpian Accordion & Palm Gestures IN FRONT OF CHEST)
     def kf_explain(pose, f, t):
         phase = t * math.pi * 2
         pulse = math.sin(phase)
@@ -434,55 +434,54 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         # Chest upright emphasis
         pose.bones["chest"].rotation_euler = Euler((accent * 0.03 + 0.02, 0, pulse * 0.02), "XYZ")
 
-        # Iconic Double-Hand Accordion & Palm Gestures
-        # Left Arm: lifts and expands laterally
+        # Iconic Double-Hand Accordion & Palm Gestures — ALWAYS IN FRONT OF CHEST
+        # Left Arm: rotates forward (-X) and lifts in conversational accordion
         pose.bones["shoulder.L"].rotation_euler = Euler((0, -0.05, 0.08), "XYZ")
-        pose.bones["upper_arm.L"].rotation_euler = Euler((0.35 + pulse * 0.10, -0.15, 0.22 + pulse * 0.12), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.65 + accent * 0.15, 0.10, 0), "XYZ")
-        pose.bones["hand.L"].rotation_euler = Euler((0.12, 0, pulse * 0.14), "XYZ")
+        pose.bones["upper_arm.L"].rotation_euler = Euler((-0.45 - pulse * 0.12, -0.15, 0.22 + pulse * 0.12), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.65 - accent * 0.15, 0.10, 0), "XYZ")
+        pose.bones["hand.L"].rotation_euler = Euler((-0.12, 0, pulse * 0.14), "XYZ")
 
-        # Right Arm: Trumpian precision pinch & emphasis pulses
+        # Right Arm: Trumpian precision pinch & emphasis pulses forward (-X)
         pose.bones["shoulder.R"].rotation_euler = Euler((0, 0.05, -0.08), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((0.40 - pulse * 0.12, 0.15, -0.25 - pulse * 0.12), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.70 + pulse * 0.18, -0.10, 0), "XYZ")
-        pose.bones["hand.R"].rotation_euler = Euler((0.18 + accent * 0.10, 0, -pulse * 0.15), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((-0.45 + pulse * 0.12, 0.15, -0.22 - pulse * 0.12), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.65 - pulse * 0.18, -0.10, 0), "XYZ")
+        pose.bones["hand.R"].rotation_euler = Euler((-0.18 - accent * 0.10, 0, -pulse * 0.15), "XYZ")
 
         # Head conversational nods
         pose.bones["head"].rotation_euler = Euler((accent * 0.06 - 0.02, pulse * 0.05, 0), "XYZ")
 
     actions.append(make_action("Explain", 72, kf_explain))
 
-    # 5. POINT (0..60 frames: Right arm extends to monument)
+    # 5. POINT (0..60 frames: Right arm extends FORWARD toward monument)
     def kf_point(pose, f, t):
-        # In-out curve: reach target, hold, return
         reach = math.sin(t * math.pi)
         pose.bones["chest"].rotation_euler = Euler((0, 0, -reach * 0.15), "XYZ")
         pose.bones["head"].rotation_euler = Euler((-reach * 0.05, 0, -reach * 0.25), "XYZ")
 
-        # Right arm points smoothly toward destination
-        pose.bones["shoulder.R"].rotation_euler = Euler((0, 0.12 * reach, -0.15 * reach), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((0.75 * reach, 0.10 * reach, -0.45 * reach), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.25 * reach, 0, 0), "XYZ")
-        pose.bones["hand.R"].rotation_euler = Euler((0.10 * reach, 0, -0.10 * reach), "XYZ")
+        # Right arm points smoothly forward toward landmark
+        pose.bones["shoulder.R"].rotation_euler = Euler((0, 0.10 * reach, -0.12 * reach), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((-0.78 * reach, 0.10 * reach, -0.38 * reach), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.28 * reach, 0, 0), "XYZ")
+        pose.bones["hand.R"].rotation_euler = Euler((-0.10 * reach, 0, -0.10 * reach), "XYZ")
 
-        # Left hand rests at side
-        pose.bones["forearm.L"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
+        # Left hand rests forward at side
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.10, 0, 0), "XYZ")
 
     actions.append(make_action("Point", 60, kf_point))
 
-    # 6. WELCOME (0..60 frames: Two-handed open welcoming gesture)
+    # 6. WELCOME (0..60 frames: Two-handed open welcoming gesture FORWARD)
     def kf_welcome(pose, f, t):
         reach = math.sin(t * math.pi)
         pose.bones["chest"].rotation_euler = Euler((-reach * 0.03, 0, 0), "XYZ")
         pose.bones["head"].rotation_euler = Euler((-reach * 0.04, 0, reach * 0.04), "XYZ")
 
-        # Both arms open wide in welcoming posture
-        pose.bones["upper_arm.L"].rotation_euler = Euler((0.40 * reach, -0.20 * reach, 0.45 * reach), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((0.40 * reach, 0.20 * reach, -0.45 * reach), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.55 * reach, 0.20 * reach, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.55 * reach, -0.20 * reach, 0), "XYZ")
-        pose.bones["hand.L"].rotation_euler = Euler((0, -0.25 * reach, 0), "XYZ")
-        pose.bones["hand.R"].rotation_euler = Euler((0, 0.25 * reach, 0), "XYZ")
+        # Both arms open wide forward in welcoming posture
+        pose.bones["upper_arm.L"].rotation_euler = Euler((-0.38 * reach, -0.18 * reach, 0.38 * reach), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((-0.38 * reach, 0.18 * reach, -0.38 * reach), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.48 * reach, 0.12 * reach, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.48 * reach, -0.12 * reach, 0), "XYZ")
+        pose.bones["hand.L"].rotation_euler = Euler((0, -0.20 * reach, 0), "XYZ")
+        pose.bones["hand.R"].rotation_euler = Euler((0, 0.20 * reach, 0), "XYZ")
 
     actions.append(make_action("Welcome", 60, kf_welcome))
 
@@ -492,8 +491,8 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         look_yaw = math.sin(phase) * 0.45
         pose.bones["head"].rotation_euler = Euler((math.cos(phase * 2) * 0.04, 0, look_yaw), "XYZ")
         pose.bones["chest"].rotation_euler = Euler((0, 0, look_yaw * 0.35), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.10, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.10, 0, 0), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
 
     actions.append(make_action("LookAround", 80, kf_look_around))
 
@@ -503,8 +502,8 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         pose.bones["head"].rotation_euler = Euler((math.sin(phase) * 0.03 - 0.02, 0, 0.04), "XYZ")
         pose.bones["pelvis"].rotation_euler = Euler((0, 0.02, 0), "XYZ")
         pose.bones["chest"].rotation_euler = Euler((0.02, 0, 0), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.10, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.10, 0, 0), "XYZ")
 
     actions.append(make_action("Listen", 60, kf_listen))
 
@@ -522,10 +521,10 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         ease = 1.0 - t
         pose.bones["chest"].rotation_euler = Euler((ease * 0.05, 0, 0), "XYZ")
         pose.bones["head"].rotation_euler = Euler((ease * 0.04, 0, 0), "XYZ")
-        pose.bones["upper_arm.L"].rotation_euler = Euler((ease * 0.15, 0, 0.02), "XYZ")
-        pose.bones["upper_arm.R"].rotation_euler = Euler((ease * 0.15, 0, -0.02), "XYZ")
-        pose.bones["forearm.L"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
-        pose.bones["forearm.R"].rotation_euler = Euler((0.08, 0, 0), "XYZ")
+        pose.bones["upper_arm.L"].rotation_euler = Euler((-0.08 - ease * 0.15, 0, 0.02), "XYZ")
+        pose.bones["upper_arm.R"].rotation_euler = Euler((-0.08 - ease * 0.15, 0, -0.02), "XYZ")
+        pose.bones["forearm.L"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
+        pose.bones["forearm.R"].rotation_euler = Euler((-0.12, 0, 0), "XYZ")
 
     actions.append(make_action("ReturnToIdle", 30, kf_return_idle))
 
