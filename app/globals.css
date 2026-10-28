@@ -1,38 +1,94 @@
 @import "tailwindcss";
 
-/* MIRAS design tokens. Ink/lake/saffron/rose/paper from the team brief; sky and mist from the story page. */
+/* MIRAS "Pichhola Hours" design tokens. Defined once here; components never hard-code hex values. */
 :root {
+  /* base */
   --ink: #131b31;
-  --ink-soft: #3a4260;
-  --lake: #8fb0d6;
-  --lake-deep: #4a5a82;
-  --saffron: #f0a140;
-  --rose: #d98a78;
+  --ink-2: #172044;
+  --ink-3: #0b1128;
   --paper: #f5eee0;
-  --stone: #f1e6d6;
-  --mist: #f3e3d3;
+  --paper-2: #ffffff;
+  /* roles */
+  --saffron: #f0a140; /* actions only */
+  --saffron-text: #9a5b12; /* saffron text on paper */
+  --lake: #8fb0d6; /* information */
+  --lake-deep: #2e4a7a; /* lake text on paper */
+  --rose: #d98a78; /* people and makers */
+  --ok: #8fd3a8; /* consent recorded */
+  /* text */
+  --text-on-dark: #eee9dd;
+  --muted-on-dark: #a9b0c6;
+  --text-on-paper: #1b2036;
+  --muted-on-paper: #5a5f78;
+  --line-dark: rgba(238, 233, 221, 0.12);
+  --line-paper: rgba(27, 32, 54, 0.12);
+  /* shape */
+  --r-card: 16px;
+  --r-input: 14px;
+  --r-chip: 999px;
+  /* scene colours used by the inline SVG hero scenes */
   --sky-top: #8c9cc0;
   --sky-mid: #e8b9a2;
   --sky-hor: #f5d7aa;
   --hill: #3f6b50;
-  --line: rgba(19, 27, 49, 0.14);
+  --stone: #f1e6d6;
+  --mist: #f3e3d3;
+  /* earlier names kept as aliases so existing screens keep working */
+  --ink-soft: var(--muted-on-paper);
+  --line: var(--line-paper);
+}
+
+/* Time-of-day theme for the home screen and splash only (set as data-time on the home shell). */
+[data-time="dawn"],
+[data-time="day"] {
+  --home-bg: var(--paper);
+  --home-text: var(--text-on-paper);
+  --home-muted: var(--muted-on-paper);
+  --topbar-tint: rgba(245, 238, 224, 0.92);
+}
+[data-time="golden"] {
+  --home-bg: var(--paper);
+  --home-text: var(--text-on-paper);
+  --home-muted: var(--muted-on-paper);
+  --topbar-tint: rgba(240, 161, 64, 0.18);
+}
+[data-time="night"] {
+  --home-bg: var(--ink);
+  --home-text: var(--text-on-dark);
+  --home-muted: var(--muted-on-dark);
+  --topbar-tint: rgba(19, 27, 49, 0.92);
 }
 
 @theme inline {
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
   --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-saffron: var(--saffron);
+  --color-saffron-text: var(--saffron-text);
   --color-lake: var(--lake);
   --color-lake-deep: var(--lake-deep);
-  --color-saffron: var(--saffron);
   --color-rose: var(--rose);
-  --color-paper: var(--paper);
+  --color-ok: var(--ok);
+  --color-on-dark: var(--text-on-dark);
+  --color-muted-dark: var(--muted-on-dark);
+  --color-on-paper: var(--text-on-paper);
+  --color-muted-paper: var(--muted-on-paper);
+  --color-line: var(--line);
+  --color-line-dark: var(--line-dark);
   --color-stone: var(--stone);
   --color-mist: var(--mist);
   --color-sky-top: var(--sky-top);
   --color-sky-mid: var(--sky-mid);
   --color-sky-hor: var(--sky-hor);
   --color-hill: var(--hill);
-  --color-line: var(--line);
+  --color-home-bg: var(--home-bg);
+  --color-home-text: var(--home-text);
+  --color-home-muted: var(--home-muted);
+  --radius-card: var(--r-card);
+  --radius-input: var(--r-input);
   --font-sans: var(--font-hind), system-ui, sans-serif;
   --font-display: var(--font-tiro), Georgia, serif;
 }
@@ -43,8 +99,10 @@ html {
 
 body {
   background: var(--paper);
-  color: var(--ink);
+  color: var(--text-on-paper);
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
 }
 
 h1,
@@ -56,11 +114,145 @@ h3 {
   text-wrap: balance;
 }
 
+/* Type scale (mobile). */
+.t-hero {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 42px;
+}
+.t-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 34px;
+}
+.t-heading {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 28px;
+}
+.t-section {
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+}
+.t-story {
+  font-size: 17px;
+  line-height: 27px;
+}
+.t-small {
+  font-size: 13px;
+  line-height: 18px;
+}
+.t-label {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus: lake-deep on paper, saffron on dark surfaces. */
 :focus-visible {
-  outline: 3px solid var(--lake-deep);
+  outline: 2px solid var(--lake-deep);
   outline-offset: 2px;
+}
+.on-dark :focus-visible {
+  outline-color: var(--saffron);
 }
 
 .sky-gradient {
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-hor) 100%);
+}
+
+/* Motion: transform and opacity only, and nothing at all under reduced motion. */
+@keyframes miras-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes miras-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes miras-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+@keyframes miras-snap {
+  from {
+    transform: scale(1.12);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes miras-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.anim-fade {
+  animation: miras-fade 180ms ease-out both;
+}
+.anim-arrival > * {
+  animation: miras-rise 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.anim-arrival > *:nth-child(2) {
+  animation-delay: 80ms;
+}
+.anim-arrival > *:nth-child(3) {
+  animation-delay: 160ms;
+}
+.anim-open {
+  animation: miras-rise 350ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.anim-snap {
+  animation: miras-snap 250ms ease-out both;
+}
+.anim-pulse {
+  animation: miras-pulse 1.6s ease-out infinite;
+}
+.anim-progress {
+  transform-origin: left;
+  animation: miras-progress 1.5s linear both;
+}
+.hero-fade {
+  transition: opacity 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Leave room for the bottom nav and the phone's home indicator. */
+.pb-nav {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
 }

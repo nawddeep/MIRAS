@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { checkContent, renderTodo } from "../lib/content-check";
+import { HINDI_DRAFT_KEYS, hindiDraft } from "../lib/i18n";
 
 const root = process.cwd();
 const report = checkContent(path.join(root, "content"), path.join(root, "public"));
+// Draft Hindi UI copy is listed with the content so the team reviews it in one place.
+for (const key of HINDI_DRAFT_KEYS) report.todo.push({ kind: "copy", id: key, file: "lib/i18n.ts", note: `Hindi "${hindiDraft(key)}" needs native-speaker review` });
 fs.writeFileSync(path.join(root, "CONTENT_TODO.md"), renderTodo(report, new Date()));
 
 console.log(`Content check: ${report.errors.length} error(s), ${report.todo.length} item(s) still sample or unverified.`);

@@ -169,3 +169,11 @@ Times are IST.
 - The footer has an "Explore more" list with links to all the new pages. README lists every page and the new content folders and env vars.
 - Tests: `tests/e2e/tier3.spec.ts` (11): events in IST, a pick stays hidden while pending, moderation disabled without a passcode, 360 replay on the device with no upload, the AR concept label, a check that no screen claims AR, VR or certification, and 360 px checks.
 - Full run: typecheck and lint clean, 123 unit tests, content:check 0 errors (34 sample or unverified items), production build, 50 of 50 e2e, and the demo path 3 runs in a row.
+
+## F1 "Pichhola Hours" tokens, copy and theme engine: 2026-10-28 23:53
+
+- Committed first, as found (at the user's request): someone else's uncommitted PWA work (manifest, install prompt, icons, agent guidelines). Its one lint error was fixed with the same documented one-time-read exception used elsewhere.
+- `app/globals.css`: the design tokens from the brief (ink, paper, saffron, saffron-text, lake, lake-deep, rose, ok, text and line colours, radii) defined once. Earlier token names are kept as aliases. Added the type scale classes, `tnum` (tabular numbers), focus rings (lake-deep on paper, saffron on dark), per-mode home variables under `[data-time]`, the motion keyframes, and a reduced-motion rule that turns all animation off.
+- `lib/time-of-day.ts` (dawn 05–10, day 10–16, golden 16–19, night 19–05; `?hour=` parsing) and `lib/read-time.ts` (ceil(words / 200)).
+- `lib/i18n.ts`: the section 8 copy plus labels for the new screens, in English and Hindi. A "day" greeting and headline were added because the brief's table has none. `npm run content:check` now lists every draft Hindi design line in CONTENT_TODO.md as "needs native-speaker review" (11 items).
+- Tests: `tests/unit/theme.test.ts` (4). Full run: typecheck and lint clean, 131 unit tests, 53 of 53 e2e, demo path 3 runs in a row, content:check 0 errors.

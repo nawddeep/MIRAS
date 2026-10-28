@@ -20,6 +20,7 @@ export function InstallPrompt() {
       (navigator as unknown as { standalone?: boolean }).standalone === true;
 
     if (isStandalone) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of browser display mode after mount
       setIsInstalled(true);
       return;
     }

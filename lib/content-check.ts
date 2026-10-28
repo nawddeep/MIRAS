@@ -131,7 +131,7 @@ export function renderTodo(report: ContentReport, when: Date): string {
     `${report.todo.length} item(s) still to replace or verify.`,
     "",
   ];
-  const headings: Record<string, string> = { place: "Places", story: "Stories", artisan: "Artisans", workshop: "Workshops", media: "Media", trail: "Trails", phrase: "Phrases", event: "Events" };
+  const headings: Record<string, string> = { place: "Places", story: "Stories", artisan: "Artisans", workshop: "Workshops", media: "Media", trail: "Trails", phrase: "Phrases", event: "Events", copy: "Hindi copy (draft)" };
   const kinds = [...new Set(report.todo.map((t) => t.kind))];
   for (const k of kinds) {
     lines.push(`## ${headings[k] ?? k}`, "");
