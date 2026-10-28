@@ -121,3 +121,9 @@ Times are IST.
 - `lib/services/trails.ts`: samples show only in demo mode, and a trail with a hidden stop is hidden. `/trails` lists trails. `/trails/[id]` lists stops in order with each stop's visit duration.
 - `content:check` fails on an unknown place id in a trail and lists sample trails. Also added: `Phrase` schema and `content/phrases.json` (3 SAMPLE phrases), needed by 4.4 "Save for offline" because there was no phrase list yet.
 - Tests: `tests/unit/trails.test.ts` (4).
+
+## 5.3 Digital heritage passport: 2026-10-28 10:24
+
+- `lib/passport.ts`: `earnStamp` adds a stamp only for a visible story, one per place. `validStamps` drops stamps whose story is no longer visible. Stamps are kept in localStorage (`miras-passport-v1`) on the device only.
+- Every story now has "Mark as read", and "Listen" also earns the place's stamp. `/passport` shows one stamp per visible place (three sample places, badged), says plainly that stamps are not location-verified, and has no leaderboard.
+- Tests: `tests/unit/passport.test.ts` (3).
