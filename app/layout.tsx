@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Hind, Tiro_Devanagari_Hindi } from "next/font/google";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { getConfig } from "@/lib/config";
 import { t } from "@/lib/i18n";
@@ -25,12 +26,32 @@ const hind = Hind({
 export const metadata: Metadata = {
   title: "MIRAS: Udaipur heritage and local makers",
   description: "Find a heritage site, read a sourced story, and meet a local artisan in Udaipur.",
+  applicationName: "MIRAS",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "MIRAS",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#131B31",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -46,6 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang={lang} className={`${tiro.variable} ${hind.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <ServiceWorker />
+        <InstallPrompt />
         {demoMode && (
           <div className="bg-ink px-4 py-1.5 text-center text-xs text-paper">
             Demo mode: sample content is shown and badged. Nothing marked sample is real.

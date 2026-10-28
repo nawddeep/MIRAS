@@ -78,5 +78,62 @@
     "permittedUse": "Demo placeholder",
     "licenceNote": "Generated gradient/shape placeholder. No third-party content.",
     "containsPeople": false
+  },
+  {
+    "id": "icon-apple-touch",
+    "path": "/icons/apple-touch-icon.png",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-192",
+    "path": "/icons/icon-192.png",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-512",
+    "path": "/icons/icon-512.png",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-maskable-192",
+    "path": "/icons/icon-maskable-192.png",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-maskable-512",
+    "path": "/icons/icon-maskable-512.png",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-maskable-svg",
+    "path": "/icons/icon-maskable.svg",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
+  },
+  {
+    "id": "icon-svg",
+    "path": "/icons/icon.svg",
+    "owner": "Team Impala (generated vector artwork)",
+    "permittedUse": "PWA icon asset",
+    "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
+    "containsPeople": false
   }
 ]
+
