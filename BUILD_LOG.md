@@ -127,3 +127,8 @@ Times are IST.
 - `lib/passport.ts`: `earnStamp` adds a stamp only for a visible story, one per place. `validStamps` drops stamps whose story is no longer visible. Stamps are kept in localStorage (`miras-passport-v1`) on the device only.
 - Every story now has "Mark as read", and "Listen" also earns the place's stamp. `/passport` shows one stamp per visible place (three sample places, badged), says plainly that stamps are not location-verified, and has no leaderboard.
 - Tests: `tests/unit/passport.test.ts` (3).
+
+## 4.3 Audio walks: 2026-10-28 10:25
+
+- `/trails/[id]/walk` (`components/AudioWalk.tsx`): the trail plays as chapters with a stop list and Previous/Next buttons. Each chapter reads the stop's first visible story, or says there is no verified story, using the browser's speech synthesis labelled "Synthetic voice".
+- Location help: a checkbox, off by default. Turning it on asks for permission. It shows a straight-line distance labelled Estimate, but no distance for placeholder coordinates. A blocked or failed location turns it off with a message, and manual navigation keeps working. Location is never sent to the server.
