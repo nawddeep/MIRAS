@@ -1,0 +1,21 @@
+.DS_Store
+.claude/
+node_modules/
+dist/
+CODEX_PROMPT_MIRAS_Capture_iOS.md
+ios_photocamera/
+/Udaipur*.mp4
+/ghat/
+/city palace/
+/kari mata */
+/moti magri */
+/models */
+
+# Binary media / Blender files (source code only)
+*.mp4
+*.blend
+*.glb
+*.stl
+*.png
+*.jpg
+*.jpeg
