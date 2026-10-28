@@ -146,3 +146,10 @@ Times are IST.
 - `/admin/moderation`: disabled with a clear message when `ADMIN_PASSCODE` is unset. With a passcode, sign-in sets an httpOnly, SameSite=Strict cookie holding a hash of the passcode (never the passcode), checked with a timing-safe compare. Approve or reject records `moderatedBy` and `moderatedAt` (named this way so it covers rejections too). Approval needs a moderator name and a `sourcedBy` note. Sensitive picks never carry coordinates in the public list.
 - `.env.example` adds `ADMIN_PASSCODE`.
 - Tests: `tests/unit/picks.test.ts` (7). 118 unit tests pass.
+
+## 5.4 Events: 2026-10-28 10:35
+
+- `EventItem` schema (`title`, `organiser`, `startsAt`, `language`, `durationMinutes`, `cost`, `howToBook`, `confirmedByOrganiserAt`, `updatedAt`, `isSample`) in `content/events/*.json`, with one SAMPLE event.
+- `lib/services/events.ts`: only organiser-confirmed events are shown, samples only in demo mode, past events are hidden, and events are sorted by start time. `/events` shows times and the update date in IST. Booking happens outside MIRAS.
+- `content:check` lists sample and unconfirmed events.
+- Tests: `tests/unit/events.test.ts` (5). 123 unit tests pass.

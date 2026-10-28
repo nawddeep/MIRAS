@@ -1,6 +1,6 @@
 import path from "node:path";
 import { getConfig } from "@/lib/config";
-import { Artisan, MediaAsset, Phrase, Pick, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
+import { Artisan, EventItem, MediaAsset, Phrase, Pick, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
 import { readEntities, readEntityFile } from "./json";
 import { openDb, type Db } from "./sqlite";
 import type { Repos } from "./types";
@@ -35,6 +35,9 @@ export function createRepos(contentDir: string, db: Db): Repos {
     trails: {
       list: trails,
       get: (id) => trails().find((t) => t.id === id),
+    },
+    events: {
+      list: () => readEntities(dir("events"), EventItem).items,
     },
     phrases: {
       list: () => readEntityFile(path.join(contentDir, "phrases.json"), Phrase).items,

@@ -191,6 +191,22 @@ export type Trail = z.infer<typeof Trail>;
 export const Phrase = z.object({ id: nonEmpty, en: nonEmpty, hi: nonEmpty, transliteration: z.string().optional(), isSample: z.boolean() });
 export type Phrase = z.infer<typeof Phrase>;
 
+/** Events follow the workshop pattern: shown only once the organiser has confirmed the details. */
+export const EventItem = z.object({
+  id: nonEmpty,
+  title: nonEmpty,
+  organiser: nonEmpty,
+  startsAt: isoDate,
+  language: nonEmpty,
+  durationMinutes: z.number().int().positive(),
+  cost: nonEmpty,
+  howToBook: nonEmpty,
+  confirmedByOrganiserAt: isoDate.optional(),
+  updatedAt: isoDate,
+  isSample: z.boolean(),
+});
+export type EventItem = z.infer<typeof EventItem>;
+
 /** A visitor's "Hidden Udaipur" suggestion. Always pending until a named moderator approves it. */
 export const PickInput = z.object({
   name: z.string().trim().min(1, "Please add a name.").max(80),
