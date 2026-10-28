@@ -1,10 +1,13 @@
 import { getAiProvider } from "@/lib/ai";
+import { clientKey } from "@/lib/http";
+import { limits, tooMany } from "@/lib/rate-limit";
 import { matchFrame } from "@/lib/services/camera";
 
 const MAX_FRAME_BYTES = 3 * 1024 * 1024;
 
 /** One frame in, a place match (or "I don't know") out. The frame is never stored. */
 export async function POST(req: Request) {
+  if (!limits.cameraMatch.allow(clientKey(req))) return tooMany();
   let form: FormData;
   try {
     form = await req.formData();

@@ -83,3 +83,10 @@ Times are IST.
 - Tests: `tests/unit/content-check.test.ts` (9), `tests/unit/config.test.ts` (4: no-.env defaults, the model is never guessed). `tests/e2e/demo-path.spec.ts` (15): no horizontal scroll at 360 px on 9 routes, the full demo path including the 360 viewer, enquiry validation and duplicate block, slow-3G load, offline enquiry message, no-.env admin, and the Hindi switch.
 - Results: 65 unit tests pass. 22 e2e tests pass against a production build started with empty Gemini env vars. The demo-path spec passed 3 runs in a row (`--repeat-each=3`, 45/45).
 - The test helper was renamed to `withFixture` (lint rule).
+
+## Phase 3–6 prerequisites: 2026-10-28 10:09
+
+- Gate item 1: `geminiAudioMime` in `lib/services/onboarding.ts` maps browser recording types to types the Gemini API lists as supported (ai.google.dev/gemini-api/docs/audio, checked today). Safari's `audio/mp4` and `audio/x-m4a` become `audio/m4a`. Anything not on the list gets a 415 and the typed form.
+- Gate item 2: shared limiter `lib/rate-limit.ts`. Camera match allows 20 per minute, onboard draft 10 per 10 minutes, onboard submit 5 per 10 minutes, per client, then 429. The enquiry limiter is unchanged.
+- Gate item 3 (real-phone test over HTTPS with the real Gemini key): not done, because it needs the team's phones, HTTPS and the key. The user asked to build the Phase 3–6 foundation anyway.
+- Tests: `tests/unit/gate.test.ts` (8). 73 unit tests pass.

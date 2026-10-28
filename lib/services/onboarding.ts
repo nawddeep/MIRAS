@@ -12,6 +12,18 @@ export const MIN_AUDIO_BYTES = 2_000;
 export const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
+// Audio types the Gemini API lists as supported (ai.google.dev/gemini-api/docs/audio, checked 2026-10-28).
+const GEMINI_AUDIO = new Set(["audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac", "audio/mpeg", "audio/m4a", "audio/opus", "audio/webm"]);
+// Browser spellings for the same formats. Safari records AAC in an MP4 container, which is M4A.
+const AUDIO_ALIASES: Record<string, string> = { "audio/mp4": "audio/m4a", "audio/x-m4a": "audio/m4a", "audio/x-wav": "audio/wav", "audio/wave": "audio/wav" };
+
+/** Maps a browser recording type to a type Gemini accepts, or null if it is not supported. */
+export function geminiAudioMime(type: string): string | null {
+  const base = (type.split(";")[0] || "audio/webm").trim().toLowerCase();
+  const mapped = AUDIO_ALIASES[base] ?? base;
+  return GEMINI_AUDIO.has(mapped) ? mapped : null;
+}
+
 export type DraftResult =
   | { ok: true; draft: ListingDraft; demo: boolean; attempts: number }
   | { ok: false; reason: "empty_audio" | "invalid_model_output" | "ai_unavailable"; partial: Partial<ListingDraft>; demo: boolean; attempts: number };

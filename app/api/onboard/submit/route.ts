@@ -1,7 +1,10 @@
+import { clientKey } from "@/lib/http";
+import { limits, tooMany } from "@/lib/rate-limit";
 import { createListing, ListingSubmission, MAX_IMAGE_BYTES } from "@/lib/services/onboarding";
 import { getStorage } from "@/lib/storage";
 
 export async function POST(req: Request) {
+  if (!limits.onboardSubmit.allow(clientKey(req))) return tooMany();
   let form: FormData;
   try {
     form = await req.formData();
