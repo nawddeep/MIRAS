@@ -1,82 +1,116 @@
 import Link from "next/link";
-import { PlaceCard } from "@/components/domain";
-import { EmptyState } from "@/components/ui";
-import { t } from "@/lib/i18n";
+import type { ReactNode } from "react";
+import { StoryCard } from "@/components/domain";
+import { HomeShell } from "@/components/HomeShell";
+import { ArrowIcon, ClockIcon, MakersIcon, PlacesIcon, SearchIcon, StoriesIcon } from "@/components/icons";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { RippleDivider } from "@/components/scene";
+import { Splash } from "@/components/Splash";
+import { EmptyState, SampleBadge } from "@/components/ui";
+import { getConfig } from "@/lib/config";
+import { pick, t, type DictKey } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
-import { filterPlaces, getVisiblePlaces } from "@/lib/services/content";
+import { getVisiblePlaces, getVisibleStories } from "@/lib/services/content";
+import type { TimeMode } from "@/lib/time-of-day";
 
-export default async function Home({ searchParams }: PageProps<"/">) {
+const MODES: TimeMode[] = ["dawn", "day", "golden", "night"];
+
+export default async function Home() {
   const lang = await getLang();
-  const sp = await searchParams;
-  const q = typeof sp.q === "string" ? sp.q : "";
-  const cat = typeof sp.cat === "string" ? sp.cat : "";
-  const all = getVisiblePlaces();
-  const categories = [...new Set(all.map((p) => p.category))].sort();
-  const places = filterPlaces(all, q, cat);
-  const href = (c: string) => {
-    const p = new URLSearchParams();
-    if (q) p.set("q", q);
-    if (c) p.set("cat", c);
-    const s = p.toString();
-    return s ? `/?${s}` : "/";
-  };
+  const withStories = getVisiblePlaces().map((p) => ({ place: p, stories: getVisibleStories(p.id) }));
+  const featured = withStories.find((x) => x.stories.length);
+
+  const copy = Object.fromEntries(
+    MODES.map((m) => [
+      m,
+      {
+        greetingHi: t("hi", `greeting_${m}` as DictKey),
+        greetingEn: t("en", `greeting_${m}` as DictKey),
+        headline: t("en", `hero_${m}` as DictKey),
+        headlineHi: t("hi", `hero_${m}` as DictKey),
+      },
+    ]),
+  ) as Record<TimeMode, { greetingHi: string; greetingEn: string; headline: string; headlineHi: string }>;
+
+  // No Food circle: there is no food data. Workshops are listed on each maker's page.
+  const categories: { href: string; label: string; icon: ReactNode }[] = [
+    { href: "/places", label: t(lang, "navPlaces"), icon: <PlacesIcon /> },
+    { href: "/artisans", label: t(lang, "navMakers"), icon: <MakersIcon /> },
+    { href: "/artisans", label: t(lang, "catWorkshops"), icon: <ClockIcon /> },
+    { href: "/stories", label: t(lang, "navStories"), icon: <StoriesIcon /> },
+  ];
 
   return (
-    <div className="space-y-5">
-      <section className="sky-gradient -mx-4 -mt-5 px-4 pt-8 pb-6">
-        <h1 className="text-4xl text-ink">{t(lang, "tagline")}</h1>
-        <form action="/" method="get" role="search" className="mt-4 flex gap-2">
-          {cat && <input type="hidden" name="cat" value={cat} />}
+    <>
+      <Splash tagline={t("en", "tagline")} taglineHi={t("hi", "tagline")} />
+      <HomeShell copy={copy} demoMode={getConfig().demoMode} lang={lang} top={<LanguageSwitch lang={lang} />}>
+        <form action="/search" method="get" role="search" className="-mt-2">
           <label htmlFor="home-q" className="sr-only">
             {t(lang, "searchPlaceholder")}
           </label>
-          <input
-            id="home-q"
-            name="q"
-            type="search"
-            defaultValue={q}
-            placeholder={t(lang, "searchPlaceholder")}
-            className="min-h-11 min-w-0 flex-1 rounded-full border border-ink/20 bg-white/90 px-4 text-base outline-none focus:border-lake-deep"
-          />
-          <button type="submit" className="min-h-11 rounded-full bg-ink px-5 text-paper">
-            {t(lang, "searchButton")}
-          </button>
+          <div className="relative">
+            <SearchIcon size={20} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted-paper" />
+            <input
+              id="home-q"
+              name="q"
+              type="search"
+              placeholder={t(lang, "searchPlaceholder")}
+              className="min-h-[52px] w-full rounded-full border border-line bg-paper-2 pr-4 pl-11 text-base text-on-paper shadow-sm outline-none focus:border-lake-deep"
+            />
+          </div>
         </form>
-      </section>
 
-      <nav aria-label="Categories" className="-mx-4 overflow-x-auto px-4">
-        <ul className="flex w-max gap-2">
-          {["", ...categories].map((c) => (
-            <li key={c || "all"}>
-              <Link
-                href={href(c)}
-                aria-current={c === cat ? "page" : undefined}
-                className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm ${
-                  c === cat ? "border-ink bg-ink text-paper" : "border-ink/25"
-                }`}
-              >
-                {c || t(lang, "allCategories")}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        <nav aria-label="Categories">
+          <ul className="grid grid-cols-4 gap-2">
+            {categories.map((c) => (
+              <li key={c.label}>
+                <Link href={c.href} className="flex flex-col items-center gap-1.5 text-center text-sm">
+                  <span className="grid h-14 w-14 place-items-center rounded-full border border-line bg-paper-2 text-lake-deep">{c.icon}</span>
+                  {c.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-      {places.length ? (
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {places.map((p) => (
-            <li key={p.id}>
-              <PlaceCard place={p} lang={lang} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <EmptyState title={t(lang, "noResults")}>
-          <Link href="/" className="underline">
-            {t(lang, "allCategories")}
-          </Link>
-        </EmptyState>
-      )}
-    </div>
+        <section className="space-y-3" aria-labelledby="featured">
+          <h2 id="featured" className="t-section">
+            {t(lang, "featuredStory")}
+          </h2>
+          {featured ? (
+            <StoryCard story={featured.stories[0]} lang={lang} placeName={pick(lang, featured.place.name, featured.place.name_hi)} />
+          ) : (
+            <EmptyState title={t(lang, "emptyTitle")} />
+          )}
+        </section>
+
+        <RippleDivider className="text-home-muted" />
+
+        <section className="space-y-3" aria-labelledby="hear">
+          <h2 id="hear" className="t-section">
+            {t(lang, "hearAStory")}
+          </h2>
+          <ul className="space-y-2">
+            {withStories.map(({ place, stories }) => (
+              <li key={place.id}>
+                <Link
+                  href={`/places/${place.slug}#stories`}
+                  className="flex min-h-16 items-center gap-3 rounded-card border border-line bg-paper-2 px-4 py-3 text-on-paper"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="t-heading block">{pick(lang, place.name, place.name_hi)}</span>
+                    <span className="t-small tnum text-muted-paper">
+                      {stories.length} {t(lang, "storyCount")}
+                    </span>
+                  </span>
+                  {place.isSample && <SampleBadge lang={lang} />}
+                  <ArrowIcon className="shrink-0 text-saffron-text" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </HomeShell>
+    </>
   );
 }

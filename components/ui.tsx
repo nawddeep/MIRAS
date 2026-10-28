@@ -25,7 +25,7 @@ export function ButtonLink({ variant = "primary", className = "", ...props }: Co
 }
 
 export function Card({ className = "", children }: { className?: string; children: ReactNode }) {
-  return <div className={`rounded-card border border-line bg-paper-2 p-4 ${className}`}>{children}</div>;
+  return <div className={`rounded-card border border-line bg-paper-2 p-4 text-on-paper ${className}`}>{children}</div>;
 }
 
 /* ---------- Labels and badges: one component per label, one style each ---------- */
