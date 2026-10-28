@@ -72,7 +72,7 @@ export function InstallPrompt() {
     <aside
       aria-label="Install MIRAS application"
       data-testid="pwa-install-prompt"
-      className="fixed bottom-4 left-4 right-4 z-40 mx-auto max-w-lg rounded-2xl border border-line bg-paper/95 p-3.5 shadow-lg backdrop-blur sm:bottom-6"
+      className="fixed bottom-[calc(92px+env(safe-area-inset-bottom))] left-4 right-4 z-40 mx-auto max-w-lg rounded-2xl border border-line bg-paper/95 p-3.5 shadow-lg backdrop-blur"
     >
       <div className="flex items-center gap-3">
         <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl border border-line bg-ink">

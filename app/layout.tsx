@@ -4,6 +4,7 @@ import { Hind, Tiro_Devanagari_Hindi } from "next/font/google";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ServiceWorker } from "@/components/ServiceWorker";
+import { BottomNav, TopBar } from "@/components/shell";
 import { getConfig } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
@@ -57,46 +58,23 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const lang = await getLang();
   const { demoMode } = getConfig();
-  const nav = [
-    { href: "/", label: t(lang, "navExplore") },
-    { href: "/artisans", label: t(lang, "navArtisans") },
-    { href: "/camera", label: t(lang, "navCamera") },
-    { href: "/search", label: t(lang, "navSearch") },
-  ];
   return (
     <html lang={lang} className={`${tiro.variable} ${hind.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <ServiceWorker />
         <InstallPrompt />
         {demoMode && (
-          <div className="bg-ink px-4 py-1.5 text-center text-xs text-paper">
+          <div className="bg-ink px-4 py-1.5 text-center text-xs text-on-dark">
             Demo mode: sample content is shown and badged. Nothing marked sample is real.
           </div>
         )}
-        <header className="sticky top-0 z-20 border-b border-line bg-paper/95 backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2">
-            <Link href="/" className="font-display text-2xl tracking-wide">
-              {t(lang, "appName")}
-            </Link>
-            <LanguageSwitch lang={lang} />
-          </div>
-          <nav aria-label="Main" className="mx-auto max-w-3xl px-2">
-            <ul className="flex justify-between gap-1 text-sm sm:justify-start sm:gap-4">
-              {nav.map((n) => (
-                <li key={n.href}>
-                  <Link href={n.href} className="inline-flex min-h-10 items-center rounded-full px-3 hover:bg-ink/5">
-                    {n.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </header>
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-5">{children}</main>
-        <footer className="border-t border-line px-4 py-6 text-center text-xs text-ink-soft">
+        <TopBar appName={t(lang, "appName")} right={<LanguageSwitch lang={lang} />} />
+        <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-5">{children}</main>
+        <footer className="pb-nav border-t border-line px-5 pt-6 text-center text-xs text-muted-paper">
           <nav aria-label="Explore more" className="mx-auto mb-4 max-w-3xl">
-            <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-ink">
+            <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-on-paper">
               {[
+                ["/search", t(lang, "navSearch")],
                 ["/plan", "Plan your day"],
                 ["/trails", "Trails"],
                 ["/memories", "Memories"],
@@ -130,6 +108,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
           </p>
         </footer>
+        <BottomNav
+          labels={{
+            home: t(lang, "navHome"),
+            places: t(lang, "navPlaces"),
+            camera: t(lang, "navCamera"),
+            stories: t(lang, "navStories"),
+            makers: t(lang, "navMakers"),
+          }}
+        />
       </body>
     </html>
   );

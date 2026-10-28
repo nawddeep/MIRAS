@@ -33,6 +33,30 @@
   --hill: #3f6b50;
   --stone: #f1e6d6;
   --mist: #f3e3d3;
+  /* hero scene palettes (dawn, golden, night) */
+  --dawn-sky-1: #8c9cc0;
+  --dawn-sky-2: #e8b9a2;
+  --dawn-sky-3: #f5d7aa;
+  --dawn-water: #8fb0d6;
+  --dawn-hill: #6e8f78;
+  --dawn-palace: #f1e6d6;
+  --dawn-shade: #c9b9a3;
+  --golden-sky-1: #d9774a;
+  --golden-sky-2: #f0a140;
+  --golden-sky-3: #f7d08a;
+  --golden-water: #b8703f;
+  --golden-hill: #7a5a48;
+  --golden-palace: #f3d7a8;
+  --golden-shade: #c99a62;
+  --night-sky-1: #0b1128;
+  --night-sky-2: #172044;
+  --night-sky-3: #2e3a63;
+  --night-water: #131b31;
+  --night-hill: #0b1128;
+  --night-palace: #3a4466;
+  --night-shade: #262f4f;
+  --night-glow: #f0a140;
+  --moon: #eee9dd;
   /* earlier names kept as aliases so existing screens keep working */
   --ink-soft: var(--muted-on-paper);
   --line: var(--line-paper);

@@ -177,3 +177,13 @@ Times are IST.
 - `lib/time-of-day.ts` (dawn 05–10, day 10–16, golden 16–19, night 19–05; `?hour=` parsing) and `lib/read-time.ts` (ceil(words / 200)).
 - `lib/i18n.ts`: the section 8 copy plus labels for the new screens, in English and Hindi. A "day" greeting and headline were added because the brief's table has none. `npm run content:check` now lists every draft Hindi design line in CONTENT_TODO.md as "needs native-speaker review" (11 items).
 - Tests: `tests/unit/theme.test.ts` (4). Full run: typecheck and lint clean, 131 unit tests, 53 of 53 e2e, demo path 3 runs in a row, content:check 0 errors.
+
+## F2 Shared components, AppShell and BottomNav: 2026-10-28 23:59
+
+- `components/icons.tsx`: inline SVG icons (24 px, stroke 1.8, round caps) and a lotus mark. No icon package.
+- `components/scene.tsx`: `HeroScene` (dawn, golden, night lake-and-palace scenes, inline SVG, no people), `ArchFrame` (jharokha clip path, for the splash and camera only) and `RippleDivider`. Scene colours are tokens in globals.css.
+- `components/ui.tsx`: one component per label, one style each. Honesty labels (Sample content dashed, plus Concept, Demo response, Estimate, Synthetic voice, Illustrative, Not yet verified) share one saffron-outline style. Source chips are fixed (History lake, Oral tradition rose, Legend saffron). Consent recorded, Confirmed by the maker and Verified source use the "ok" colour, and Artisan is rose. States added: Skeleton, OfflineState, PermissionDenied, DontKnow. Buttons are 48 px with a 14 px radius, and saffron ("accent") is the only action colour.
+- `components/domain.tsx`: restyled PlaceCard (English and Hindi name, first story's source chip, no rating, no heart), new StoryCard (read time from text length, "Verified by" only when set) and WorkshopCard ("Confirmed by the maker" only when confirmed and not a sample), ArtisanCard with a craft-pattern fallback (never a face), and `isVerifiedSource` (verifiedBy set and not a sample).
+- `components/AudioBar.tsx`: play/pause, static waveform, Synthetic voice label and elapsed time, using the browser's speech synthesis.
+- `components/shell.tsx` and `app/layout.tsx`: a TopBar (44 px back button, wordmark, and the EN/हिं toggle in place of the board's bell and avatar), and a 76 px ink BottomNav with a raised 64 px saffron camera button, safe-area padding and a 20 px gutter. The nav shows only slots whose route exists today (Home, Camera, Makers); Places and Stories are added in F4 and F5. Search moved to the footer list. The install prompt was moved above the nav.
+- Full run: typecheck and lint clean, 131 unit tests, 53 of 53 e2e, demo path 3 runs in a row, content:check 0 errors.
