@@ -2,6 +2,7 @@ import Link from "next/link";
 import { pick, t, type Lang } from "@/lib/i18n";
 import { readMinutes } from "@/lib/read-time";
 import type { Artisan, Place, SourceType, StoryEntry, Workshop } from "@/lib/schemas";
+import { ArrowIcon } from "./icons";
 import { HeroScene } from "./scene";
 import { StoryBody } from "./StoryBody";
 import { ConfirmedByMakerBadge, IllustrativeBadge, Label, NotRealLabel, SampleBadge, SourceTypeLabel, VerifiedSourceBadge } from "./ui";
@@ -74,7 +75,7 @@ export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang:
 export function StoryCard({ story, lang, placeName }: { story: StoryEntry; lang: Lang; placeName?: string }) {
   const text = pick(lang, story.text, story.text_hi);
   return (
-    <Link href={`/stories/${story.id}`} className="group block overflow-hidden rounded-card border border-line bg-paper-2" data-testid="story-card">
+    <Link href={`/stories/${story.id}`} className="group block overflow-hidden rounded-card border border-line bg-paper-2 text-on-paper" data-testid="story-card">
       <div className="relative aspect-[16/7]">
         <HeroScene scene="night" className="h-full w-full" />
       </div>
@@ -102,7 +103,7 @@ export function StoryCard({ story, lang, placeName }: { story: StoryEntry; lang:
 /** Full story inside a place page or a camera match. Only ever rendered with stories from getVisibleStories. */
 export function StoryBlock({ story, lang }: { story: StoryEntry; lang: Lang }) {
   return (
-    <article className="rounded-card border border-line bg-paper-2 p-4" data-testid="story" data-story-id={story.id}>
+    <article className="rounded-card border border-line bg-paper-2 text-on-paper p-4" data-testid="story" data-story-id={story.id}>
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <SourceTypeLabel lang={lang} type={story.sourceType} />
         {isVerifiedSource(story) ? <VerifiedSourceBadge lang={lang} /> : story.isSample && <SampleBadge lang={lang} />}
@@ -121,6 +122,9 @@ export function StoryBlock({ story, lang }: { story: StoryEntry; lang: Lang }) {
           <dd>{story.verifiedBy ?? t(lang, "unverified")}</dd>
         </div>
       </dl>
+      <Link href={`/stories/${story.id}`} className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-lake-deep">
+        {t(lang, "viewFullStory")} <ArrowIcon size={18} />
+      </Link>
     </article>
   );
 }
@@ -141,7 +145,7 @@ export function CraftPattern({ className = "" }: { className?: string }) {
 
 export function ArtisanCard({ artisan, lang }: { artisan: Artisan; lang: Lang }) {
   return (
-    <Link href={`/artisans/${artisan.id}`} className="flex gap-3 rounded-card border border-line bg-paper-2 p-3 hover:bg-paper">
+    <Link href={`/artisans/${artisan.id}`} className="flex gap-3 rounded-card border border-line bg-paper-2 text-on-paper p-3 hover:bg-paper">
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-mist">
         {artisan.photos[0] ? <MediaImage src={artisan.photos[0]} alt="" /> : <CraftPattern className="h-full w-full" />}
       </div>
@@ -163,7 +167,7 @@ export function WorkshopCard({ workshop: w, lang }: { workshop: Workshop; lang: 
   const confirmed = Boolean(w.confirmedByOwnerAt) && !w.isSample;
   const fmt = new Intl.DateTimeFormat(lang === "hi" ? "hi-IN" : "en-IN", { dateStyle: "medium" });
   return (
-    <div className="rounded-card border border-line bg-paper-2 p-4">
+    <div className="rounded-card border border-line bg-paper-2 text-on-paper p-4">
       <div className="flex flex-wrap items-center gap-2">{confirmed ? <ConfirmedByMakerBadge lang={lang} /> : w.isSample && <SampleBadge lang={lang} />}</div>
       <h3 className="t-heading mt-1">{w.title}</h3>
       <p className="mt-1">{w.description}</p>

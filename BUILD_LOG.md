@@ -187,3 +187,22 @@ Times are IST.
 - `components/AudioBar.tsx`: play/pause, static waveform, Synthetic voice label and elapsed time, using the browser's speech synthesis.
 - `components/shell.tsx` and `app/layout.tsx`: a TopBar (44 px back button, wordmark, and the EN/हिं toggle in place of the board's bell and avatar), and a 76 px ink BottomNav with a raised 64 px saffron camera button, safe-area padding and a 20 px gutter. The nav shows only slots whose route exists today (Home, Camera, Makers); Places and Stories are added in F4 and F5. Search moved to the footer list. The install prompt was moved above the nav.
 - Full run: typecheck and lint clean, 131 unit tests, 53 of 53 e2e, demo path 3 runs in a row, content:check 0 errors.
+
+## F3 Splash and Home: 2026-10-29 00:05
+
+- `components/Splash.tsx`: ink overlay with the lotus mark, MIRAS wordmark, the golden scene in the jharokha arch, the tagline in English and Hindi, and a progress line. It shows on the first visit of a session, auto-dismisses at 1.5 s and can be tapped to skip. It never shows under reduced motion, with `?nosplash`, with `NEXT_PUBLIC_E2E=true`, or in automated browsers (`navigator.webdriver`), because NEXT_PUBLIC_E2E is baked in at build time and the e2e build does not set it.
+- `components/HomeShell.tsx`: the server renders dawn, then after mount the visitor's local hour picks dawn, day, golden or night, exposed as `data-time`. `?hour=HH` works only in demo mode (the repo's existing `NEXT_PUBLIC_DEMO_MODE` flag). The scene, greeting (Hindi above English), headline and top-bar tint change per mode, with a 300 ms fade.
+- `app/page.tsx`: hero with an Illustrative label, 52 px pill search, category circles (Places, Makers, Workshops, Stories; no Food because there is no data), Featured story (the first visible story) and "Hear a story" cards per place with the real story count. The board's "Sunrise at 5:45 AM" line is not used. The old place filter moved to /places.
+- Fixes from a 360 px screenshot review: the language toggle follows the current text colour (saffron when selected) and paper cards set their own text colour, so both stay readable on the night home.
+
+## F4 Explore and Place detail: 2026-10-29 00:05
+
+- `/places`: search, filter chips built only from categories in content, and PlaceCards with English and Hindi names and the first visible story's source chip. No ratings and no hearts.
+- Place detail: full-bleed hero (360 preview, Illustrative photo or scene), a save-for-later button (jumps to Save for offline), the English/Hindi title, in-page tabs (Overview, Stories, Photos, Visit), and a facts row. The facts row shows duration from `typicalVisitMinutes` with a Sample badge for sample places; entry fee and hours show "Not yet verified" because the schema has no verified field for them. Stories, visit tips, Visiting responsibly, Save for offline, makers and photos are kept.
+- Bottom nav now shows all five slots.
+
+## F5 Stories list and Story detail: 2026-10-29 00:05
+
+- `/stories`: All/History/Oral tradition/Legend chips and a search over visible stories only. StoryCards show the read time computed from the text and "Verified by" only when set. With no result it shows "I don't know" with search.
+- `/stories/[id]`: found only through `getVisibleStories` (otherwise a 404). It shows a hero scene (Illustrative), the source chip plus "Verified source" (only when verified and not a sample) or "Sample content", the English/Hindi title, the source line, "Verified by … · date" or "Not yet verified", the AudioBar (Synthetic voice), the 17/27 body, the Simple version toggle (only when checked) and the Hindi toggle (only when `text_hi` exists). Mark as read and Listen earn the passport stamp. Place-page story blocks link to it.
+- Full run before these commits: typecheck and lint clean, 131 unit tests, 53 of 53 e2e, demo path 3 runs in a row, content:check 0 errors.
