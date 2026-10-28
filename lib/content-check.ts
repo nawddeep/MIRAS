@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readEntities, readEntityFile, type FileIssue } from "@/lib/repos/json";
 import { placeholderCoordinateIds } from "@/lib/planner";
-import { Artisan, MediaAsset, MusicTrack, Place, StoryEntry, Workshop } from "@/lib/schemas";
+import { Artisan, MediaAsset, MusicTrack, Phrase, Place, StoryEntry, Trail, Workshop } from "@/lib/schemas";
 import { artisanPublishBlockers, workshopPublishBlockers } from "@/lib/services/publishing";
 
 const MEDIA_EXT = /\.(jpe?g|png|webp|gif|svg|avif|mp4|webm|mov|mp3|m4a|wav|ogg|aac)$/i;
@@ -34,7 +34,9 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
   const media = readEntityFile(mediaFile, MediaAsset);
   if (!fs.existsSync(mediaFile)) errors.push("content/media.json is missing.");
   const music = readEntityFile(path.join(contentDir, "music.json"), MusicTrack);
-  [places, stories, artisans, workshops, media, music].forEach((r) => r.issues.forEach(issue));
+  const trails = readEntities(path.join(contentDir, "trails"), Trail);
+  const phrases = readEntityFile(path.join(contentDir, "phrases.json"), Phrase);
+  [places, stories, artisans, workshops, media, music, trails, phrases].forEach((r) => r.issues.forEach(issue));
 
   const dupes = (kind: string, ids: string[]) =>
     ids.filter((id, i) => ids.indexOf(id) !== i).forEach((id) => errors.push(`Duplicate ${kind} id "${id}".`));
@@ -45,6 +47,7 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
 
   const placeIds = new Set(places.items.map((p) => p.id));
   for (const s of stories.items) if (!placeIds.has(s.placeId)) errors.push(`Story "${s.id}" points to unknown place "${s.placeId}".`);
+  for (const t of trails.items) for (const id of t.placeIds) if (!placeIds.has(id)) errors.push(`Trail "${t.id}" includes unknown place "${id}".`);
   const artisanIds = new Set(artisans.items.map((a) => a.id));
   for (const w of workshops.items) if (!artisanIds.has(w.artisanId)) errors.push(`Workshop "${w.id}" points to unknown artisan "${w.artisanId}".`);
 
@@ -102,6 +105,8 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
     else if (!s.verifiedBy?.trim()) todo.push({ kind: "story", id: s.id, file: file("stories"), note: "not verified yet, so hidden from visitors" });
   }
   for (const a of artisans.items) if (a.isSample) todo.push({ kind: "artisan", id: a.id, file: file("artisans"), note: "sample listing; replace with a real artisan and signed consent" });
+  for (const t of trails.items) if (t.isSample) todo.push({ kind: "trail", id: t.id, file: file("trails"), note: "sample trail" });
+  for (const p of phrases.items) if (p.isSample) todo.push({ kind: "phrase", id: p.id, file: "content/phrases.json", note: "sample phrase; needs a checked translation" });
   for (const w of workshops.items) if (w.isSample) todo.push({ kind: "workshop", id: w.id, file: file("workshops"), note: "sample workshop" });
   for (const m of media.items) if (/placeholder/i.test(m.permittedUse)) todo.push({ kind: "media", id: m.id, file: "content/media.json", note: `placeholder image ${m.path}` });
 
@@ -121,7 +126,7 @@ export function renderTodo(report: ContentReport, when: Date): string {
     `${report.todo.length} item(s) still to replace or verify.`,
     "",
   ];
-  const headings: Record<string, string> = { place: "Places", story: "Stories", artisan: "Artisans", workshop: "Workshops", media: "Media" };
+  const headings: Record<string, string> = { place: "Places", story: "Stories", artisan: "Artisans", workshop: "Workshops", media: "Media", trail: "Trails", phrase: "Phrases" };
   const kinds = [...new Set(report.todo.map((t) => t.kind))];
   for (const k of kinds) {
     lines.push(`## ${headings[k] ?? k}`, "");

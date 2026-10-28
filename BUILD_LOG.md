@@ -114,3 +114,10 @@ Times are IST.
 - `/memories`: pick up to 5 photos or clips. One still frame each is taken in the browser (video: about 1 s in). Each has an optional place choice and a date stamp "(from your file)". A face flag forces a choice: cut, blur whole frame (stated plainly), or keep. The reel is in-app only ("not an exported video"), with captions, stamp, verified story with source label, and optional Synthetic voice narration. It is saved to IndexedDB on the device and can be deleted. No music.
 - `content/music.json`: empty licensed-music slot. `content:check` fails on a track without a rights entry.
 - Tests: `tests/unit/memories.test.ts` (9), `tests/e2e/tier1.spec.ts` (7, including accessibility, planner, mock reel save and delete, face choice, invalid output, and 360 px checks). 97 unit tests pass and 7 of 7 e2e pass.
+
+## 4.2 Heritage trails: 2026-10-28 10:22
+
+- `Trail` schema (`id`, `title`, `theme`, ordered `placeIds`, `approxMinutes`, `isSample`) in `content/trails/*.json`. No AI-generated trails. One sample trail with SAMPLE text.
+- `lib/services/trails.ts`: samples show only in demo mode, and a trail with a hidden stop is hidden. `/trails` lists trails. `/trails/[id]` lists stops in order with each stop's visit duration.
+- `content:check` fails on an unknown place id in a trail and lists sample trails. Also added: `Phrase` schema and `content/phrases.json` (3 SAMPLE phrases), needed by 4.4 "Save for offline" because there was no phrase list yet.
+- Tests: `tests/unit/trails.test.ts` (4).

@@ -1,6 +1,6 @@
 import path from "node:path";
 import { getConfig } from "@/lib/config";
-import { Artisan, MediaAsset, Place, StoryEntry, Workshop, type Enquiry } from "@/lib/schemas";
+import { Artisan, MediaAsset, Phrase, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
 import { readEntities, readEntityFile } from "./json";
 import { openDb, type Db } from "./sqlite";
 import type { Repos } from "./types";
@@ -22,6 +22,7 @@ export function createRepos(contentDir: string, db: Db): Repos {
   };
 
   const places = () => readEntities(dir("places"), Place).items;
+  const trails = () => readEntities(dir("trails"), Trail).items;
   const artisans = () => layered(readEntities(dir("artisans"), Artisan).items, dbRows("artisans", Artisan));
   const workshops = () => layered(readEntities(dir("workshops"), Workshop).items, dbRows("workshops", Workshop));
 
@@ -30,6 +31,13 @@ export function createRepos(contentDir: string, db: Db): Repos {
       list: places,
       getById: (id) => places().find((p) => p.id === id),
       getBySlug: (slug) => places().find((p) => p.slug === slug),
+    },
+    trails: {
+      list: trails,
+      get: (id) => trails().find((t) => t.id === id),
+    },
+    phrases: {
+      list: () => readEntityFile(path.join(contentDir, "phrases.json"), Phrase).items,
     },
     stories: {
       listAll: () => readEntities(dir("stories"), StoryEntry).items,

@@ -1,0 +1,8 @@
+{
+  "id": "sample-lake-palace",
+  "title": "SAMPLE: trail title goes here",
+  "theme": "SAMPLE: trail theme goes here",
+  "placeIds": ["city-palace", "pichhola", "sajjangarh"],
+  "approxMinutes": 240,
+  "isSample": true
+}
