@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 import { CONFIG } from './config.js';
-import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo } from './panorama.js';
+import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo, createProceduralPanoramaTexture } from './panorama.js';
 import { LookControls } from './look-controls.js';
 import { detectImmersiveVR, XRSessionController } from './xr.js';
 import { GuideOverlay } from './guide-overlay.js';
@@ -118,11 +118,19 @@ let switching = null;
 
 async function loadViewTexture(view, progress) {
   if (viewCache.has(view.id)) return viewCache.get(view.id);
-  const entry = isVideoUrl(view.url)
-    ? await loadPanoramaVideo(view.url, progress)
-    : { texture: await loadPanoramaTexture(view.url, renderer, progress), video: null };
-  viewCache.set(view.id, entry);
-  return entry;
+  try {
+    const entry = isVideoUrl(view.url)
+      ? await loadPanoramaVideo(view.url, progress)
+      : { texture: await loadPanoramaTexture(view.url, renderer, progress), video: null };
+    viewCache.set(view.id, entry);
+    return entry;
+  } catch (err) {
+    console.warn(`[MIRAS] Media file (${view.url}) not found, using procedural heritage horizon:`, err.message);
+    const texture = createProceduralPanoramaTexture(view.id, view.name);
+    const fallbackEntry = { texture, video: null };
+    viewCache.set(view.id, fallbackEntry);
+    return fallbackEntry;
+  }
 }
 
 // Timer-driven (not rAF) so a transition always completes, even in a background tab.

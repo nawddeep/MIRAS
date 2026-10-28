@@ -102,3 +102,105 @@ export async function loadPanoramaTexture(url, renderer, onProgress) {
   texture.needsUpdate = true;
   return texture;
 }
+
+/**
+ * Procedural 2:1 equirectangular heritage panorama texture.
+ * Ensures the 360 viewer, hotspot gaze, and WebXR work instantly even before external media files are downloaded.
+ */
+export function createProceduralPanoramaTexture(viewId, viewName) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 2048;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+
+  // Atmospheric sky gradient
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, 512);
+  if (viewId === 'pichola_lake') {
+    skyGrad.addColorStop(0, '#102A45');
+    skyGrad.addColorStop(0.6, '#385F7D');
+    skyGrad.addColorStop(1, '#D49B72');
+  } else if (viewId === 'moti_magri') {
+    skyGrad.addColorStop(0, '#1C3144');
+    skyGrad.addColorStop(0.5, '#40627C');
+    skyGrad.addColorStop(1, '#E0A96D');
+  } else if (viewId === 'karni_mata') {
+    skyGrad.addColorStop(0, '#2D1B36');
+    skyGrad.addColorStop(0.6, '#683B5E');
+    skyGrad.addColorStop(1, '#EBB071');
+  } else {
+    // City Palace sunset
+    skyGrad.addColorStop(0, '#16233B');
+    skyGrad.addColorStop(0.5, '#4F4259');
+    skyGrad.addColorStop(1, '#E69C66');
+  }
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, 2048, 512);
+
+  // Ground / Courtyard gradient
+  const groundGrad = ctx.createLinearGradient(0, 512, 0, 1024);
+  if (viewId === 'pichola_lake') {
+    groundGrad.addColorStop(0, '#2C495E');
+    groundGrad.addColorStop(0.3, '#1B3245');
+    groundGrad.addColorStop(1, '#0D1A24');
+  } else {
+    groundGrad.addColorStop(0, '#8A6A4E');
+    groundGrad.addColorStop(0.3, '#543D2E');
+    groundGrad.addColorStop(1, '#2E1E14');
+  }
+  ctx.fillStyle = groundGrad;
+  ctx.fillRect(0, 512, 2048, 512);
+
+  // Aravalli Hills Horizon silhouette
+  ctx.fillStyle = '#2A2633';
+  ctx.beginPath();
+  ctx.moveTo(0, 512);
+  for (let x = 0; x <= 2048; x += 32) {
+    const y = 490 + Math.sin(x * 0.008) * 22 + Math.cos(x * 0.02) * 12;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(2048, 512);
+  ctx.closePath();
+  ctx.fill();
+
+  // Architectural palace silhouettes & jharokha chhatris along horizon
+  ctx.fillStyle = '#1D1A24';
+  for (let x = 80; x < 2000; x += 220) {
+    ctx.fillRect(x, 430, 90, 82);
+    ctx.beginPath();
+    ctx.arc(x + 45, 430, 32, Math.PI, 0);
+    ctx.fill();
+    ctx.fillStyle = '#3D3540';
+    ctx.fillRect(x + 15, 450, 12, 62);
+    ctx.fillRect(x + 63, 450, 12, 62);
+    ctx.fillStyle = '#1D1A24';
+  }
+
+  // Courtyard paved grid lines
+  ctx.strokeStyle = 'rgba(255, 235, 200, 0.07)';
+  ctx.lineWidth = 2;
+  for (let x = 0; x <= 2048; x += 128) {
+    ctx.beginPath();
+    ctx.moveTo(x, 512);
+    ctx.lineTo(x, 1024);
+    ctx.stroke();
+  }
+  for (let y = 512; y <= 1024; y += 48) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(2048, y);
+    ctx.stroke();
+  }
+
+  // Horizon title & coordinate indicators
+  ctx.fillStyle = 'rgba(255, 246, 234, 0.85)';
+  ctx.font = '22px Oswald, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`[ ${viewName} · 360° Equirectangular Heritage Horizon ]`, 1024, 465);
+  ctx.font = '15px Mukta, sans-serif';
+  ctx.fillText('Look around or drag to inspect architectural compounds and hotspots', 1024, 492);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  return texture;
+}
