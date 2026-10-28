@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readEntities, readEntityFile, type FileIssue } from "@/lib/repos/json";
 import { placeholderCoordinateIds } from "@/lib/planner";
-import { Artisan, MediaAsset, Place, StoryEntry, Workshop } from "@/lib/schemas";
+import { Artisan, MediaAsset, MusicTrack, Place, StoryEntry, Workshop } from "@/lib/schemas";
 import { artisanPublishBlockers, workshopPublishBlockers } from "@/lib/services/publishing";
 
 const MEDIA_EXT = /\.(jpe?g|png|webp|gif|svg|avif|mp4|webm|mov|mp3|m4a|wav|ogg|aac)$/i;
@@ -33,7 +33,8 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
   const mediaFile = path.join(contentDir, "media.json");
   const media = readEntityFile(mediaFile, MediaAsset);
   if (!fs.existsSync(mediaFile)) errors.push("content/media.json is missing.");
-  [places, stories, artisans, workshops, media].forEach((r) => r.issues.forEach(issue));
+  const music = readEntityFile(path.join(contentDir, "music.json"), MusicTrack);
+  [places, stories, artisans, workshops, media, music].forEach((r) => r.issues.forEach(issue));
 
   const dupes = (kind: string, ids: string[]) =>
     ids.filter((id, i) => ids.indexOf(id) !== i).forEach((id) => errors.push(`Duplicate ${kind} id "${id}".`));
@@ -75,6 +76,7 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
     ...places.items.flatMap((p) => [...p.photos, ...(p.preview360 ? [p.preview360.path] : [])].map((src): [string, string] => [`place "${p.id}"`, src])),
     ...artisans.items.flatMap((a) => a.photos.map((src): [string, string] => [`artisan "${a.id}"`, src])),
   ];
+  for (const m of music.items) if (!byPath.has(m.path)) errors.push(`Music track "${m.id}" (${m.path}) has no rights entry in content/media.json.`);
   for (const [owner, src] of referenced) {
     const m = byPath.get(src);
     if (!m) errors.push(`${owner} uses ${src}, which has no rights entry in content/media.json.`);

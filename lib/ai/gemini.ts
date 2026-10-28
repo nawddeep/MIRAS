@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
-import { ListingDraft, PlaceMatch } from "@/lib/schemas";
-import type { AiProvider, DraftInput, MatchInput } from "./types";
+import { ListingDraft, MomentPicks, PlaceMatch } from "@/lib/schemas";
+import type { AiProvider, DraftInput, MatchInput, MomentsInput } from "./types";
 
 // Gemini's schema field does not accept the "$schema" meta key that Zod adds.
 const jsonSchema = (schema: z.ZodType) => {
@@ -27,6 +27,16 @@ Rules:
 - personIsMainSubject is true if a person is the main subject of the photo.
 - Do not describe the place or write any text other than the JSON.`;
 
+const MOMENTS_PROMPT = (names: string, count: number) => `You help a visitor make a highlight reel from ${count} of their own photos (frames are numbered from 0 in the order given).
+Candidate places in Udaipur (id: name): ${names}
+Rules:
+- Pick up to 5 frames worth keeping. For each give frameIndex, a short caption, placeId, faceVisible and uncertain.
+- The caption describes ONLY what is visible in that frame (colours, objects, light, water, people's activity). Never add history, dates, names of rulers, legends or facts that are not visible.
+- placeId is one candidate id only if the frame clearly shows that place; otherwise null.
+- faceVisible is true if any person's face can be seen.
+- uncertain is true if you are not sure about the caption or place.
+Return only JSON matching the schema.`;
+
 /** Gemini via the official Google Gen AI SDK. The model name always comes from GEMINI_MODEL; it is never guessed. */
 export class GeminiAiProvider implements AiProvider {
   readonly name = "gemini" as const;
@@ -50,6 +60,24 @@ export class GeminiAiProvider implements AiProvider {
       model: this.model,
       contents: [{ role: "user", parts }],
       config: { responseMimeType: "application/json", responseJsonSchema: jsonSchema(ListingDraft), temperature: 0.2 },
+    });
+    return res.text ?? "";
+  }
+
+  async pickMoments(input: MomentsInput) {
+    const names = input.candidates.map((c) => `${c.id}: ${c.name}`).join("; ");
+    const res = await this.client.models.generateContent({
+      model: this.model,
+      contents: [
+        {
+          role: "user",
+          parts: [
+            ...input.frames.map((f) => ({ inlineData: { mimeType: f.mime, data: f.data.toString("base64") } })),
+            { text: MOMENTS_PROMPT(names, input.frames.length) },
+          ],
+        },
+      ],
+      config: { responseMimeType: "application/json", responseJsonSchema: jsonSchema(MomentPicks), temperature: 0.2 },
     });
     return res.text ?? "";
   }

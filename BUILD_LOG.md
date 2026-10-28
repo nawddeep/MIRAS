@@ -105,3 +105,12 @@ Times are IST.
 - `/plan`: pick places, start time, day length, mode and day. The plan is saved in localStorage on the device only.
 - `content:check` now reports warnings: places sharing identical coordinates (all three samples) and places without `openingTimes`.
 - Tests: `tests/unit/planner.test.ts` (9): ordering and travel, opening time, closed late, closed weekday, overlong day, missing data, placeholder coordinates, shared-coordinate detection, check warning. 88 unit tests pass.
+
+## 3.1 Memories (in-app highlight reel): 2026-10-28 10:20
+
+- `AiProvider.pickMoments(frames, candidates)`: the mock returns "Demo response" captions with no place and no face claimed. The Gemini version's prompt limits captions to what is visible, with no history. Output is validated with Zod (`MomentPicks`, at most 5) and retried once.
+- `lib/services/memories.ts`: the visitor's place choice wins over the model's suggestion (shown as "(suggested)"). Stories come only from `getVisibleStories`, and no story is shown when none is visible. Out-of-range or duplicate frames and unknown places are dropped. Frames are zeroed after the call.
+- `POST /api/memories/moments`: up to 5 frames of 1.5 MB or less in one request, rate-limited (10 per 10 minutes), no-store, never written to storage.
+- `/memories`: pick up to 5 photos or clips. One still frame each is taken in the browser (video: about 1 s in). Each has an optional place choice and a date stamp "(from your file)". A face flag forces a choice: cut, blur whole frame (stated plainly), or keep. The reel is in-app only ("not an exported video"), with captions, stamp, verified story with source label, and optional Synthetic voice narration. It is saved to IndexedDB on the device and can be deleted. No music.
+- `content/music.json`: empty licensed-music slot. `content:check` fails on a track without a rights entry.
+- Tests: `tests/unit/memories.test.ts` (9), `tests/e2e/tier1.spec.ts` (7, including accessibility, planner, mock reel save and delete, face choice, invalid output, and 360 px checks). 97 unit tests pass and 7 of 7 e2e pass.

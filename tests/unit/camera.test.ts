@@ -12,7 +12,7 @@ const stories = [
 ];
 
 function vision(out: unknown): AiProvider & { matchPlace: ReturnType<typeof vi.fn> } {
-  return { name: "gemini", draftListing: vi.fn(), matchPlace: vi.fn().mockResolvedValue(out) };
+  return { name: "gemini", draftListing: vi.fn(), matchPlace: vi.fn().mockResolvedValue(out), pickMoments: vi.fn() };
 }
 const frame = () => Buffer.from("fake-jpeg-bytes-of-a-monument");
 
@@ -46,7 +46,7 @@ describe("camera story mode", () => {
   it("treats invalid model output or a failed call as unsure", async () => {
     withFixture({ places, stories });
     expect(await matchFrame(vision("I think it's a fort, built in..."), frame(), "image/jpeg", { mode: "live" })).toMatchObject({ known: false, reason: "unsure" });
-    const failing: AiProvider = { name: "gemini", draftListing: vi.fn(), matchPlace: vi.fn().mockRejectedValue(new Error("down")) };
+    const failing: AiProvider = { name: "gemini", draftListing: vi.fn(), matchPlace: vi.fn().mockRejectedValue(new Error("down")), pickMoments: vi.fn() };
     expect(await matchFrame(failing, frame(), "image/jpeg", { mode: "live" })).toMatchObject({ known: false, reason: "unsure" });
   });
 

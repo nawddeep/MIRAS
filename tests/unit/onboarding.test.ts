@@ -14,7 +14,7 @@ function provider(...outputs: (unknown | Error)[]): AiProvider & { draftListing:
     if (o instanceof Error) draftListing.mockRejectedValueOnce(o);
     else draftListing.mockResolvedValueOnce(o);
   }
-  return { name: "gemini", draftListing, matchPlace: vi.fn() };
+  return { name: "gemini", draftListing, matchPlace: vi.fn(), pickMoments: vi.fn() };
 }
 
 describe("draftFromVoice", () => {

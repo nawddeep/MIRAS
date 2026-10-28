@@ -1,4 +1,4 @@
-import type { AiProvider } from "./types";
+import type { AiProvider, MomentsInput } from "./types";
 
 /** Default provider when Gemini is not configured. Everything it returns is shown as "Demo response". */
 export class MockAiProvider implements AiProvider {
@@ -12,6 +12,19 @@ export class MockAiProvider implements AiProvider {
       category: "Demo craft",
       materials: ["demo material"],
       uncertain_fields: ["category", "materials"],
+    };
+  }
+
+  /** The mock cannot see, so captions are placeholders and no place or face is claimed. */
+  async pickMoments(input: MomentsInput) {
+    return {
+      moments: input.frames.slice(0, 5).map((_, i) => ({
+        frameIndex: i,
+        caption: `Demo response: caption for moment ${i + 1}`,
+        placeId: null,
+        faceVisible: false,
+        uncertain: true,
+      })),
     };
   }
 

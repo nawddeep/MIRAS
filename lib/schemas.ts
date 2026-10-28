@@ -160,6 +160,25 @@ export const ListingDraft = z.object({
 });
 export type ListingDraft = z.infer<typeof ListingDraft>;
 
+/** What the AI returns for Memories. Captions describe only what is visible in the frame. */
+export const MomentPicks = z.object({
+  moments: z
+    .array(
+      z.object({
+        frameIndex: z.number().int().min(0),
+        caption: z.string().max(200),
+        placeId: z.string().nullable(),
+        faceVisible: z.boolean(),
+        uncertain: z.boolean(),
+      }),
+    )
+    .max(5),
+});
+export type MomentPicks = z.infer<typeof MomentPicks>;
+
+/** Slot for licensed music in Memories. Empty until the team has a track with a rights entry. */
+export const MusicTrack = z.object({ id: nonEmpty, title: nonEmpty, path: nonEmpty, owner: nonEmpty, permittedUse: nonEmpty, licenceNote: nonEmpty });
+
 export const PlaceMatch = z.object({
   placeId: z.string().nullable(),
   confidence: z.number().min(0).max(1),

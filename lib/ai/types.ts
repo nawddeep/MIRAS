@@ -12,6 +12,12 @@ export type MatchInput = {
   candidates: { id: string; name: string }[];
 };
 
+export type MomentsInput = {
+  /** Small still frames extracted in the visitor's browser. Never stored. */
+  frames: { data: Buffer; mime: string }[];
+  candidates: { id: string; name: string }[];
+};
+
 /**
  * Providers return RAW model output (string or object). Callers validate it with Zod
  * before anything reaches a user, so a provider can never push unchecked text into the UI.
@@ -20,4 +26,5 @@ export interface AiProvider {
   readonly name: "mock" | "gemini";
   draftListing(input: DraftInput): Promise<unknown>;
   matchPlace(input: MatchInput): Promise<unknown>;
+  pickMoments(input: MomentsInput): Promise<unknown>;
 }
