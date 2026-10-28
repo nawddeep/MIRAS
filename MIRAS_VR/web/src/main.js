@@ -4,7 +4,7 @@ import { CONFIG } from './config.js';
 import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo } from './panorama.js';
 import { LookControls } from './look-controls.js';
 import { detectImmersiveVR, XRSessionController } from './xr.js';
-import { GuideOverlay } from './guide-overlay.js';
+import { TrumpCompanionGuide } from './companion-guide.js';
 import { GazeHotspots } from './gaze.js';
 import { DevHud } from './dev-hud.js';
 import { HotspotMarkers } from './hotspot-markers.js';
@@ -51,9 +51,8 @@ scene.add(new THREE.HemisphereLight(0xfff1e0, 0x5a4636, 0.9));
 
 // The guide is hidden until the visitor dwells on a hotspot, then appears bottom-right
 // with a caption and fades away. Gaze = centre of the view (desktop) or the headset.
-const guide = new GuideOverlay(scene, camera, renderer, {
+const guide = new TrumpCompanionGuide(scene, camera, renderer, {
   url: CONFIG.guide.url,
-  character: CONFIG.guide.character,
   onFinished: (hotspot, now) => {
     gaze.busy = false;
     gaze.release(hotspot.id, now);
