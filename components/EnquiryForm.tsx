@@ -70,7 +70,7 @@ export function EnquiryForm({ artisanId, lang }: { artisanId: string; lang: Lang
           onChange={(e) => setMessage(e.target.value)}
           aria-invalid={Boolean(fieldError("message"))}
           aria-describedby="message-help"
-          className="w-full rounded-xl border border-ink/25 bg-white p-3"
+          className="w-full rounded-input border border-line bg-paper-2 p-3 text-base"
         />
         <p id="message-help" className="text-right text-xs text-ink-soft">
           {message.length}/{ENQUIRY_MAX}
@@ -86,7 +86,7 @@ export function EnquiryForm({ artisanId, lang }: { artisanId: string; lang: Lang
           name="contactBack"
           autoComplete="email"
           aria-invalid={Boolean(fieldError("contactBack"))}
-          className="min-h-11 w-full rounded-xl border border-ink/25 bg-white px-3"
+          className="min-h-[52px] w-full rounded-input border border-line bg-paper-2 px-3 text-base"
         />
         {fieldError("contactBack") && <p className="text-sm text-[#9b3b28]">{fieldError("contactBack")}</p>}
       </div>
@@ -95,10 +95,10 @@ export function EnquiryForm({ artisanId, lang }: { artisanId: string; lang: Lang
           {state.message}
         </p>
       )}
-      <Button type="submit" disabled={state.kind === "sending"}>
+      <Button type="submit" variant="accent" className="w-full" disabled={state.kind === "sending"}>
         {t(lang, "send")}
       </Button>
-      <p className="text-xs text-ink-soft">No payments or bookings happen in MIRAS. The artisan replies to you directly.</p>
+      <p className="text-sm text-muted-paper">{t(lang, "noPaymentHere")}</p>
     </form>
   );
 }
