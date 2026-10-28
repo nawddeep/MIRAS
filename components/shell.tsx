@@ -42,8 +42,8 @@ const SLOTS: { slot: Slot; href: string; icon: (p: { size?: number }) => ReactNo
   { slot: "stories", href: "/stories", icon: StoriesIcon },
   { slot: "makers", href: "/artisans", icon: MakersIcon },
 ];
-// Slots whose route exists. Places and Stories are added when their screens are built.
-const LIVE = new Set<Slot>(["home", "camera", "makers"]);
+// Slots whose route exists (all five now).
+const LIVE = new Set<Slot>(["home", "places", "camera", "stories", "makers"]);
 
 /**
  * Bottom nav: Home, Places, Camera (centred), Stories, Makers.
