@@ -1,8 +1,9 @@
 /**
- * MIRAS · Voice-First Artisan Onboarding with Gemini AI
+ * MIRAS · Voice-First Artisan Onboarding with Gemini 3.8 Flash
  * Zero typing required · Audio review in Hindi · Strict owner confirmation
  */
 import { getArtisans, saveArtisans, initArtisans } from './artisans.js';
+import { hasGeminiApiKey, draftArtisanListingWithGemini } from './geminiService.js';
 
 const DEMO_PRESETS = [
   {
@@ -100,7 +101,7 @@ function renderVoiceApp(container) {
       <div class="voice-input-card">
         <div class="voice-mic-zone">
           <button class="voice-mic-btn" id="voiceMicBtn" type="button" aria-label="Toggle Microphone">
-            <span class="mic-icon">🎙️</span>
+            <span class="mic-icon"><i class="star"></i></span>
             <span class="mic-pulse"></span>
           </button>
           <p class="mic-status" id="micStatus">Tap to Speak in Hindi (बोलिए)</p>
@@ -205,10 +206,32 @@ function renderVoiceApp(container) {
     });
   });
 
-  // Generate with Gemini
-  generateBtn.addEventListener('click', () => {
+  // Generate with Gemini 3.8 Flash
+  generateBtn.addEventListener('click', async () => {
     generateBtn.disabled = true;
-    generateBtn.innerHTML = '<i class="star"></i> Gemini Multimodal Analyzing...';
+    generateBtn.innerHTML = '<i class="star"></i> Gemini 3.8 Flash Analyzing Speech...';
+
+    if (hasGeminiApiKey() && activeTranscript) {
+      try {
+        const aiDraft = await draftArtisanListingWithGemini(activeTranscript);
+        activeDraft = {
+          hindiTranscript: activeTranscript,
+          englishTitle: aiDraft.englishTitle || 'Handcrafted Artisan Heritage Listing',
+          hindiTitle: aiDraft.hindiTitle || 'पारंपरिक हस्तशिल्प उत्पाद',
+          englishDesc: aiDraft.englishDesc || `Direct artisan transcription: "${activeTranscript}"`,
+          hindiDesc: aiDraft.hindiDesc || activeTranscript,
+          craftType: aiDraft.craftType || 'Traditional Craft',
+          suggestedPrice: Number(aiDraft.suggestedPrice) || 1600,
+          materials: Array.isArray(aiDraft.materials) && aiDraft.materials.length > 0 ? aiDraft.materials : ['Natural Raw Materials'],
+        };
+        renderReviewUI();
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="star"></i> Regenerate with Gemini 3.8 Flash';
+        return;
+      } catch (err) {
+        console.warn('Gemini 3.8 Flash listing generation fallback:', err);
+      }
+    }
 
     setTimeout(() => {
       const presetMatch = DEMO_PRESETS.find((p) => p.transcript === activeTranscript);
@@ -240,7 +263,7 @@ function renderVoiceApp(container) {
       renderReviewUI();
       generateBtn.disabled = false;
       generateBtn.innerHTML = '<i class="star"></i> Regenerate Listing';
-    }, 900);
+    }, 700);
   });
 
   function renderReviewUI() {
@@ -258,7 +281,7 @@ function renderVoiceApp(container) {
 
       <div class="audio-listen-bar">
         <button class="btn btn-sm btn-speak" id="listenAudioBtn" type="button">
-          🔊 इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)
+          [Audio Review] इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)
         </button>
         <span class="audio-hint">Helps artisans verify by ear without reading</span>
       </div>
@@ -309,7 +332,7 @@ function renderVoiceApp(container) {
       if (isSpeaking) {
         window.speechSynthesis.cancel();
         isSpeaking = false;
-        listenBtn.textContent = '🔊 इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)';
+        listenBtn.textContent = '[Audio Review] इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)';
         return;
       }
 
@@ -319,11 +342,11 @@ function renderVoiceApp(container) {
       utterance.rate = 0.95;
       utterance.onend = () => {
         isSpeaking = false;
-        listenBtn.textContent = '🔊 इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)';
+        listenBtn.textContent = '[Audio Review] इस लिस्टिंग को बोलकर सुनें (Listen in Hindi)';
       };
 
       isSpeaking = true;
-      listenBtn.textContent = '⏹️ बोलना बंद करें (Stop Audio)';
+      listenBtn.textContent = '[Stop] बोलना बंद करें (Stop Audio)';
       window.speechSynthesis.speak(utterance);
     });
 

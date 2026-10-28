@@ -253,9 +253,9 @@ function setupConsentModal(artisans) {
         <h4>Verified Legal Covenants:</h4>
         <p>"${art.consent.notes}"</p>
         <ul class="covenants-list">
-          <li>✓ 100% Direct Remittance (0% Platform Commissions)</li>
-          <li>✓ Authorised Digital Exhibition of Family Workshop</li>
-          <li>✓ Right to revoke consent or adjust pricing at any time</li>
+          <li>- 100% Direct Remittance (0% Platform Commissions)</li>
+          <li>- Authorised Digital Exhibition of Family Workshop</li>
+          <li>- Right to revoke consent or adjust pricing at any time</li>
         </ul>
       </div>
     `;

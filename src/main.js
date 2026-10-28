@@ -7,6 +7,7 @@ import { places, icons } from './art.js';
 import { initArtisans } from './artisans.js';
 import { initVoiceOnboarding } from './voiceOnboarding.js';
 import { initStoryCamera } from './storyCamera.js';
+import { initSpatialStudio } from './spatialStudio.js';
 import './style.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -66,7 +67,7 @@ ScrollTrigger.create({
   onLeaveBack: () => { header.classList.remove('show'); closeMenu(); },
 });
 // highlight the current section in the nav
-['about', 'places', 'experiences', 'itineraries', 'artisans', 'voice-onboard', 'story-camera', 'plan'].forEach((id) => {
+['about', 'places', 'experiences', 'itineraries', 'artisans', 'voice-onboard', 'story-camera', 'spatial-studio', 'plan'].forEach((id) => {
   const link = $(`.nav a[href="#${id}"]`);
   if (!link) return;
   ScrollTrigger.create({
@@ -79,6 +80,7 @@ ScrollTrigger.create({
 initArtisans();
 initVoiceOnboarding();
 initStoryCamera();
+initSpatialStudio();
 
 // ---------- hero ----------
 const media = $('#heroMedia');
