@@ -342,10 +342,11 @@ function wrapText(ctx, text, maxW) {
  * Apply the official Indian Traditional Attire turnaround color palette:
  * - Navy Blue Nehru Vest (#1D263B)
  * - Cream / Off-White Silk Kurta & Churidar (#F4EDE4)
- * - Deep Maroon Stole with Golden Borders (#88252C & #D4A853)
+ * - Deep Maroon Stole with Golden Borders & Fringes (#88252C & #D4A853)
  * - Golden Blonde Hair (#E5B876)
  * - Natural Warm Skin Tone (#F2BA93)
  * - Dark Leather Brown Mojari Shoes (#382318)
+ * Strict Zero Emojis.
  */
 function applyTrumpIndianAttireColors(geometry) {
   const pos = geometry.attributes.position;
@@ -353,17 +354,24 @@ function applyTrumpIndianAttireColors(geometry) {
   const colors = new Float32Array(count * 3);
 
   const cNavy = new THREE.Color('#1D263B');
-  const cNavyShadow = new THREE.Color('#141C2B');
-  const cCream = new THREE.Color('#F4EDE4');
-  const cCreamShade = new THREE.Color('#E6DDD0');
+  const cNavyShadow = new THREE.Color('#131A29');
+  const cCream = new THREE.Color('#F5EFE6');
+  const cCreamShade = new THREE.Color('#E3D7C8');
   const cMaroon = new THREE.Color('#88252C');
+  const cMaroonShadow = new THREE.Color('#671B20');
   const cGoldTrim = new THREE.Color('#D4A853');
+  const cGoldHighlight = new THREE.Color('#E5BE6C');
   const cHair = new THREE.Color('#E5B876');
   const cHairDark = new THREE.Color('#C49352');
   const cSkin = new THREE.Color('#F2BA93');
   const cSkinRosy = new THREE.Color('#EAA082');
+  const cLips = new THREE.Color('#D48B77');
+  const cEyes = new THREE.Color('#3B6B8E');
   const cShoes = new THREE.Color('#382318');
+  const cShoesToe = new THREE.Color('#7A5232');
   const cButton = new THREE.Color('#E5C158');
+  const cWatchStrap = new THREE.Color('#382318');
+  const cWatchBezel = new THREE.Color('#D4A853');
 
   const c = new THREE.Color();
 
@@ -373,74 +381,129 @@ function applyTrumpIndianAttireColors(geometry) {
     const z = pos.getZ(i);
     const ax = Math.abs(x);
 
-    // 1. FOOTWEAR: Rajasthani Leather Mojari
+    // 1. FOOTWEAR: Rajasthani Leather Mojari (0 to 0.11m)
     if (y < 0.11) {
-      c.copy(cShoes);
+      if (y < 0.08 && z > 0.08) {
+        c.copy(cShoesToe);
+      } else {
+        c.copy(cShoes);
+      }
     }
-    // 2. CHURIDAR PYJAMA: Off-White / Cream Fabric
-    else if (y < 0.68) {
+    // 2. CHURIDAR PYJAMA: Off-White Silk Fabric (0.11 to 0.48m)
+    else if (y < 0.48) {
       const foldNoise = (Math.sin(y * 42) + Math.cos(x * 28)) * 0.035;
       c.copy(cCream).lerp(cCreamShade, Math.max(0, foldNoise));
     }
-    // 3. KURTA HEM: Lower Kurta Flare
-    else if (y < 1.05 && ax < 0.36) {
-      const foldNoise = (Math.sin(y * 32) + Math.sin(x * 18)) * 0.04;
-      c.copy(cCream).lerp(cCreamShade, Math.max(0, foldNoise));
+    // 3. HANDS & WRISTS (0.72 to 0.93m, outer extremities |x| >= 0.45m)
+    else if (y >= 0.72 && y < 0.93 && ax >= 0.45) {
+      // Left wrist watch
+      if (x > 0.46 && y >= 0.88 && y <= 0.92) {
+        c.copy(z > 0.02 ? cWatchBezel : cWatchStrap);
+      } else {
+        const isRosy = ax > 0.52 || y < 0.80;
+        c.copy(isRosy ? cSkinRosy : cSkin);
+      }
     }
-    // 4. HANDS & WRISTS: Exposed Skin
-    else if (y < 1.05 && ax >= 0.36) {
-      c.copy(cSkin);
+    // 4. KURTA SLEEVES (0.90 to 1.48m, outer arms |x| >= 0.28m)
+    else if (y >= 0.90 && y < 1.48 && ax >= 0.28) {
+      const sleeveNoise = (Math.sin(y * 30) + Math.cos(x * 24)) * 0.03;
+      c.copy(cCream).lerp(cCreamShade, Math.max(0, sleeveNoise));
     }
-    // 5. UPPER BODY: SLEEVES, NAVY VEST & MAROON STOLE (1.05 to 1.55)
-    else if (y >= 1.05 && y < 1.55) {
-      // Kurta sleeves on outer arms
-      if (ax > 0.28) {
-        c.copy(cCream);
-      }
-      // Brass buttons down the center placket
-      else if (z > 0.045 && ax < 0.018 && (Math.abs((y - 1.15) % 0.10) < 0.025)) {
-        c.copy(cButton);
-      }
-      // Center Kurta strip
-      else if (z > 0.04 && ax < 0.065) {
-        c.copy(cCream);
-      }
-      // Maroon Stole with gold geometric borders
-      else if (z > 0.03 && ax >= 0.065 && ax <= 0.25) {
-        const isBorder = ax < 0.088 || ax > 0.228 || (Math.sin(y * 55) > 0.72);
-        if (isBorder) {
-          c.copy(cGoldTrim);
+    // 5. LOWER BODY & TORSO (0.48 to 1.55m)
+    else if (y >= 0.48 && y < 1.55) {
+      // Front Maroon Stole drape with golden zari borders & fringes
+      const isStoleZ =
+        (y < 0.84 && z > 0.11) ||
+        (y >= 0.84 && y < 1.15 && z > 0.075) ||
+        (y >= 1.15 && z > 0.035);
+      const isStoleX = ax >= 0.055 && ax <= 0.235;
+      const isStole = isStoleZ && isStoleX && y >= 0.54;
+
+      if (isStole) {
+        const isBorder = ax < 0.082 || ax > 0.208;
+        const isBottomFringe = y < 0.575;
+        const isZariPalla =
+          (y >= 0.575 && y < 0.615) || (y >= 0.645 && y < 0.665);
+
+        if (isBorder || isBottomFringe || isZariPalla) {
+          const goldShimmer = (Math.sin(x * 60 + y * 50) + 1) * 0.04;
+          c.copy(cGoldTrim).lerp(cGoldHighlight, goldShimmer);
         } else {
-          c.copy(cMaroon);
+          const weaveShade = (Math.cos(y * 35) + Math.sin(x * 35)) * 0.03;
+          c.copy(cMaroon).lerp(cMaroonShadow, Math.max(0, weaveShade));
         }
       }
-      // Deep Navy Blue Nehru Vest Jacket
+      // Brass buttons down center placket
+      else if (
+        z > 0.08 &&
+        ax < 0.016 &&
+        y >= 0.86 &&
+        Math.abs((y - 0.90) % 0.08) < 0.018
+      ) {
+        c.copy(cButton);
+      }
+      // Lower Kurta hem flare peeking out below Nehru vest
+      else if (y < 0.84) {
+        const foldNoise = (Math.sin(y * 32) + Math.sin(x * 18)) * 0.04;
+        c.copy(cCream).lerp(cCreamShade, Math.max(0, foldNoise));
+      }
+      // Deep Royal Navy Blue Nehru Vest Jacket
       else {
-        const vestShade = (Math.cos(y * 20) + Math.sin(x * 15)) * 0.04;
+        const vestShade = (Math.cos(y * 18) + Math.sin(x * 14)) * 0.04;
         c.copy(cNavy).lerp(cNavyShadow, Math.max(0, vestShade));
       }
     }
-    // 6. NECK & MANDARIN COLLAR (1.55 to 1.63)
-    else if (y >= 1.55 && y < 1.63) {
-      if (z > 0.05 && ax < 0.068) {
-        c.copy(cCream); // Cream buttoned collar
-      } else if (ax >= 0.08 && ax <= 0.22) {
-        c.copy(cMaroon); // Stole collar wrap
-      } else {
+    // 6. NECK, MANDARIN COLLAR & CHIN (1.55 to 1.64m)
+    else if (y >= 1.55 && y < 1.64) {
+      // Donald Trump Chin & Jawline: Must be skin tone, NOT white/cream collar
+      if (z > 0.015 && ax < 0.085) {
         c.copy(cSkin);
       }
+      // Stole wrapping around shoulder/neck sides
+      else if (ax >= 0.085 && ax <= 0.18 && z > 0.0) {
+        const isBorder = ax < 0.105 || ax > 0.165;
+        c.copy(isBorder ? cGoldTrim : cMaroon);
+      }
+      // Back hairline / nape
+      else if (z < -0.02 || ax > 0.09) {
+        c.copy(cHair);
+      }
+      // Mandarin Nehru Collar band
+      else {
+        c.copy(cNavy);
+      }
     }
-    // 7. HEAD, FACE & GOLDEN BLONDE HAIR (y >= 1.63)
+    // 7. HEAD, FACE & GOLDEN BLONDE HAIR (y >= 1.64m)
     else {
-      // Front facial plane
-      const isFace = (y < 1.765) && (z > 0.015) && (ax < 0.108);
+      const isFront = z > 0.025 && ax < 0.092;
+      const isForeheadHair = (y >= 1.745 && z < 0.09) || y >= 1.76;
 
-      if (isFace) {
-        const isCheekOrLip = (y > 1.66 && y < 1.72 && ax > 0.035) || (y > 1.64 && y < 1.67 && ax < 0.04);
-        c.copy(isCheekOrLip ? cSkinRosy : cSkin);
+      if (isFront && !isForeheadHair) {
+        // Lips
+        if (y >= 1.635 && y <= 1.655 && ax < 0.032 && z > 0.09) {
+          c.copy(cLips);
+        }
+        // Piercing Eyes
+        else if (
+          y >= 1.695 &&
+          y <= 1.72 &&
+          ax > 0.022 &&
+          ax < 0.058 &&
+          z > 0.08
+        ) {
+          c.copy(cEyes);
+        }
+        // Cheeks
+        else if (y >= 1.66 && y <= 1.71 && ax > 0.038) {
+          c.copy(cSkinRosy);
+        }
+        // Face skin
+        else {
+          c.copy(cSkin);
+        }
       } else {
-        // Iconic Donald Trump Golden Blonde Hair
-        const hairWave = Math.sin(x * 45 + y * 55) * 0.07;
+        // Iconic Donald Trump Golden Blonde Hair with swept-back wave volume
+        const hairWave = (Math.sin(x * 40 + y * 50) + Math.cos(z * 40)) * 0.06;
         c.copy(cHair).lerp(cHairDark, Math.max(0, hairWave));
       }
     }
