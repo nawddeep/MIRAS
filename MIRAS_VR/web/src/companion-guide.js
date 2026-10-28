@@ -59,10 +59,16 @@ export class TrumpCompanionGuide {
     this.animUniforms = null;
     this.walkIntensity = 0;
     this.walkPhase = 0;
+    this.strafeIntensity = 0;
     this.speakIntensity = 0;
     this.speakPhase = 0;
+    this.headNod = 0;
+    this.headTurn = 0;
+    this.headTilt = 0;
     this.lastPos = new THREE.Vector3();
     this.hasLastPos = false;
+    this._charForward = new THREE.Vector3();
+    this._charRight = new THREE.Vector3();
   }
 
   async load() {
@@ -85,13 +91,17 @@ export class TrumpCompanionGuide {
       // Colorize the STL model with the official Indian Attire turnaround palette
       applyTrumpIndianAttireColors(geometry);
 
-      // Real-time GPU Vertex Shader Animation Uniforms for hand & walking gestures
+      // Real-time GPU Vertex Shader Animation Uniforms for hand, elbow, finger, head & walking gestures
       const uniforms = {
         uTime: { value: 0 },
         uWalk: { value: 0 },
         uWalkPhase: { value: 0 },
+        uStrafe: { value: 0 },
         uSpeak: { value: 0 },
         uSpeakPhase: { value: 0 },
+        uHeadNod: { value: 0 },
+        uHeadTurn: { value: 0 },
+        uHeadTilt: { value: 0 },
       };
       this.animUniforms = uniforms;
 
@@ -102,21 +112,29 @@ export class TrumpCompanionGuide {
         metalness: 0.08,
       });
 
-      // Inject dynamic GPU vertex deformation for real-time hand and walking gestures
+      // Inject dynamic GPU vertex deformation for real-time hand, elbow, finger, head and walking gestures
       material.onBeforeCompile = (shader) => {
         shader.uniforms.uTime = uniforms.uTime;
         shader.uniforms.uWalk = uniforms.uWalk;
         shader.uniforms.uWalkPhase = uniforms.uWalkPhase;
+        shader.uniforms.uStrafe = uniforms.uStrafe;
         shader.uniforms.uSpeak = uniforms.uSpeak;
         shader.uniforms.uSpeakPhase = uniforms.uSpeakPhase;
+        shader.uniforms.uHeadNod = uniforms.uHeadNod;
+        shader.uniforms.uHeadTurn = uniforms.uHeadTurn;
+        shader.uniforms.uHeadTilt = uniforms.uHeadTilt;
 
         shader.vertexShader =
           `
           uniform float uTime;
           uniform float uWalk;
           uniform float uWalkPhase;
+          uniform float uStrafe;
           uniform float uSpeak;
           uniform float uSpeakPhase;
+          uniform float uHeadNod;
+          uniform float uHeadTurn;
+          uniform float uHeadTilt;
         ` + shader.vertexShader;
 
         shader.vertexShader = shader.vertexShader.replace(
@@ -126,49 +144,104 @@ export class TrumpCompanionGuide {
 
           float py = position.y;
           float px = position.x;
+          float pz = position.z;
           float apx = abs(px);
 
-          // 1. WALKING LOCOMOTION GESTURES (Legs & Feet: py < 0.65m)
+          // 1. INDEPENDENT HEAD & NECK ARTICULATION (py > 1.55m, apx < 0.20m)
+          if (py > 1.55 && apx < 0.20) {
+            float headWeight = clamp((py - 1.55) / 0.14, 0.0, 1.0);
+            vec3 neckPivot = vec3(0.0, 1.55, 0.0);
+            vec3 pRel = transformed - neckPivot;
+
+            // Pitch / Conversational Nod
+            float cosNod = cos(uHeadNod * headWeight);
+            float sinNod = sin(uHeadNod * headWeight);
+            float nY = pRel.y * cosNod - pRel.z * sinNod;
+            float nZ = pRel.y * sinNod + pRel.z * cosNod;
+            pRel.y = nY;
+            pRel.z = nZ;
+
+            // Yaw / Turn (Tracking user gaze & emphasis)
+            float cosTurn = cos(uHeadTurn * headWeight);
+            float sinTurn = sin(uHeadTurn * headWeight);
+            float tX = pRel.x * cosTurn + pRel.z * sinTurn;
+            float tZ = -pRel.x * sinTurn + pRel.z * cosTurn;
+            pRel.x = tX;
+            pRel.z = tZ;
+
+            // Roll / Inquisitive Tilt
+            float cosTilt = cos(uHeadTilt * headWeight);
+            float sinTilt = sin(uHeadTilt * headWeight);
+            float lX = pRel.x * cosTilt - pRel.y * sinTilt;
+            float lY = pRel.x * sinTilt + pRel.y * cosTilt;
+            pRel.x = lX;
+            pRel.y = lY;
+
+            transformed = neckPivot + pRel;
+          }
+
+          // 2. DIRECTIONAL WALKING & LOCOMOTION (Legs & Feet: py < 0.65m)
           if (py < 0.65) {
             float legWeight = clamp((0.65 - py) / 0.65, 0.0, 1.0);
-            float strideZ = 0.14 * legWeight * uWalk;
-            float stepY = 0.045 * legWeight * uWalk;
+            float strideZ = 0.15 * legWeight * uWalk;
+            float stepY = 0.048 * legWeight * uWalk;
+            float strafeStep = 0.08 * legWeight * uStrafe;
 
+            // Left leg vs Right leg
             if (px > 0.02) {
               transformed.z += sin(uWalkPhase) * strideZ;
               transformed.y += max(0.0, sin(uWalkPhase)) * stepY;
+              transformed.x -= sin(uWalkPhase) * strafeStep;
             } else if (px < -0.02) {
               transformed.z += -sin(uWalkPhase) * strideZ;
               transformed.y += max(0.0, -sin(uWalkPhase)) * stepY;
+              transformed.x += sin(uWalkPhase) * strafeStep;
             }
           }
 
-          // 2. ARMS & HANDS: Walking Swing + Expressive Trumpian Hand Gestures
+          // 3. ARMS, ELBOWS & FINGERS ARTICULATION (apx >= 0.28m, py in [0.65, 1.48]m)
           if (apx >= 0.28 && py >= 0.65 && py <= 1.48) {
             float armWeight = clamp((1.45 - py) / 0.70, 0.0, 1.0);
-            float handWeight = clamp((0.96 - py) / 0.24, 0.0, 1.0);
+            float elbowWeight = clamp((1.12 - py) / 0.32, 0.0, 1.0);
+            float fingerWeight = clamp((0.88 - py) / 0.16, 0.0, 1.0);
+            float isLeft = px > 0.0 ? 1.0 : -1.0;
 
-            // Arm swing opposite to legs during walking
-            float armSwing = (px > 0.0 ? -1.0 : 1.0) * sin(uWalkPhase) * 0.11 * armWeight * uWalk;
-            transformed.z += armSwing;
+            // A. Locomotion Arm Swing with Natural Elbow Flex
+            float armSwing = -isLeft * sin(uWalkPhase) * 0.12 * armWeight * uWalk;
+            float walkElbowBend = max(0.0, sin(uWalkPhase) * isLeft) * 0.07 * elbowWeight * uWalk;
+            transformed.z += armSwing + walkElbowBend;
 
-            // Expressive Trumpian Hand Gestures while speaking site stories
+            // B. Conversational Elbow Flexion & Human Trump Hand Gestures
             if (uSpeak > 0.001) {
               float gPhase = uSpeakPhase * 2.8;
               float pulse = sin(gPhase);
               float pulseAlt = cos(gPhase * 0.85 + 0.35);
 
-              // Trump's iconic accordion double-hand expansion
-              float accordionX = pulse * 0.075 * handWeight * uSpeak;
-              transformed.x += (px > 0.0 ? accordionX : -accordionX);
+              // Elbow Hinged Flexion: Forearm swings forward & up from elbow joint
+              float elbowBend = (0.13 + 0.06 * pulseAlt) * elbowWeight * uSpeak;
+              transformed.z += elbowBend;
+              transformed.y += (0.05 + 0.035 * pulse) * elbowWeight * uSpeak;
 
-              // Forward conversational emphasis push
-              float pushZ = (0.075 + pulseAlt * 0.055) * handWeight * uSpeak;
-              transformed.z += pushZ;
+              // Double-Hand Accordion Emphasis Gestures
+              float accordionX = pulse * 0.085 * elbowWeight * uSpeak;
+              transformed.x += isLeft * accordionX;
 
-              // Conversational hand gesture lift
-              float liftY = (0.04 + sin(gPhase * 1.3) * 0.035) * handWeight * uSpeak;
-              transformed.y += liftY;
+              // Nuanced Finger Gestures: Thumb/Index Pinch ("OK" gesture) & Open Palm Expansions
+              if (fingerWeight > 0.01) {
+                float pinchCycle = pow(sin(uSpeakPhase * 2.2) * 0.5 + 0.5, 2.0);
+                float pinchX = -isLeft * pinchCycle * 0.035 * fingerWeight * uSpeak;
+                float pinchZ = -pinchCycle * 0.025 * fingerWeight * uSpeak;
+                float fingerSpreadY = sin(gPhase * 1.3) * 0.025 * fingerWeight * uSpeak;
+
+                transformed.x += pinchX;
+                transformed.z += pinchZ;
+                transformed.y += fingerSpreadY;
+              }
+            } else {
+              // C. Natural Relaxed Human Finger Curl when Standing Still
+              if (fingerWeight > 0.01 && uWalk < 0.1) {
+                transformed.z -= 0.014 * fingerWeight;
+              }
             }
           }
           `
@@ -283,22 +356,24 @@ export class TrumpCompanionGuide {
       this.characterGroup.position.lerp(this._targetPos, followSpeed);
     }
 
-    // Always turn smoothly to look at the user/camera
-    const eyeLevelTarget = new THREE.Vector3(
-      this._headPos.x,
-      this.characterGroup.position.y,
-      this._headPos.z
-    );
-    this.characterGroup.lookAt(eyeLevelTarget);
+    // Direction vectors for current character orientation
+    this.characterGroup.getWorldDirection(this._charForward);
+    this._charForward.y = 0;
+    if (this._charForward.lengthSq() < 0.001) this._charForward.set(0, 0, -1);
+    this._charForward.normalize();
+    this._charRight.crossVectors(this._charForward, this._up).normalize();
 
-    // Calculate actual movement speed for procedural walking locomotion
+    // Calculate actual movement speed and directional projection for procedural locomotion
     let moveSpeed = 0;
+    let localVelX = 0;
     if (this.hasLastPos) {
       const dx = this.characterGroup.position.x - this.lastPos.x;
       const dz = this.characterGroup.position.z - this.lastPos.z;
       const distTraveled = Math.sqrt(dx * dx + dz * dz);
       if (dt > 0.0005) {
         moveSpeed = distTraveled / dt;
+        // Project movement onto character's right vector for strafing (positive = right, negative = left)
+        localVelX = (dx * this._charRight.x + dz * this._charRight.z) / dt;
       }
     } else {
       this.hasLastPos = true;
@@ -306,15 +381,33 @@ export class TrumpCompanionGuide {
     this.lastPos.copy(this.characterGroup.position);
 
     // Smooth walking intensity transition (0 when idle, up to 1.0 when walking)
-    const targetWalk = Math.min(1.0, moveSpeed / 0.55);
-    const walkLerp = Math.min(1.0, dt * 6.0);
+    const isStopping = moveSpeed < 0.035;
+    const targetWalk = isStopping ? 0.0 : Math.min(1.0, moveSpeed / 0.5);
+    const walkLerp = isStopping
+      ? Math.min(1.0, dt * 8.0)
+      : Math.min(1.0, dt * 5.0);
     this.walkIntensity += (targetWalk - this.walkIntensity) * walkLerp;
+
+    // Smooth lateral strafe intensity (-1 = moving left, +1 = moving right)
+    const targetStrafe = isStopping
+      ? 0.0
+      : Math.max(-1.0, Math.min(1.0, localVelX / 0.45));
+    this.strafeIntensity +=
+      (targetStrafe - this.strafeIntensity) * Math.min(1.0, dt * 6.0);
 
     // Advance walking gait cycle phase
     if (this.walkIntensity > 0.015) {
       const walkCadence = 6.4 + this.walkIntensity * 2.8;
       this.walkPhase = (this.walkPhase + dt * walkCadence) % (Math.PI * 2);
     }
+
+    // Always turn smoothly to look at the user/camera
+    const eyeLevelTarget = new THREE.Vector3(
+      this._headPos.x,
+      this.characterGroup.position.y,
+      this._headPos.z
+    );
+    this.characterGroup.lookAt(eyeLevelTarget);
 
     // Smooth speaking intensity and cadence transition
     const targetSpeak = this.state === 'speaking' ? 1.0 : 0.0;
@@ -325,40 +418,62 @@ export class TrumpCompanionGuide {
       this.speakPhase += dt * (1.1 + Math.sin(now * 0.0012) * 0.25);
     }
 
+    // Lifelike Independent Head Movements
+    const idleTime = now * 0.0015;
+    if (this.state === 'speaking') {
+      this.headNod =
+        Math.sin(this.speakPhase * 2.6) * 0.1 +
+        Math.sin(idleTime * 0.8) * 0.02;
+      this.headTurn = Math.cos(this.speakPhase * 1.6) * 0.12 - 0.06; // slight glance toward story bubble
+      this.headTilt = Math.sin(this.speakPhase * 2.1) * 0.05;
+    } else {
+      // Natural idle gaze tracking and subtle micro-saccades
+      this.headNod = Math.sin(idleTime * 0.9) * 0.035;
+      this.headTurn = Math.sin(idleTime * 0.5) * 0.06;
+      this.headTilt = Math.cos(idleTime * 0.7) * 0.025;
+    }
+
     // Update GPU vertex shader uniforms in real-time
     if (this.animUniforms) {
       this.animUniforms.uTime.value = now * 0.001;
       this.animUniforms.uWalk.value = this.walkIntensity;
       this.animUniforms.uWalkPhase.value = this.walkPhase;
+      this.animUniforms.uStrafe.value = this.strafeIntensity;
       this.animUniforms.uSpeak.value = this.speakIntensity;
       this.animUniforms.uSpeakPhase.value = this.speakPhase;
+      this.animUniforms.uHeadNod.value = this.headNod;
+      this.animUniforms.uHeadTurn.value = this.headTurn;
+      this.animUniforms.uHeadTilt.value = this.headTilt;
     }
 
-    // Whole-body kinetics: walking bob, hip sway, speaking emphasis & idle breathing
+    // Whole-body kinetics: walking bob, banking when moving right/left, realistic standing posture
     if (this.model) {
       // Walking bob: vertical foot-strike rise & fall
-      const walkBob = Math.abs(Math.sin(this.walkPhase)) * 0.032 * this.walkIntensity;
+      const walkBob =
+        Math.abs(Math.sin(this.walkPhase)) * 0.032 * this.walkIntensity;
       // Pelvis hip roll & lateral sway during stride
       const hipRoll = Math.sin(this.walkPhase) * 0.035 * this.walkIntensity;
+      // Lateral bank lean when moving right or left with the user
+      const strafeLean = -this.strafeIntensity * 0.055;
       // Forward stride lean
       const forwardLean = this.walkIntensity * 0.032;
 
-      // Conversational speaking head nods & body gestures
-      const speakNod = Math.sin(this.speakPhase * 2.6) * 0.045 * this.speakIntensity;
-      const speakTurn = Math.cos(this.speakPhase * 1.8) * 0.05 * this.speakIntensity;
-      const speakBob = Math.sin(this.speakPhase * 3.4) * 0.014 * this.speakIntensity;
+      // Conversational speaking body gestures
+      const speakBob =
+        Math.sin(this.speakPhase * 3.4) * 0.012 * this.speakIntensity;
 
-      // Idle breathing & natural stance sway
-      const idleTime = now * 0.0015;
-      const breathBob = Math.sin(idleTime * 1.5) * 0.008 * (1.0 - this.walkIntensity);
-      const breathSway = Math.sin(idleTime * 0.8) * 0.018 * (1.0 - this.walkIntensity);
+      // Idle breathing & realistic standing weight shift between feet
+      const breathBob =
+        Math.sin(idleTime * 1.5) * 0.007 * (1.0 - this.walkIntensity);
+      const stanceSway =
+        Math.sin(idleTime * 0.8) * 0.018 * (1.0 - this.walkIntensity);
+      const stanceHipShift =
+        Math.cos(idleTime * 0.4) * 0.012 * (1.0 - this.walkIntensity);
 
       this.model.position.y = walkBob + speakBob + breathBob;
-      this.model.rotation.x = forwardLean + speakNod * 0.5;
-      this.model.rotation.y = speakTurn + breathSway;
-      this.model.rotation.z =
-        hipRoll +
-        (this.state === 'speaking' ? Math.cos(this.speakPhase * 2.1) * 0.02 : 0);
+      this.model.rotation.x = forwardLean;
+      this.model.rotation.y = stanceSway;
+      this.model.rotation.z = hipRoll + strafeLean + stanceHipShift;
     }
 
     // Auto-dismiss story after duration
