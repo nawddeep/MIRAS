@@ -11,6 +11,10 @@ if (report.todo.length) {
   console.log("\nStill to replace or verify (full list in CONTENT_TODO.md):");
   for (const t of report.todo) console.log(`  - ${t.kind} ${t.id}: ${t.note}`);
 }
+if (report.warnings.length) {
+  console.warn("\nWarnings:");
+  for (const w of report.warnings) console.warn(`  ! ${w}`);
+}
 if (report.errors.length) {
   console.error("\nErrors:");
   for (const e of report.errors) console.error(`  ✗ ${e}`);

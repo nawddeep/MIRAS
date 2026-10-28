@@ -19,6 +19,12 @@ export type CheckedNote = z.infer<typeof CheckedNote>;
 export const Accessibility = z.object({ stepFree: z.enum(["yes", "no", "unknown"]), notes: z.string().optional(), ...Checked });
 export type Accessibility = z.infer<typeof Accessibility>;
 
+const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "use 24-hour HH:MM");
+export const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+/** Machine-readable hours for the trip planner. openingHours stays as the human-readable text. */
+export const OpeningTimes = z.object({ open: hhmm, close: hhmm, closedDays: z.array(z.enum(WEEKDAYS)).default([]) });
+export type OpeningTimes = z.infer<typeof OpeningTimes>;
+
 export const Place = z.object({
   id: nonEmpty,
   slug: z.string().regex(/^[a-z0-9-]+$/),
@@ -31,6 +37,7 @@ export const Place = z.object({
   summary_hi: z.string().optional(),
   visitTips: z.array(nonEmpty),
   openingHours: nonEmpty,
+  openingTimes: OpeningTimes.optional(),
   typicalVisitMinutes: z.number().int().positive(),
   photos: z.array(nonEmpty),
   preview360: z

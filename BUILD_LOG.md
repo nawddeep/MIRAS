@@ -97,3 +97,11 @@ Times are IST.
 - `components/ResponsibleInfo.tsx` ("Visiting responsibly" on the place page): each claim renders only with a non-blank `verifiedBy`, plus "Checked by", otherwise "Not yet verified". There is no certification wording.
 - Sample places carry unverified SAMPLE notes, so they show "Not yet verified". `content:check` lists every unverified field in CONTENT_TODO.md.
 - Tests: `tests/unit/responsible.test.ts` (6). 79 unit tests pass.
+
+## 4.1 Trip planner: 2026-10-28 10:14
+
+- Conflict reported: `openingHours` is free text and cannot be parsed reliably. Added an optional structured `openingTimes` field (`open`, `close` as HH:MM, `closedDays`). The planner uses only that, plus `lat`, `lng` and `typicalVisitMinutes`.
+- `lib/planner.ts` (pure, runs in the browser): greedy earliest-possible ordering. It never schedules outside opening hours or past the chosen day length. Travel is straight-line distance at 4.5 km/h walking or 20 km/h driving, labelled Estimate. It refuses to plan and names the problem ("Needs real coordinates", "Missing opening times") instead of guessing. Places closed that weekday are left out with a reason.
+- `/plan`: pick places, start time, day length, mode and day. The plan is saved in localStorage on the device only.
+- `content:check` now reports warnings: places sharing identical coordinates (all three samples) and places without `openingTimes`.
+- Tests: `tests/unit/planner.test.ts` (9): ordering and travel, opening time, closed late, closed weekday, overlong day, missing data, placeholder coordinates, shared-coordinate detection, check warning. 88 unit tests pass.

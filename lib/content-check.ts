@@ -1,13 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { readEntities, readEntityFile, type FileIssue } from "@/lib/repos/json";
+import { placeholderCoordinateIds } from "@/lib/planner";
 import { Artisan, MediaAsset, Place, StoryEntry, Workshop } from "@/lib/schemas";
 import { artisanPublishBlockers, workshopPublishBlockers } from "@/lib/services/publishing";
 
 const MEDIA_EXT = /\.(jpe?g|png|webp|gif|svg|avif|mp4|webm|mov|mp3|m4a|wav|ogg|aac)$/i;
 
 export type TodoItem = { kind: string; id: string; file: string; note: string };
-export type ContentReport = { errors: string[]; todo: TodoItem[] };
+export type ContentReport = { errors: string[]; warnings: string[]; todo: TodoItem[] };
 
 function walk(dir: string): string[] {
   if (!fs.existsSync(dir)) return [];
@@ -20,6 +21,7 @@ function walk(dir: string): string[] {
  */
 export function checkContent(contentDir: string, publicDir: string): ContentReport {
   const errors: string[] = [];
+  const warnings: string[] = [];
   const todo: TodoItem[] = [];
   const rel = (f: string) => path.relative(path.dirname(contentDir), f);
   const issue = (i: FileIssue) => errors.push(`${rel(i.file)}${i.index !== undefined ? ` [${i.index}]` : ""}: ${i.message}`);
@@ -101,7 +103,11 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
   for (const w of workshops.items) if (w.isSample) todo.push({ kind: "workshop", id: w.id, file: file("workshops"), note: "sample workshop" });
   for (const m of media.items) if (/placeholder/i.test(m.permittedUse)) todo.push({ kind: "media", id: m.id, file: "content/media.json", note: `placeholder image ${m.path}` });
 
-  return { errors, todo };
+  const shared = placeholderCoordinateIds(places.items);
+  if (shared.size) warnings.push(`Places share identical coordinates (likely placeholders; the trip planner will refuse them): ${[...shared].join(", ")}.`);
+  for (const p of places.items) if (!p.openingTimes) warnings.push(`Place "${p.id}" has no openingTimes, so the trip planner cannot schedule it.`);
+
+  return { errors, warnings, todo };
 }
 
 export function renderTodo(report: ContentReport, when: Date): string {
@@ -120,6 +126,7 @@ export function renderTodo(report: ContentReport, when: Date): string {
     for (const t of report.todo.filter((x) => x.kind === k)) lines.push(`- [ ] \`${t.id}\` (${t.file}): ${t.note}`);
     lines.push("");
   }
+  if (report.warnings.length) lines.push("## Warnings", "", ...report.warnings.map((w) => `- ${w}`), "");
   if (report.errors.length) {
     lines.push("## Errors to fix first", "", ...report.errors.map((e) => `- ${e}`), "");
   }
