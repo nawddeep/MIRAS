@@ -54,6 +54,15 @@ export class TrumpCompanionGuide {
     this._targetPos = new THREE.Vector3();
     this._up = new THREE.Vector3(0, 1, 0);
     this._first = true;
+
+    // Gesture & Locomotion Animation States
+    this.animUniforms = null;
+    this.walkIntensity = 0;
+    this.walkPhase = 0;
+    this.speakIntensity = 0;
+    this.speakPhase = 0;
+    this.lastPos = new THREE.Vector3();
+    this.hasLastPos = false;
   }
 
   async load() {
@@ -76,12 +85,95 @@ export class TrumpCompanionGuide {
       // Colorize the STL model with the official Indian Attire turnaround palette
       applyTrumpIndianAttireColors(geometry);
 
-      // Material: Full vertex-colored realistic PBR shading
+      // Real-time GPU Vertex Shader Animation Uniforms for hand & walking gestures
+      const uniforms = {
+        uTime: { value: 0 },
+        uWalk: { value: 0 },
+        uWalkPhase: { value: 0 },
+        uSpeak: { value: 0 },
+        uSpeakPhase: { value: 0 },
+      };
+      this.animUniforms = uniforms;
+
+      // Material: Full vertex-colored realistic PBR shading with dynamic procedural gestures
       const material = new THREE.MeshStandardMaterial({
         vertexColors: true,
         roughness: 0.44,
         metalness: 0.08,
       });
+
+      // Inject dynamic GPU vertex deformation for real-time hand and walking gestures
+      material.onBeforeCompile = (shader) => {
+        shader.uniforms.uTime = uniforms.uTime;
+        shader.uniforms.uWalk = uniforms.uWalk;
+        shader.uniforms.uWalkPhase = uniforms.uWalkPhase;
+        shader.uniforms.uSpeak = uniforms.uSpeak;
+        shader.uniforms.uSpeakPhase = uniforms.uSpeakPhase;
+
+        shader.vertexShader =
+          `
+          uniform float uTime;
+          uniform float uWalk;
+          uniform float uWalkPhase;
+          uniform float uSpeak;
+          uniform float uSpeakPhase;
+        ` + shader.vertexShader;
+
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <begin_vertex>',
+          `
+          #include <begin_vertex>
+
+          float py = position.y;
+          float px = position.x;
+          float apx = abs(px);
+
+          // 1. WALKING LOCOMOTION GESTURES (Legs & Feet: py < 0.65m)
+          if (py < 0.65) {
+            float legWeight = clamp((0.65 - py) / 0.65, 0.0, 1.0);
+            float strideZ = 0.14 * legWeight * uWalk;
+            float stepY = 0.045 * legWeight * uWalk;
+
+            if (px > 0.02) {
+              transformed.z += sin(uWalkPhase) * strideZ;
+              transformed.y += max(0.0, sin(uWalkPhase)) * stepY;
+            } else if (px < -0.02) {
+              transformed.z += -sin(uWalkPhase) * strideZ;
+              transformed.y += max(0.0, -sin(uWalkPhase)) * stepY;
+            }
+          }
+
+          // 2. ARMS & HANDS: Walking Swing + Expressive Trumpian Hand Gestures
+          if (apx >= 0.28 && py >= 0.65 && py <= 1.48) {
+            float armWeight = clamp((1.45 - py) / 0.70, 0.0, 1.0);
+            float handWeight = clamp((0.96 - py) / 0.24, 0.0, 1.0);
+
+            // Arm swing opposite to legs during walking
+            float armSwing = (px > 0.0 ? -1.0 : 1.0) * sin(uWalkPhase) * 0.11 * armWeight * uWalk;
+            transformed.z += armSwing;
+
+            // Expressive Trumpian Hand Gestures while speaking site stories
+            if (uSpeak > 0.001) {
+              float gPhase = uSpeakPhase * 2.8;
+              float pulse = sin(gPhase);
+              float pulseAlt = cos(gPhase * 0.85 + 0.35);
+
+              // Trump's iconic accordion double-hand expansion
+              float accordionX = pulse * 0.075 * handWeight * uSpeak;
+              transformed.x += (px > 0.0 ? accordionX : -accordionX);
+
+              // Forward conversational emphasis push
+              float pushZ = (0.075 + pulseAlt * 0.055) * handWeight * uSpeak;
+              transformed.z += pushZ;
+
+              // Conversational hand gesture lift
+              float liftY = (0.04 + sin(gPhase * 1.3) * 0.035) * handWeight * uSpeak;
+              transformed.y += liftY;
+            }
+          }
+          `
+        );
+      };
 
       const mesh = new THREE.Mesh(geometry, material);
       mesh.name = 'Trump_Tour_Guide_Mesh';
@@ -183,6 +275,8 @@ export class TrumpCompanionGuide {
     // Smooth follow interpolation (spring/lerp damping)
     if (this._first) {
       this.characterGroup.position.copy(this._targetPos);
+      this.lastPos.copy(this._targetPos);
+      this.hasLastPos = true;
       this._first = false;
     } else {
       const followSpeed = Math.min(1, dt * 4.2);
@@ -197,21 +291,74 @@ export class TrumpCompanionGuide {
     );
     this.characterGroup.lookAt(eyeLevelTarget);
 
-    // Subtle conversational breathing and speaking animation
-    if (this.model) {
-      if (this.state === 'speaking') {
-        // Conversational head nods and expressive gesturing while telling stories
-        const talkTime = (now - this.shownAt) * 0.0035;
-        this.model.rotation.y = Math.sin(talkTime * 1.8) * 0.06;
-        this.model.rotation.z = Math.cos(talkTime * 2.2) * 0.025;
-        this.model.position.y = Math.sin(talkTime * 3.5) * 0.012;
-      } else {
-        // Natural idle breathing
-        const idleTime = now * 0.0015;
-        this.model.rotation.y = Math.sin(idleTime * 0.8) * 0.02;
-        this.model.rotation.z = 0;
-        this.model.position.y = Math.sin(idleTime * 1.2) * 0.008;
+    // Calculate actual movement speed for procedural walking locomotion
+    let moveSpeed = 0;
+    if (this.hasLastPos) {
+      const dx = this.characterGroup.position.x - this.lastPos.x;
+      const dz = this.characterGroup.position.z - this.lastPos.z;
+      const distTraveled = Math.sqrt(dx * dx + dz * dz);
+      if (dt > 0.0005) {
+        moveSpeed = distTraveled / dt;
       }
+    } else {
+      this.hasLastPos = true;
+    }
+    this.lastPos.copy(this.characterGroup.position);
+
+    // Smooth walking intensity transition (0 when idle, up to 1.0 when walking)
+    const targetWalk = Math.min(1.0, moveSpeed / 0.55);
+    const walkLerp = Math.min(1.0, dt * 6.0);
+    this.walkIntensity += (targetWalk - this.walkIntensity) * walkLerp;
+
+    // Advance walking gait cycle phase
+    if (this.walkIntensity > 0.015) {
+      const walkCadence = 6.4 + this.walkIntensity * 2.8;
+      this.walkPhase = (this.walkPhase + dt * walkCadence) % (Math.PI * 2);
+    }
+
+    // Smooth speaking intensity and cadence transition
+    const targetSpeak = this.state === 'speaking' ? 1.0 : 0.0;
+    const speakLerp = Math.min(1.0, dt * 5.0);
+    this.speakIntensity += (targetSpeak - this.speakIntensity) * speakLerp;
+
+    if (this.speakIntensity > 0.01) {
+      this.speakPhase += dt * (1.1 + Math.sin(now * 0.0012) * 0.25);
+    }
+
+    // Update GPU vertex shader uniforms in real-time
+    if (this.animUniforms) {
+      this.animUniforms.uTime.value = now * 0.001;
+      this.animUniforms.uWalk.value = this.walkIntensity;
+      this.animUniforms.uWalkPhase.value = this.walkPhase;
+      this.animUniforms.uSpeak.value = this.speakIntensity;
+      this.animUniforms.uSpeakPhase.value = this.speakPhase;
+    }
+
+    // Whole-body kinetics: walking bob, hip sway, speaking emphasis & idle breathing
+    if (this.model) {
+      // Walking bob: vertical foot-strike rise & fall
+      const walkBob = Math.abs(Math.sin(this.walkPhase)) * 0.032 * this.walkIntensity;
+      // Pelvis hip roll & lateral sway during stride
+      const hipRoll = Math.sin(this.walkPhase) * 0.035 * this.walkIntensity;
+      // Forward stride lean
+      const forwardLean = this.walkIntensity * 0.032;
+
+      // Conversational speaking head nods & body gestures
+      const speakNod = Math.sin(this.speakPhase * 2.6) * 0.045 * this.speakIntensity;
+      const speakTurn = Math.cos(this.speakPhase * 1.8) * 0.05 * this.speakIntensity;
+      const speakBob = Math.sin(this.speakPhase * 3.4) * 0.014 * this.speakIntensity;
+
+      // Idle breathing & natural stance sway
+      const idleTime = now * 0.0015;
+      const breathBob = Math.sin(idleTime * 1.5) * 0.008 * (1.0 - this.walkIntensity);
+      const breathSway = Math.sin(idleTime * 0.8) * 0.018 * (1.0 - this.walkIntensity);
+
+      this.model.position.y = walkBob + speakBob + breathBob;
+      this.model.rotation.x = forwardLean + speakNod * 0.5;
+      this.model.rotation.y = speakTurn + breathSway;
+      this.model.rotation.z =
+        hipRoll +
+        (this.state === 'speaking' ? Math.cos(this.speakPhase * 2.1) * 0.02 : 0);
     }
 
     // Auto-dismiss story after duration
