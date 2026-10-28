@@ -81,6 +81,18 @@ export function checkContent(contentDir: string, publicDir: string): ContentRepo
 
   const file = (kind: string) => `content/${kind}`;
   for (const p of places.items) if (p.isSample) todo.push({ kind: "place", id: p.id, file: file("places"), note: "sample text and photos; coordinates are placeholders" });
+  const unchecked = (notes?: { verifiedBy?: string }[]) => Boolean(notes?.some((n) => !n.verifiedBy?.trim()));
+  for (const p of places.items) {
+    const fields = Object.entries({
+      accessibility: unchecked(p.accessibility && [p.accessibility]),
+      etiquette: unchecked(p.etiquette),
+      conservation: unchecked(p.conservation),
+      photography: unchecked(p.photographyRules && [p.photographyRules]),
+    })
+      .filter(([, v]) => v)
+      .map(([k]) => k);
+    if (fields.length) todo.push({ kind: "place", id: p.id, file: file("places"), note: `not yet verified: ${fields.join(", ")}` });
+  }
   for (const s of stories.items) {
     if (s.isSample) todo.push({ kind: "story", id: s.id, file: file("stories"), note: "sample text; needs real text, source and a verifier" });
     else if (!s.verifiedBy?.trim()) todo.push({ kind: "story", id: s.id, file: file("stories"), note: "not verified yet, so hidden from visitors" });

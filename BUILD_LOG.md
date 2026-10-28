@@ -90,3 +90,10 @@ Times are IST.
 - Gate item 2: shared limiter `lib/rate-limit.ts`. Camera match allows 20 per minute, onboard draft 10 per 10 minutes, onboard submit 5 per 10 minutes, per client, then 429. The enquiry limiter is unchanged.
 - Gate item 3 (real-phone test over HTTPS with the real Gemini key): not done, because it needs the team's phones, HTTPS and the key. The user asked to build the Phase 3–6 foundation anyway.
 - Tests: `tests/unit/gate.test.ts` (8). 73 unit tests pass.
+
+## 4.5 Responsible and accessible tourism fields: 2026-10-28 10:11
+
+- Optional Place fields: `accessibility` (`stepFree` yes/no/unknown, `notes`, `verifiedBy`, `verifiedAt`), plus `etiquette[]`, `conservation[]` and `photographyRules` as `{text, verifiedBy, verifiedAt}`.
+- `components/ResponsibleInfo.tsx` ("Visiting responsibly" on the place page): each claim renders only with a non-blank `verifiedBy`, plus "Checked by", otherwise "Not yet verified". There is no certification wording.
+- Sample places carry unverified SAMPLE notes, so they show "Not yet verified". `content:check` lists every unverified field in CONTENT_TODO.md.
+- Tests: `tests/unit/responsible.test.ts` (6). 79 unit tests pass.

@@ -22,6 +22,23 @@
     "path": "/media/placeholders/pano-placeholder.png",
     "illustrative": true
   },
+  "accessibility": {
+    "stepFree": "unknown",
+    "notes": "SAMPLE: accessibility notes for Pichhola go here."
+  },
+  "etiquette": [
+    {
+      "text": "SAMPLE: etiquette note for Pichhola goes here."
+    }
+  ],
+  "conservation": [
+    {
+      "text": "SAMPLE: conservation note for Pichhola goes here."
+    }
+  ],
+  "photographyRules": {
+    "text": "SAMPLE: photography rules for Pichhola go here."
+  },
   "status": "published",
   "isSample": true
 }

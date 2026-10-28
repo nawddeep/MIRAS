@@ -12,6 +12,13 @@ export const Rights = z.object({
   permittedUse: nonEmpty,
 });
 
+/** Who checked a claim and when. A claim without verifiedBy is never shown as fact. */
+const Checked = { verifiedBy: z.string().optional(), verifiedAt: isoDate.optional() };
+export const CheckedNote = z.object({ text: nonEmpty, ...Checked });
+export type CheckedNote = z.infer<typeof CheckedNote>;
+export const Accessibility = z.object({ stepFree: z.enum(["yes", "no", "unknown"]), notes: z.string().optional(), ...Checked });
+export type Accessibility = z.infer<typeof Accessibility>;
+
 export const Place = z.object({
   id: nonEmpty,
   slug: z.string().regex(/^[a-z0-9-]+$/),
@@ -29,6 +36,10 @@ export const Place = z.object({
   preview360: z
     .object({ path: nonEmpty, illustrative: z.boolean() })
     .optional(),
+  accessibility: Accessibility.optional(),
+  etiquette: z.array(CheckedNote).optional(),
+  conservation: z.array(CheckedNote).optional(),
+  photographyRules: CheckedNote.optional(),
   status: z.enum(["draft", "published"]),
   isSample: z.boolean(),
 });

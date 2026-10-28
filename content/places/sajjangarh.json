@@ -18,6 +18,23 @@
     "/media/placeholders/sajjangarh-1.svg",
     "/media/placeholders/sajjangarh-2.svg"
   ],
+  "accessibility": {
+    "stepFree": "unknown",
+    "notes": "SAMPLE: accessibility notes for Sajjangarh go here."
+  },
+  "etiquette": [
+    {
+      "text": "SAMPLE: etiquette note for Sajjangarh goes here."
+    }
+  ],
+  "conservation": [
+    {
+      "text": "SAMPLE: conservation note for Sajjangarh goes here."
+    }
+  ],
+  "photographyRules": {
+    "text": "SAMPLE: photography rules for Sajjangarh go here."
+  },
   "status": "published",
   "isSample": true
 }

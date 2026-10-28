@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ArtisanCard, IllustrativePhoto, MediaImage, PlaceHeader, StoryBlock } from "@/components/domain";
 import { Pano360 } from "@/components/Pano360";
+import { ResponsibleInfo } from "@/components/ResponsibleInfo";
 import { IDontKnow } from "@/components/ui";
 import { pick, t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
@@ -53,6 +54,8 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
           ))}
         </ul>
       </section>
+
+      <ResponsibleInfo place={place} lang={lang} />
 
       {artisans.length > 0 && (
         <section className="space-y-3">

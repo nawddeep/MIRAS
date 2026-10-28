@@ -18,6 +18,23 @@
     "/media/placeholders/city-palace-1.svg",
     "/media/placeholders/city-palace-2.svg"
   ],
+  "accessibility": {
+    "stepFree": "unknown",
+    "notes": "SAMPLE: accessibility notes for City Palace go here."
+  },
+  "etiquette": [
+    {
+      "text": "SAMPLE: etiquette note for City Palace goes here."
+    }
+  ],
+  "conservation": [
+    {
+      "text": "SAMPLE: conservation note for City Palace goes here."
+    }
+  ],
+  "photographyRules": {
+    "text": "SAMPLE: photography rules for City Palace go here."
+  },
   "status": "published",
   "isSample": true
 }
