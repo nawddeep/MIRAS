@@ -132,3 +132,10 @@ Times are IST.
 
 - `/trails/[id]/walk` (`components/AudioWalk.tsx`): the trail plays as chapters with a stop list and Previous/Next buttons. Each chapter reads the stop's first visible story, or says there is no verified story, using the browser's speech synthesis labelled "Synthetic voice".
 - Location help: a checkbox, off by default. Turning it on asks for permission. It shows a straight-line distance labelled Estimate, but no distance for placeholder coordinates. A blocked or failed location turns it off with a message, and manual navigation keeps working. Location is never sent to the server.
+
+## 4.4 Save for offline: 2026-10-28 10:30
+
+- `public/sw.js`: hand-written service worker with a versioned cache (`miras-shell-v1`), registered only in production builds. It pre-caches only `/offline` plus the static assets that page references, and caches `/_next/static/*` on first use. It never intercepts `/api/*` or non-GET requests. Other pages always go to the network and fall back to `/offline` only when the network fails. Old cache versions are deleted on activate.
+- "Save for offline" on each place page (`components/SaveOffline.tsx`) stores the place data with its visible stories, the visitor's plan and the phrase list in IndexedDB, and shows "Offline copy saved on {date}". `/offline` reads only from IndexedDB, with a delete button per copy.
+- Tests: `tests/unit/sw.test.ts` (7, runs the real sw.js in a sandbox): versioned pre-cache, an existing cached `/api/*` copy is never served, navigations are not cached, offline fallback, static cache-first, POST and other files untouched, old caches deleted. `tests/e2e/tier2.spec.ts` (10): trail order, walk without location, walk with location denied, passport stamp, a real offline run (service worker active, network off, saved plan and place shown, other pages fall back to `/offline`), and 360 px checks. 111 unit tests pass and 10 of 10 e2e pass.
+- Not verified: offline behaviour on real phones (Android Chrome, iPhone Safari).

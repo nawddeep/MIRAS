@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Hind, Tiro_Devanagari_Hindi } from "next/font/google";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import { getConfig } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={lang} className={`${tiro.variable} ${hind.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <ServiceWorker />
         {demoMode && (
           <div className="bg-ink px-4 py-1.5 text-center text-xs text-paper">
             Demo mode: sample content is shown and badged. Nothing marked sample is real.

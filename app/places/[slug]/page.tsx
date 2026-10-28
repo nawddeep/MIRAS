@@ -2,11 +2,14 @@ import { notFound } from "next/navigation";
 import { ArtisanCard, IllustrativePhoto, MediaImage, PlaceHeader, StoryBlock } from "@/components/domain";
 import { Pano360 } from "@/components/Pano360";
 import { ResponsibleInfo } from "@/components/ResponsibleInfo";
+import { SaveOffline } from "@/components/SaveOffline";
 import { IDontKnow } from "@/components/ui";
+import { currentMode } from "@/lib/config";
 import { pick, t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
+import { getRepos } from "@/lib/repos";
 import { getVisibleArtisans } from "@/lib/services/artisans";
-import { getVisiblePlaceBySlug, getVisibleStories } from "@/lib/services/content";
+import { getVisiblePlaceBySlug, getVisiblePlaces, getVisibleStories } from "@/lib/services/content";
 
 export default async function PlacePage({ params }: PageProps<"/places/[slug]">) {
   const { slug } = await params;
@@ -56,6 +59,28 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
       </section>
 
       <ResponsibleInfo place={place} lang={lang} />
+
+      <SaveOffline
+        place={{
+          slug: place.slug,
+          name,
+          summary: pick(lang, place.summary, place.summary_hi),
+          openingHours: place.openingHours,
+          visitTips: place.visitTips,
+          isSample: place.isSample,
+          stories: stories.map((s) => ({
+            title: pick(lang, s.title, s.title_hi),
+            text: pick(lang, s.text, s.text_hi),
+            sourceType: s.sourceType,
+            sourceRef: s.sourceRef,
+            isSample: s.isSample,
+          })),
+        }}
+        phrases={getRepos()
+          .phrases.list()
+          .filter((p) => !p.isSample || currentMode() === "demo")}
+        placeNames={Object.fromEntries(getVisiblePlaces().map((p) => [p.id, pick(lang, p.name, p.name_hi)]))}
+      />
 
       {artisans.length > 0 && (
         <section className="space-y-3">
