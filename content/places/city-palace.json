@@ -6,8 +6,8 @@
   "category": "Palace",
   "lat": 24.5854,
   "lng": 73.7125,
-  "summary": "SAMPLE: short summary for City Palace goes here.",
-  "summary_hi": "नमूना: सिटी पैलेस का छोटा परिचय यहाँ आएगा।",
+  "summary": "A lakeside ensemble of courtyards, balconies and palaces overlooking Pichhola. Explore the architecture and the stories of Mewar. Sample editorial introduction; historical review pending.",
+  "summary_hi": "पिछोला के किनारे आँगन, झरोखे और महल। मेवाड़ की कला और कहानियों को जानिए। नमूना परिचय; ऐतिहासिक समीक्षा शेष है।",
   "visitTips": [
     "SAMPLE: visit tip 1 for City Palace goes here.",
     "SAMPLE: visit tip 2 for City Palace goes here."
@@ -15,8 +15,9 @@
   "openingHours": "SAMPLE: opening hours go here.",
   "typicalVisitMinutes": 60,
   "photos": [
-    "/media/placeholders/city-palace-1.svg",
-    "/media/placeholders/city-palace-2.svg"
+    "/media/pichhola/palace.webp",
+    "/media/pichhola/palace-wide.webp",
+    "/media/pichhola/golden.webp"
   ],
   "accessibility": {
     "stepFree": "unknown",

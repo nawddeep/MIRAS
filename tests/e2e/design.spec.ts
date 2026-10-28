@@ -58,19 +58,20 @@ test("a sample story shows 'Sample content' and never 'Verified source'", async 
 test("camera: a low-confidence result renders I don't know", async ({ page }) => {
   await page.route("**/api/camera/match", (r) => r.fulfill({ json: { known: false, demo: false, reason: "low_confidence" } }));
   await page.goto("/camera");
-  await page.locator("input[type=file]").setInputFiles({ name: "x.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
+  await page.locator("input[type=file]:not([capture])").setInputFiles({ name: "x.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
   await expect(page.getByTestId("i-dont-know")).toContainText("I don't know this one yet");
 });
 
-test("camera: the result sheet shows a confidence band, never a percentage", async ({ page }) => {
+test("camera: the result sheet labels uncalibrated suggestions without a confidence score", async ({ page }) => {
   await page.route("**/api/camera/match", (r) =>
     r.fulfill({ json: { known: true, demo: false, confidence: 0.97, place: { id: "pichhola", slug: "pichhola", name: "Pichhola", name_hi: "पिछोला" }, stories: [] } }),
   );
   await page.goto("/camera");
-  await page.locator("input[type=file]").setInputFiles({ name: "x.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
+  await page.locator("input[type=file]:not([capture])").setInputFiles({ name: "x.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
   const sheet = page.getByTestId("camera-match");
-  await expect(sheet).toContainText("Match confidence");
-  await expect(sheet).toContainText("High");
+  await expect(sheet).toContainText("Suggested match");
+  await expect(sheet).toContainText("Not yet verified");
+  await expect(sheet).not.toContainText("Match confidence");
   expect(await sheet.innerText()).not.toMatch(/\d\s*%|0\.97/);
 });
 

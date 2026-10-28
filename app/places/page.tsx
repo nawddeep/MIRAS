@@ -14,7 +14,8 @@ export default async function ExplorePage({ searchParams }: PageProps<"/places">
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q.slice(0, 200) : "";
   const cat = typeof sp.cat === "string" ? sp.cat : "";
-  const all = getVisiblePlaces();
+  const order = ['city-palace','jagdish-temple','saheliyon-ki-bari','pichhola','sajjangarh'];
+  const all = getVisiblePlaces().sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
   // Filter chips come only from the categories that exist in content.
   const categories = [...new Set(all.map((p) => p.category))].sort();
   const places = filterPlaces(all, q, cat);
@@ -27,7 +28,7 @@ export default async function ExplorePage({ searchParams }: PageProps<"/places">
   };
 
   return (
-    <div className="space-y-5">
+    <div className="explore-screen space-y-5">
       <header>
         <h1 className="t-title">{t(lang, "explorePlaces")}</h1>
         <p lang="hi" className="font-display text-lg text-muted-paper">

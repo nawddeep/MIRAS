@@ -23,9 +23,9 @@ export default async function StoryPage({ params }: PageProps<"/stories/[id]">) 
   const fmt = new Intl.DateTimeFormat(lang === "hi" ? "hi-IN" : "en-IN", { dateStyle: "medium" });
 
   return (
-    <article className="anim-open space-y-5" data-testid="story" data-story-id={story.id}>
+    <article className="story-screen anim-open space-y-5" data-testid="story" data-story-id={story.id}>
       <figure className="relative -mx-5 -mt-5 overflow-hidden">
-        <HeroScene scene="night" className="aspect-[16/9] w-full" />
+        <HeroScene scene="golden" className="aspect-[16/9] w-full" />
         <figcaption className="absolute top-3 left-3">
           <IllustrativeBadge lang={lang} />
         </figcaption>

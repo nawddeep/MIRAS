@@ -134,6 +134,117 @@
     "permittedUse": "PWA icon asset",
     "licenceNote": "Generated vector icon artwork for MIRAS. No third-party content.",
     "containsPeople": false
+  },
+  {
+    "path": "/media/pichhola/artisan.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-artisan",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/artwork-detail.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-artwork-detail",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/artwork.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-artwork",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/camera.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-camera",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/dawn.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-dawn",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/garden.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-garden",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/golden.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-golden",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/moonlight.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-moonlight",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/night.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-night",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/palace-wide.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-palace-wide",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/palace.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-palace",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/splash.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-splash",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/story.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-story",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
+  },
+  {
+    "path": "/media/pichhola/temple.webp",
+    "owner": "User-supplied MIRAS background sheet",
+    "permittedUse": "Supplied by the user for this app implementation; underlying rights not independently verified. Illustrative reference imagery, not verified documentary photography.",
+    "containsPeople": false,
+    "id": "pichhola-temple",
+    "licenceNote": "Derived by cropping the user-provided background sheet, Udaipur Palaces, Temples and Lakes.png. No external replacement used. Faces are not shown; hands appear in the artisan illustration."
   }
 ]
-

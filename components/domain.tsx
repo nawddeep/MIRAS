@@ -2,6 +2,7 @@ import Link from "next/link";
 import { pick, t, type Lang } from "@/lib/i18n";
 import { readMinutes } from "@/lib/read-time";
 import type { Artisan, Place, SourceType, StoryEntry, Workshop } from "@/lib/schemas";
+import { BookmarkPlace } from "./BookmarkPlace";
 import { ArrowIcon } from "./icons";
 import { HeroScene } from "./scene";
 import { StoryBody } from "./StoryBody";
@@ -42,14 +43,14 @@ export function PlaceHeader({ place, lang }: { place: Place; lang: Lang }) {
         {place.isSample && <SampleBadge lang={lang} />}
       </div>
       <TwoLineName lang={lang} en={place.name} hi={place.name_hi} as="h1" className="t-title" />
-      <p className="text-lg text-muted-paper">{pick(lang, place.summary, place.summary_hi)}</p>
+
     </header>
   );
 }
 
 export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang: Lang; firstStoryType?: SourceType }) {
   return (
-    <Link href={`/places/${place.slug}`} className="group relative block overflow-hidden rounded-card border border-line bg-ink text-on-dark">
+    <div className="place-photo-wrap"><Link href={`/places/${place.slug}`} className="place-photo-card group relative block overflow-hidden rounded-card border border-line bg-ink text-on-dark">
       <div className="relative aspect-[16/10]">
         {place.photos[0] ? <MediaImage src={place.photos[0]} alt="" /> : <HeroScene scene="dawn" className="h-full w-full" />}
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
@@ -67,7 +68,7 @@ export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang:
           {firstStoryType && <SourceTypeLabel lang={lang} type={firstStoryType} />}
         </div>
       </div>
-    </Link>
+    </Link><BookmarkPlace slug={place.slug}/></div>
   );
 }
 
@@ -75,7 +76,7 @@ export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang:
 export function StoryCard({ story, lang, placeName }: { story: StoryEntry; lang: Lang; placeName?: string }) {
   const text = pick(lang, story.text, story.text_hi);
   return (
-    <Link href={`/stories/${story.id}`} className="group block overflow-hidden rounded-card border border-line bg-paper-2 text-on-paper" data-testid="story-card">
+    <Link href={`/stories/${story.id}`} className="editorial-story-card group block overflow-hidden rounded-card border border-line bg-paper-2 text-on-paper" data-testid="story-card">
       <div className="relative aspect-[16/7]">
         <HeroScene scene="night" className="h-full w-full" />
       </div>

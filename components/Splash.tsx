@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { LotusMark } from "./icons";
-import { ArchFrame, HeroScene } from "./scene";
+
 
 const SEEN = "miras_splash_seen";
 
 function shouldShow(): boolean {
   if (process.env.NEXT_PUBLIC_E2E === "true") return false;
   // Automated browsers (Playwright, CI) never see the splash, so tests do not wait for it.
-  if (navigator.webdriver) return false;
+  if (navigator.webdriver && !new URLSearchParams(window.location.search).has("splash")) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   if (new URLSearchParams(window.location.search).has("nosplash")) return false;
   try {
-    if (sessionStorage.getItem(SEEN)) return false;
+    if (sessionStorage.getItem(SEEN) && !new URLSearchParams(window.location.search).has("splash")) return false;
     sessionStorage.setItem(SEEN, "1");
   } catch {
     // Storage blocked: show once for this page load.
@@ -40,16 +40,14 @@ export function Splash({ tagline, taglineHi }: { tagline: string; taglineHi: str
       onClick={() => setShow(false)}
       aria-label="Skip intro"
       data-testid="splash"
-      className="anim-fade fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-ink px-8 text-center text-on-dark"
+      className="miras-splash anim-fade fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-ink px-8 text-center text-on-dark"
     >
       <LotusMark size={44} className="text-saffron" />
       <div>
         <p className="font-display text-5xl tracking-[0.12em]">MIRAS</p>
         <p className="mt-1 text-lg">{tagline}</p>
       </div>
-      <ArchFrame className="aspect-[3/4] w-56 max-w-[70vw]">
-        <HeroScene scene="golden" className="h-full w-full" />
-      </ArchFrame>
+      <div className="splash-photo" aria-hidden="true" />
       <p lang="hi" className="font-display text-2xl">
         {taglineHi}
       </p>

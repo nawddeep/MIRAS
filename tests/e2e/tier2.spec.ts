@@ -42,7 +42,7 @@ test("audio walk handles a denied location and keeps manual navigation", async (
 
 test("passport: reading a visible story earns that place's stamp on the device", async ({ page }) => {
   await page.goto("/passport");
-  await expect(page.getByTestId("passport").locator("li")).toHaveCount(3);
+  await expect(page.getByTestId("passport").locator("li")).toHaveCount(5);
   await expect(page.getByText("not location-verified")).toBeVisible();
   await expect(page.locator("[data-stamped=true]")).toHaveCount(0);
 

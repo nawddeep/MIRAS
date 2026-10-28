@@ -8,7 +8,7 @@ import type { CameraResult } from "@/lib/services/camera";
 import { StoryBlock } from "./domain";
 import { ImageIcon, InfoIcon } from "./icons";
 import { ArchFrame } from "./scene";
-import { Button, DemoBadge, IDontKnow, Label, PermissionDenied } from "./ui";
+import { Button, DemoBadge, IDontKnow, PermissionDenied } from "./ui";
 
 const TOO_DARK = 40; // mean brightness out of 255
 
@@ -33,7 +33,6 @@ export function CameraMode({
   demo,
   places,
   uploadTimeoutMs,
-  threshold,
 }: {
   lang: Lang;
   demo: boolean;
@@ -50,7 +49,11 @@ export function CameraMode({
   const [result, setResult] = useState<CameraResult | null>(null);
   const [showInfo, setShowInfo] = useState(false);
 
-  useEffect(() => () => stream.current?.getTracks().forEach((tr) => tr.stop()), []);
+  useEffect(() => {
+    const hide = () => { if(document.hidden) { stream.current?.getTracks().forEach(tr=>tr.stop()); stream.current=null; setLive(false); } };
+    document.addEventListener('visibilitychange',hide);
+    return () => {document.removeEventListener('visibilitychange',hide);stream.current?.getTracks().forEach(tr=>tr.stop());};
+  }, []);
 
   async function startCamera() {
     setMessage(null);
@@ -61,6 +64,7 @@ export function CameraMode({
       return;
     }
     try {
+      stream.current?.getTracks().forEach(tr=>tr.stop());
       stream.current = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
       if (video.current) {
         video.current.srcObject = stream.current;
@@ -111,13 +115,13 @@ export function CameraMode({
   const matchedPlace = result?.known ? places.find((p) => p.id === result.place.id) : undefined;
 
   return (
-    <div className="space-y-4">
+    <div className="camera-mode space-y-4">
       <div className="relative mx-auto aspect-[3/4] w-full max-w-sm">
         <ArchFrame className="h-full w-full">
           <div className="h-full w-full bg-ink-3">
             <video ref={video} playsInline muted className={`h-full w-full object-cover ${live ? "" : "hidden"}`} />
             {!live && (
-              <div className="grid h-full place-items-center p-6 text-center">
+              <div className="camera-poster grid h-full place-items-end justify-center p-6 text-center">
                 <Button type="button" variant="accent" onClick={startCamera}>
                   Open camera
                 </Button>
@@ -129,11 +133,12 @@ export function CameraMode({
       </div>
       <p className="text-center text-on-dark">{t(lang, "pointAtMonument")}</p>
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="camera-controls flex items-center justify-between gap-3">
         <div role="group" aria-label="Mode" className="flex rounded-full border border-line-dark p-1 text-sm">
           <button type="button" onClick={startCamera} aria-pressed={live} className={`min-h-10 rounded-full px-4 ${live ? "bg-saffron text-ink" : ""}`}>
             {t(lang, "scan")}
           </button>
+          <label className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4">Photo<input type="file" accept="image/*" capture="environment" className="sr-only" onChange={e=>{const f=e.target.files?.[0];if(f) send({source:f});e.target.value='';}}/></label>
           <label className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full px-4">
             <ImageIcon size={18} />
             {t(lang, "upload")}
@@ -149,12 +154,12 @@ export function CameraMode({
             />
           </label>
         </div>
-        {live && (
+        {(
           <button
             type="button"
-            aria-label="What is this?"
+            aria-label={live ? "What is this?" : "Activate camera"}
             disabled={busy}
-            onClick={() => video.current && send({ source: video.current })}
+            onClick={() => live ? video.current && send({ source: video.current }) : startCamera()}
             className="grid h-[76px] w-[76px] shrink-0 place-items-center rounded-full border-4 border-on-dark bg-paper-2 disabled:opacity-60"
           />
         )}
@@ -211,27 +216,21 @@ export function CameraMode({
         )}
 
         {result?.known && (
-          <section className="anim-open -mx-5 space-y-3 rounded-t-[24px] bg-paper px-5 pt-5 pb-6 text-on-paper" data-testid="camera-match">
+          <section className="recognition-result anim-open -mx-5 space-y-3 rounded-t-[24px] bg-paper px-5 pt-5 pb-6 text-on-paper" data-testid="camera-match">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="recognition-photo" src={`/media/pichhola/${result.place.slug==='jagdish-temple'?'temple':result.place.slug==='saheliyon-ki-bari'?'garden':'palace'}.webp`} alt="Illustrative preview of the selected monument"/>
+            <p className="text-sm"><span className="hours-sample">Not yet verified</span> · Illustrative preview</p>
             <div className="flex flex-wrap items-center gap-2">
               {result.demo ? (
                 <DemoBadge lang={lang} />
               ) : (
                 <>
-                  <span className="text-sm font-semibold">{t(lang, "matchConfidence")}</span>
-                  <Label tone="info">{t(lang, confidenceBand(result.confidence, threshold) === "high" ? "bandHigh" : "bandMedium")}</Label>
-                  <button
-                    type="button"
-                    aria-label="What does match confidence mean?"
-                    aria-expanded={showInfo}
-                    onClick={() => setShowInfo(!showInfo)}
-                    className="grid h-11 w-11 place-items-center rounded-full text-lake-deep"
-                  >
-                    <InfoIcon size={20} />
-                  </button>
+                  <span className="text-sm">Suggested match · not independently verified</span>
+                  <button type="button" aria-label="About this suggestion" onClick={()=>setShowInfo(!showInfo)} className="grid h-11 w-11 place-items-center"><InfoIcon size={20}/></button>
                 </>
               )}
             </div>
-            {showInfo && <p className="t-small text-muted-paper">{t(lang, "bandInfo")}</p>}
+            {showInfo && <p className="t-small text-muted-paper">Model suggestions have not been calibrated against a labelled monument dataset. Confirm the location before relying on this result.</p>}
             <div>
               <h2 className="t-title">{result.place.name}</h2>
               {result.place.name_hi && (
@@ -240,12 +239,13 @@ export function CameraMode({
                 </p>
               )}
             </div>
-            {result.stories.length ? result.stories.map((s) => <StoryBlock key={s.id} story={s} lang={lang} />) : <IDontKnow lang={lang} />}
+            <p className="text-sm leading-relaxed">{result.place.slug==='jagdish-temple' ? 'A richly carved temple in Udaipur. Explore its architectural details and a sample story while historical sources await review.' : 'Explore this place through its architecture and stories. Historical source review is pending.'}</p>
             {matchedPlace && (
-              <Link href={`/places/${matchedPlace.slug}`} className="inline-flex min-h-11 items-center font-semibold text-lake-deep underline">
-                Open the place page
+              <Link href={result.stories[0] ? `/stories/${result.stories[0].id}` : `/places/${matchedPlace.slug}`} className="result-action inline-flex min-h-11 items-center font-semibold text-lake-deep underline">
+                View Full Story →
               </Link>
             )}
+            <details className="result-stories"><summary>Story previews and source details</summary>{result.stories.length ? result.stories.map((s) => <StoryBlock key={s.id} story={s} lang={lang}/>) : <IDontKnow lang={lang}/>}</details>
           </section>
         )}
       </div>

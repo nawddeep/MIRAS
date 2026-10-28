@@ -4,7 +4,7 @@ import vm from "node:vm";
 import { describe, expect, it, vi } from "vitest";
 
 const ORIGIN = "http://miras.test";
-const CURRENT = "miras-shell-v1";
+const CURRENT = "miras-shell-v2";
 
 /** Loads public/sw.js in a sandbox with fake caches and network, and returns its event handlers. */
 function loadWorker(network: (url: string) => Promise<Response>) {
@@ -89,6 +89,16 @@ describe("service worker", () => {
     expect(await res!.text()).toBe("chunk");
     await new Promise((r) => setTimeout(r, 0));
     expect(w.store(CURRENT).has("/_next/static/chunks/b.js")).toBe(true);
+  });
+
+  it("keeps supplied background assets available after first use", async () => {
+    let online = true;
+    const w = loadWorker(async () => { if (!online) throw new TypeError("offline"); return new Response("image bytes"); });
+    const request = w.request("/media/pichhola/dawn.webp");
+    await w.fire("fetch", { request });
+    await new Promise((r) => setTimeout(r, 0));
+    online = false;
+    expect(await (await w.fire("fetch", { request }))!.text()).toBe("image bytes");
   });
 
   it("does not intercept POSTs or other files", async () => {

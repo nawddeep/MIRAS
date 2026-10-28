@@ -17,7 +17,7 @@ for (const path of ["/", "/places/pichhola", "/places/sajjangarh", "/artisans", 
 
 test("demo path: home → place → 360 preview → story → artisan → enquiry", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: /Pichhola/ }).first().click();
+  await page.getByRole("link", { name: "Pichhola", exact: true }).click();
   await expect(page).toHaveURL(/\/places\/pichhola/);
 
   // 360 preview loads only on tap and keeps its Illustrative label.
@@ -33,7 +33,7 @@ test("demo path: home → place → 360 preview → story → artisan → enquir
   await expect(stories.first().getByText("Sample content")).toBeVisible();
   await expect(page.getByRole("button", { name: "Simple version" })).toHaveCount(0);
 
-  await page.getByRole("link", { name: /Sample Artisan 1/ }).click();
+  await page.getByRole("link", { name: /Rajasthan Miniature Painting/ }).click();
   await expect(page).toHaveURL(/\/artisans\/sample-artisan-1/);
   await page.fill("#message", `Demo path enquiry ${Date.now()}`);
   await page.fill("#contactBack", "visitor@example.invalid");

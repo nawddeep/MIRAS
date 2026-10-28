@@ -1,0 +1,30 @@
+{
+  "id": "jagdish-temple",
+  "slug": "jagdish-temple",
+  "name": "Jagdish Temple",
+  "name_hi": "जगदीश मंदिर",
+  "category": "Temple",
+  "lat": 24.5799,
+  "lng": 73.6838,
+  "summary": "Carved stone and a soaring temple spire in the heart of Udaipur. Sample editorial introduction; review pending.",
+  "summary_hi": "उदयपुर की विरासत को जानिए। नमूना परिचय; समीक्षा शेष है।",
+  "visitTips": [
+    "Check current access and visitor guidance with the venue."
+  ],
+  "openingHours": "Not yet verified",
+  "typicalVisitMinutes": 60,
+  "photos": [
+    "/media/pichhola/temple.webp"
+  ],
+  "accessibility": {
+    "stepFree": "unknown",
+    "notes": "Not yet verified"
+  },
+  "etiquette": [],
+  "conservation": [],
+  "photographyRules": {
+    "text": "Check locally before taking photographs."
+  },
+  "status": "published",
+  "isSample": true
+}

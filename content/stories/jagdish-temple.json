@@ -1,0 +1,21 @@
+[
+  {
+    "id": "jagdish-temple-sample-1",
+    "placeId": "jagdish-temple",
+    "title": "Carved in Stone, Held in Light",
+    "text": "Look closely at the carved surfaces and the rising form of Jagdish Temple. This sample introduction invites you to notice the architectural details before exploring the surrounding streets.\n\nThis is editorial sample content, not a verified history of the temple. Dates, patrons and architectural claims require source review before publication.",
+    "text_hi": "जगदीश मंदिर की नक्काशी और शिखर को करीब से देखिए। यह नमूना परिचय है; ऐतिहासिक जानकारी और स्रोतों की समीक्षा अभी शेष है।",
+    "simpleText": "SAMPLE: simple-language version for City Palace goes here.",
+    "simpleTextChecked": false,
+    "language": "en",
+    "sourceType": "history",
+    "sourceRef": "Editorial sample for MIRAS; historical source review pending.",
+    "rights": {
+      "owner": "Team Impala (placeholder text)",
+      "permittedUse": "Demo placeholder only"
+    },
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "isSample": true,
+    "title_hi": "पत्थर में कला, रोशनी में विरासत"
+  }
+]

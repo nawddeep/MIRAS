@@ -23,7 +23,7 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
   const artisans = getVisibleArtisans().slice(0, 3);
 
   return (
-    <div className="space-y-6">
+    <div className="place-screen space-y-6">
       <div className="relative -mx-5 -mt-5 sm:mx-0 sm:mt-0">
         {place.preview360 ? (
           <Pano360 src={place.preview360.path} poster={place.photos[0]} illustrative={place.preview360.illustrative} lang={lang} alt={name} />
@@ -41,6 +41,7 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
         </a>
       </div>
 
+      <div className="place-gallery-strip" aria-label="Gallery previews">{place.photos.map((src,i)=><a key={src} href="#photos" aria-label={`Open gallery, image ${i+1}`}><MediaImage src={src} alt={`${name}, view ${i+1}`}/></a>)}</div>
       <div id="overview" className="scroll-mt-28">
         <PlaceHeader place={place} lang={lang} />
       </div>
@@ -62,6 +63,7 @@ export default async function PlacePage({ params }: PageProps<"/places/[slug]">)
         </ul>
       </nav>
 
+      <p className="place-introduction">{pick(lang, place.summary, place.summary_hi)}</p>
       {/* Facts: only content values. Entry fee and hours have no verified field yet, so they say so. */}
       <section aria-label="Facts" className="grid grid-cols-3 gap-2 rounded-card border border-line bg-paper-2 p-3 text-center">
         <div className="space-y-1">

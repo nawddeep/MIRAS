@@ -32,7 +32,7 @@ export default async function StoriesPage({ searchParams }: PageProps<"/stories"
   };
 
   return (
-    <div className="space-y-5">
+    <div className="stories-screen space-y-5">
       <header>
         <h1 className="t-title">{t(lang, "navStories")}</h1>
         <p lang="hi" className="font-display text-lg text-muted-paper">

@@ -1,10 +1,10 @@
 // MIRAS service worker. Hand-written and deliberately small.
-// - Caches only the static app shell: /_next/static/* (on first use) and the /offline page with its assets (at install).
+// - Pre-caches /offline and its scripts/styles. Caches static chunks, app icons and the finite supplied background set on first use.
 // - Never touches /api/*: those requests go straight to the network, so an API response is never served from cache.
 // - Never caches other HTML pages. Navigations always go to the network and fall back to /offline only when offline.
 // Bump VERSION whenever this file or the shell changes; old caches are deleted on activate.
 
-const VERSION = "miras-shell-v1";
+const VERSION = "miras-shell-v2";
 const OFFLINE_URL = "/offline";
 
 function strategy(request) {
@@ -12,7 +12,7 @@ function strategy(request) {
   if (request.method !== "GET" || url.origin !== self.location.origin) return "network";
   if (url.pathname.startsWith("/api/")) return "network";
   if (request.mode === "navigate") return "network-then-offline";
-  if (url.pathname.startsWith("/_next/static/")) return "cache-first";
+  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/media/pichhola/") || url.pathname.startsWith("/icons/")) return "cache-first";
   return "network";
 }
 

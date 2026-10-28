@@ -20,7 +20,7 @@ export default async function ArtisanPage({ params }: PageProps<"/artisans/[id]"
   const gatesMet = !artisan.isSample && artisanPublishBlockers(artisan).length === 0;
 
   return (
-    <div className="space-y-6">
+    <div className="artisan-screen space-y-6">
       {/* Header image: the maker's first photo (hands and craft only), or a craft pattern. Never a face. */}
       <div className="-mx-5 -mt-5 aspect-[4/3] overflow-hidden bg-mist sm:mx-0 sm:mt-0 sm:aspect-[16/9] sm:rounded-card">
         {artisan.photos[0] ? <MediaImage src={artisan.photos[0]} alt={`${artisan.craft}: work by ${artisan.name}`} /> : <CraftPattern className="h-full w-full" />}
@@ -44,6 +44,19 @@ export default async function ArtisanPage({ params }: PageProps<"/artisans/[id]"
         <p className="whitespace-pre-line">{pick(lang, artisan.description, artisan.description_hi)}</p>
       </header>
 
+      {artisan.photos.length > 1 && (
+        <section className="space-y-2">
+          <h2 className="t-heading">{t(lang, "photos")}</h2>
+          <ul className="grid grid-cols-3 gap-2">
+            {artisan.photos.map((src, i) => (
+              <li key={src} className="aspect-square overflow-hidden rounded-xl bg-mist">
+                <MediaImage src={src} alt={`${artisan.craft} ${i + 1}`} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <ButtonLink href="#enquire" variant="accent" className="w-full">
         {t(lang, "enquire")}
       </ButtonLink>
@@ -66,19 +79,6 @@ export default async function ArtisanPage({ params }: PageProps<"/artisans/[id]"
           )}
         </dl>
       </Card>
-
-      {artisan.photos.length > 1 && (
-        <section className="space-y-2">
-          <h2 className="t-heading">{t(lang, "photos")}</h2>
-          <ul className="grid grid-cols-3 gap-2">
-            {artisan.photos.map((src, i) => (
-              <li key={src} className="aspect-square overflow-hidden rounded-xl bg-mist">
-                <MediaImage src={src} alt={`${artisan.craft} ${i + 1}`} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {workshops.length > 0 && (
         <section className="space-y-3" id="workshops">

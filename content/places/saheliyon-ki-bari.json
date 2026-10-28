@@ -1,0 +1,30 @@
+{
+  "id": "saheliyon-ki-bari",
+  "slug": "saheliyon-ki-bari",
+  "name": "Saheliyon Ki Bari",
+  "name_hi": "सहेलियों की बाड़ी",
+  "category": "Garden",
+  "lat": 24.603,
+  "lng": 73.685,
+  "summary": "A quiet garden of lotus pools, fountains and marble pavilions. Sample editorial introduction; review pending.",
+  "summary_hi": "उदयपुर की विरासत को जानिए। नमूना परिचय; समीक्षा शेष है।",
+  "visitTips": [
+    "Check current access and visitor guidance with the venue."
+  ],
+  "openingHours": "Not yet verified",
+  "typicalVisitMinutes": 60,
+  "photos": [
+    "/media/pichhola/garden.webp"
+  ],
+  "accessibility": {
+    "stepFree": "unknown",
+    "notes": "Not yet verified"
+  },
+  "etiquette": [],
+  "conservation": [],
+  "photographyRules": {
+    "text": "Check locally before taking photographs."
+  },
+  "status": "published",
+  "isSample": true
+}

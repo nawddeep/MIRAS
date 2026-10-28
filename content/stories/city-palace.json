@@ -2,25 +2,26 @@
   {
     "id": "city-palace-sample-1",
     "placeId": "city-palace",
-    "title": "SAMPLE: history story 1 for City Palace",
-    "text": "SAMPLE: story text for City Palace goes here. This is placeholder text, not a historical claim.",
-    "text_hi": "नमूना: सिटी पैलेस की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
+    "title": "The Lake that Chose Udaipur",
+    "text": "At the water’s edge, Udaipur reveals itself slowly. Light gathers on the palace walls; a boat crosses the lake; the hills stand quiet beyond.\n\nPichhola is the setting for this introduction to the city’s architecture and living heritage. Walk the shore and notice the balconies, courtyards and reflections that connect the city to its water.\n\nThis is a sample editorial story written for the interface. A reviewed historical account and its supporting sources have not yet been added. It should not be treated as a verified account of Udaipur’s founding.",
+    "text_hi": "पानी के किनारे उदयपुर धीरे-धीरे खुलता है। महल की दीवारों पर रोशनी उतरती है, एक नाव झील पार करती है और पहाड़ शांत खड़े हैं।\n\nयह ऐप के लिए लिखा गया नमूना पाठ है। इसकी ऐतिहासिक समीक्षा और स्रोतों की पुष्टि अभी शेष है।",
     "simpleText": "SAMPLE: simple-language version for City Palace goes here.",
     "simpleTextChecked": false,
     "language": "en",
     "sourceType": "history",
-    "sourceRef": "SAMPLE: source reference goes here.",
+    "sourceRef": "Editorial sample for MIRAS; historical source review pending.",
     "rights": {
       "owner": "Team Impala (placeholder text)",
       "permittedUse": "Demo placeholder only"
     },
     "updatedAt": "2026-10-28T00:00:00.000Z",
-    "isSample": true
+    "isSample": true,
+    "title_hi": "झील जिसने उदयपुर चुना"
   },
   {
     "id": "city-palace-sample-2",
     "placeId": "city-palace",
-    "title": "SAMPLE: oral tradition story 2 for City Palace",
+    "title": "Stories by the Water",
     "text": "SAMPLE: story text for City Palace goes here. This is placeholder text, not a historical claim.",
     "text_hi": "नमूना: सिटी पैलेस की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
     "simpleText": "SAMPLE: simple-language version for City Palace goes here.",
@@ -32,12 +33,13 @@
       "permittedUse": "Demo placeholder only"
     },
     "updatedAt": "2026-10-28T00:00:00.000Z",
-    "isSample": true
+    "isSample": true,
+    "title_hi": "पानी के किनारे की कहानियाँ"
   },
   {
     "id": "city-palace-sample-3",
     "placeId": "city-palace",
-    "title": "SAMPLE: legend story 3 for City Palace",
+    "title": "The Palace in the Reflection",
     "text": "SAMPLE: story text for City Palace goes here. This is placeholder text, not a historical claim.",
     "text_hi": "नमूना: सिटी पैलेस की कहानी का पाठ यहाँ आएगा। यह नमूना है, ऐतिहासिक दावा नहीं।",
     "simpleText": "SAMPLE: simple-language version for City Palace goes here.",
@@ -49,6 +51,7 @@
       "permittedUse": "Demo placeholder only"
     },
     "updatedAt": "2026-10-28T00:00:00.000Z",
-    "isSample": true
+    "isSample": true,
+    "title_hi": "पानी में महल का प्रतिबिंब"
   }
 ]

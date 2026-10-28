@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import type { ReactNode } from "react";
-import { BackIcon, CameraIcon, HomeIcon, LotusMark, MakersIcon, PlacesIcon, StoriesIcon } from "./icons";
+import { useState, type ReactNode } from "react";
+import { BackIcon, CameraIcon, HomeIcon, MakersIcon, PlacesIcon, SearchIcon, StoriesIcon } from "./icons";
 
 // Screens that draw their own top area (home greeting, full-screen camera).
 const OWN_TOP = new Set(["/", "/camera"]);
@@ -12,23 +12,17 @@ const OWN_TOP = new Set(["/", "/camera"]);
 export function TopBar({ appName, right }: { appName: string; right: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [search, setSearch] = useState(false);
   if (OWN_TOP.has(pathname)) return null;
+  const detail = /^\/(places|stories|artisans)\/.+/.test(pathname);
+  const title = pathname === '/places' ? 'Explore Places' : pathname === '/stories' ? 'Stories' : appName;
+  const hi = pathname === '/places' ? 'उदयपुर के स्थल' : pathname === '/stories' ? 'कहानियाँ' : null;
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-paper/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+    <header className={`miras-top ${detail ? 'detail-toolbar' : ''} ${search ? 'search-open' : ''} sticky top-0 z-30 border-b border-line bg-paper/95 pt-[env(safe-area-inset-top)]`}>
       <div className="mx-auto flex max-w-3xl items-center gap-2 px-3 py-1.5">
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => (window.history.length > 1 ? router.back() : router.push("/"))}
-          className="grid h-11 w-11 place-items-center rounded-full hover:bg-ink/5"
-        >
-          <BackIcon />
-        </button>
-        <Link href="/" className="flex flex-1 items-center gap-1.5 font-display text-xl tracking-wide">
-          <LotusMark size={20} className="text-saffron-text" />
-          {appName}
-        </Link>
-        {right}
+        <button type="button" aria-label="Back" onClick={() => (window.history.length > 1 ? router.back() : router.push('/'))} className="toolbar-back grid h-11 w-11 place-items-center rounded-full"><BackIcon /></button>
+        <Link href="/" className="toolbar-title flex flex-1 flex-col font-display text-xl"><span>{title}</span>{hi && <small lang="hi">{hi}</small>}</Link>
+        {hi ? <button type="button" aria-label="Search this collection" aria-expanded={search} className="toolbar-search grid h-11 w-11 place-items-center rounded-full" onClick={()=>setSearch(!search)}><SearchIcon size={22}/></button> : <div className="toolbar-language">{right}</div>}
       </div>
     </header>
   );
@@ -53,7 +47,7 @@ export function BottomNav({ labels }: { labels: Record<Slot, string> }) {
   const pathname = usePathname();
   const active = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   return (
-    <nav aria-label="Main" className="on-dark fixed inset-x-0 bottom-0 z-30 border-t border-line-dark bg-ink pb-[env(safe-area-inset-bottom)] text-on-dark">
+    <nav aria-label="Main" className="miras-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line-dark bg-ink pb-[env(safe-area-inset-bottom)] text-on-dark">
       <ul className="mx-auto flex h-[76px] max-w-md items-end justify-around px-2 pb-2">
         {SLOTS.filter((s) => LIVE.has(s.slot)).map(({ slot, href, icon: Icon, centre }) => (
           <li key={slot} className="flex flex-1 justify-center">

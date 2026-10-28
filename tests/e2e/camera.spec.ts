@@ -35,14 +35,14 @@ test("a dark photo is caught before upload", async ({ page }) => {
   let uploaded = false;
   page.on("request", (r) => r.url().includes("/api/camera/match") && (uploaded = true));
   await page.goto("/camera");
-  await page.locator("input[type=file]").setInputFiles({ name: "dark.png", mimeType: "image/png", buffer: png(64, 64, [5, 5, 8]) });
+  await page.locator("input[type=file]:not([capture])").setInputFiles({ name: "dark.png", mimeType: "image/png", buffer: png(64, 64, [5, 5, 8]) });
   await expect(page.locator("main [role=alert]")).toContainText("too dark");
   expect(uploaded).toBe(false);
 });
 
 test("an out-of-set photo gets I don't know with a search box (mock provider never guesses)", async ({ page }) => {
   await page.goto("/camera");
-  await page.locator("input[type=file]").setInputFiles({ name: "wall.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
+  await page.locator("input[type=file]:not([capture])").setInputFiles({ name: "wall.png", mimeType: "image/png", buffer: png(64, 64, [200, 180, 160]) });
   const idk = page.getByTestId("i-dont-know");
   await expect(idk).toContainText("I don't know this one yet");
   await expect(idk.getByRole("searchbox")).toBeVisible();
@@ -62,5 +62,6 @@ test("demo mode: picking a place by hand shows its stories labelled Demo respons
   await expect(match).toBeVisible();
   await expect(match.getByText("Demo response", { exact: true })).toBeVisible();
   await expect(match.getByTestId("story")).toHaveCount(3);
+  await match.getByText("Story previews and source details").click();
   await expect(match.getByText("Sample content").first()).toBeVisible();
 });

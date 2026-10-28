@@ -60,17 +60,18 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const { demoMode } = getConfig();
   return (
     <html lang={lang} className={`${tiro.variable} ${hind.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+      <body className="miras-body flex min-h-full flex-col">
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <ServiceWorker />
         <InstallPrompt />
         {demoMode && (
-          <div className="bg-ink px-4 py-1.5 text-center text-xs text-on-dark">
+          <div className="demo-notice bg-ink px-4 py-1.5 text-center text-xs text-on-dark">
             Demo mode: sample content is shown and badged. Nothing marked sample is real.
           </div>
         )}
         <TopBar appName={t(lang, "appName")} right={<LanguageSwitch lang={lang} />} />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-5">{children}</main>
-        <footer className="pb-nav border-t border-line px-5 pt-6 text-center text-xs text-muted-paper">
+        <main id="main-content" className="miras-main mx-auto w-full max-w-3xl flex-1 px-5 py-5">{children}</main>
+        <footer className="miras-footer pb-nav border-t border-line px-5 pt-6 text-center text-xs text-muted-paper">
           <nav aria-label="Explore more" className="mx-auto mb-4 max-w-3xl">
             <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-on-paper">
               {[
