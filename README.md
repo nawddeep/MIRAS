@@ -30,12 +30,34 @@ No `.env` is needed. Without a Gemini key, AI features use a mock provider label
 | `npm run test:e2e` | Browser tests at 360 px (Playwright). Run `npm run build` and `npx playwright install chromium` first |
 | `npm run content:check` | Validates `/content`, fails on errors, writes `CONTENT_TODO.md` |
 
+## Pages
+
+| Page | What it does |
+|---|---|
+| `/`, `/places/[slug]`, `/search` | Discovery, place profile (360 preview, stories, "Visiting responsibly", "Save for offline"), search |
+| `/artisans`, `/artisans/[id]`, `/owner/[token]` | Artisan showcase, enquiries, private owner page (edit, consent, publish, workshops) |
+| `/onboard` | Voice-first artisan onboarding |
+| `/camera` | Camera story mode |
+| `/plan` | Trip planner (uses `openingTimes` and coordinates from content only; travel is an Estimate) |
+| `/trails`, `/trails/[id]`, `/trails/[id]/walk` | Content-defined trails and audio walks |
+| `/memories` | In-app highlight reel from your own photos (frames never stored on the server) |
+| `/passport` | Heritage passport stamps (device only, not location-verified) |
+| `/events` | Organiser-confirmed upcoming events (IST) |
+| `/picks`, `/admin/moderation` | Visitor "Hidden Udaipur" picks, moderated (needs `ADMIN_PASSCODE`) |
+| `/offline` | Offline copies saved on this device |
+| `/replay` | Open your own 360 photo (stays on the device) |
+| `/concept/ar` | Concept only. Not real AR |
+| `/admin` | Status: AI, mode, content check, enquiry counts |
+
+Bookings and payments are not built. See [docs/PHASE6_NOT_BUILT.md](docs/PHASE6_NOT_BUILT.md).
+
 ## Configuration
 
 Copy `.env.example` to `.env`. Never commit `.env`.
 
 - `GEMINI_API_KEY`, `GEMINI_MODEL`: both needed to switch from the mock to Gemini. Use the exact model name from Google's docs.
 - `MATCH_THRESHOLD`: camera mode confidence needed to show a place (default `0.85`).
+- `ADMIN_PASSCODE`: enables `/admin/moderation`. Without it, moderation is disabled and visitor picks stay hidden.
 - `NEXT_PUBLIC_DEMO_MODE`: `true` (default) also shows sample content. Set `false` for real, verified content only. Rebuild after changing it.
 
 `/admin` shows whether AI is configured and the content status.
@@ -48,6 +70,10 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 | Stories | `content/stories/*.json` |
 | Artisans | `content/artisans/*.json` |
 | Workshops | `content/workshops/*.json` |
+| Trails | `content/trails/*.json` |
+| Events | `content/events/*.json` |
+| Phrases | `content/phrases.json` |
+| Licensed music (Memories) | `content/music.json`, each track also needs a `content/media.json` entry |
 | Photos | `public/media/…`, plus an entry in `content/media.json` (owner, permitted use, contains people) |
 | Signed consent forms | `private/` (gitignored). Reference the file name in `consent.docRef` |
 

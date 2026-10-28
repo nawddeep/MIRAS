@@ -72,6 +72,27 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </header>
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-5">{children}</main>
         <footer className="border-t border-line px-4 py-6 text-center text-xs text-ink-soft">
+          <nav aria-label="Explore more" className="mx-auto mb-4 max-w-3xl">
+            <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-ink">
+              {[
+                ["/plan", "Plan your day"],
+                ["/trails", "Trails"],
+                ["/memories", "Memories"],
+                ["/passport", "Passport"],
+                ["/events", "Events"],
+                ["/picks", "Hidden Udaipur"],
+                ["/offline", "Offline copies"],
+                ["/replay", "360 replay"],
+                ["/concept/ar", "Story view (concept)"],
+              ].map(([href, label]) => (
+                <li key={href}>
+                  <Link href={href} className="inline-flex min-h-9 items-center underline">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <p>MIRAS by Team Impala. Stories show their source type: history, oral tradition or legend.</p>
           <p className="mt-1">
             <Link href="/onboard" className="underline">

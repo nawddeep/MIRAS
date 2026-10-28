@@ -153,3 +153,19 @@ Times are IST.
 - `lib/services/events.ts`: only organiser-confirmed events are shown, samples only in demo mode, past events are hidden, and events are sorted by start time. `/events` shows times and the update date in IST. Booking happens outside MIRAS.
 - `content:check` lists sample and unconfirmed events.
 - Tests: `tests/unit/events.test.ts` (5). 123 unit tests pass.
+
+## 5.2 360 replay (the "VR replay" item, named honestly): 2026-10-28 10:38
+
+- `/replay` (`components/ReplayViewer.tsx`): the visitor opens their own equirectangular photo in the existing 360 viewer through a browser object URL. Nothing is uploaded. It warns when the image is not about 2:1.
+- Not built: stereo/headset and gyroscope modes. They need the `@photo-sphere-viewer` plugins, which need the team's approval before installing, and they could not be tested on a headset. The page says "Not built yet". Nothing in the UI is called VR.
+
+## 5.1 AR story view: Concept only: 2026-10-28 10:38
+
+- `/concept/ar` (`components/ArConcept.tsx`), labelled Concept: a camera view with a visible story card laid over the screen, not anchored to the world, with a banner reading "Concept. Not real AR." Whether real AR works in Udaipur has not been checked, so it has not been built.
+
+## Phase 6 not built, navigation and README: 2026-10-28 10:38
+
+- `docs/PHASE6_NOT_BUILT.md` lists what must exist before bookings or payments: a licensed payment provider, verified businesses, a refund and dispute process, and a compliance review. It is linked from README.
+- The footer has an "Explore more" list with links to all the new pages. README lists every page and the new content folders and env vars.
+- Tests: `tests/e2e/tier3.spec.ts` (11): events in IST, a pick stays hidden while pending, moderation disabled without a passcode, 360 replay on the device with no upload, the AR concept label, a check that no screen claims AR, VR or certification, and 360 px checks.
+- Full run: typecheck and lint clean, 123 unit tests, content:check 0 errors (34 sample or unverified items), production build, 50 of 50 e2e, and the demo path 3 runs in a row.
