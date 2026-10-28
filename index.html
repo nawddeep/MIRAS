@@ -27,6 +27,9 @@
         <a href="#places">Places</a>
         <a href="#experiences">Experiences</a>
         <a href="#itineraries">Itineraries</a>
+        <a href="#artisans">Artisans</a>
+        <a href="#voice-onboard">Voice Onboard</a>
+        <a href="#story-camera">Story Camera</a>
         <a class="btn btn-sm" href="#plan">Plan your trip</a>
       </nav>
       <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">
@@ -38,6 +41,9 @@
       <a href="#places">Places</a>
       <a href="#experiences">Experiences</a>
       <a href="#itineraries">Itineraries</a>
+      <a href="#artisans">Artisans</a>
+      <a href="#voice-onboard">Voice Onboard</a>
+      <a href="#story-camera">Story Camera</a>
       <a href="#plan">Plan your trip</a>
     </nav>
   </header>
@@ -290,11 +296,59 @@
       </div>
     </section>
 
+    <!-- ============ ARTISANS ============ -->
+    <section class="section" id="artisans">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">05 · Living Heritage</p>
+          <h2>Real local makers, verified by consent</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+          <p class="tagline" style="max-width: 48ch;">Real artisans with physical written consent deeds for their portraits and pricing. Zero middlemen deductions — 100% direct trade.</p>
+        </header>
+
+        <div class="artisans-grid" id="artisansGrid">
+          <!-- Populated by artisans.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VOICE ONBOARDING ============ -->
+    <section class="section" id="voice-onboard" style="background: var(--paper-2);">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">06 · Hands-Free Onboarding</p>
+          <h2>Voice-first artisan profile with Gemini</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+          <p class="tagline" style="max-width: 48ch;">Small business owners rarely type forms. The owner speaks in Hindi, Gemini drafts English &amp; Hindi listings, and only after the owner listens and confirms does it publish.</p>
+        </header>
+
+        <div id="voiceOnboardApp">
+          <!-- Populated by voiceOnboarding.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORY CAMERA ============ -->
+    <section class="section" id="story-camera">
+      <div class="wrap">
+        <header class="sec-head" data-reveal>
+          <p class="eyebrow">07 · Grounded Heritage Sightseeing</p>
+          <h2>Point-your-camera story mode</h2>
+          <div class="rule"><span></span><i class="star"></i><span></span></div>
+          <p class="tagline" style="max-width: 48ch;">Point your lens at a heritage monument to receive verified stories from archival monographs. Answer strictly classified under History, Oral tradition, or Legend — if not confident, it strictly says &ldquo;I don't know&rdquo;.</p>
+        </header>
+
+        <div id="storyCameraApp">
+          <!-- Populated by storyCamera.js -->
+        </div>
+      </div>
+    </section>
+
     <!-- ============ PLAN ============ -->
     <section class="section plan" id="plan">
       <div class="wrap plan-grid">
         <header class="sec-head" data-reveal>
-          <p class="eyebrow">05 · Plan your trip</p>
+          <p class="eyebrow">08 · Plan your trip</p>
           <h2>Tell us how you'd like to travel</h2>
           <div class="rule"><span></span><i class="star"></i><span></span></div>
           <p class="plan-note">Share a few details and we'll write back with a suggested plan, places to stay and the best season for what you want to see.</p>
@@ -346,6 +400,22 @@
       </div>
     </section>
   </main>
+
+  <!-- Written Consent Deed Inspector Modal -->
+  <div class="miras-modal" id="consentModal" role="dialog" aria-modal="true" aria-labelledby="consentModalTitle">
+    <div class="modal-window">
+      <button class="modal-close" id="closeConsentModal" aria-label="Close modal">&times;</button>
+      <div id="consentModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Direct Works Modal -->
+  <div class="miras-modal" id="productsModal" role="dialog" aria-modal="true" aria-labelledby="productsModalTitle">
+    <div class="modal-window">
+      <button class="modal-close" id="closeProductsModal" aria-label="Close modal">&times;</button>
+      <div id="productsModalBody"></div>
+    </div>
+  </div>
 
   <!-- ============ FOOTER ============ -->
   <footer class="footer">

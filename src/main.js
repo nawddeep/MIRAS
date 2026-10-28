@@ -4,6 +4,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initHero } from './hero.js';
 import { places, icons } from './art.js';
+import { initArtisans } from './artisans.js';
+import { initVoiceOnboarding } from './voiceOnboarding.js';
+import { initStoryCamera } from './storyCamera.js';
 import './style.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -63,13 +66,19 @@ ScrollTrigger.create({
   onLeaveBack: () => { header.classList.remove('show'); closeMenu(); },
 });
 // highlight the current section in the nav
-['about', 'places', 'experiences', 'itineraries'].forEach((id) => {
+['about', 'places', 'experiences', 'itineraries', 'artisans', 'voice-onboard', 'story-camera', 'plan'].forEach((id) => {
   const link = $(`.nav a[href="#${id}"]`);
+  if (!link) return;
   ScrollTrigger.create({
     trigger: `#${id}`, start: 'top 50%', end: 'bottom 50%',
     onToggle: (self) => link.classList.toggle('active', self.isActive),
   });
 });
+
+// ---------- initialize miras features ----------
+initArtisans();
+initVoiceOnboarding();
+initStoryCamera();
 
 // ---------- hero ----------
 const media = $('#heroMedia');
