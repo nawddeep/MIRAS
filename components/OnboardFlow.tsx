@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { compressImage, fetchWithTimeout, mediaErrorMessage, TimeoutError } from "@/lib/client/media";
 import type { ListingDraft } from "@/lib/schemas";
+import { MicIcon } from "./icons";
 import { Button, Label } from "./ui";
 
 type Step = "capture" | "drafting" | "review" | "done";
@@ -27,6 +28,17 @@ const list = (s: string) =>
     .split(",")
     .map((x) => x.trim())
     .filter(Boolean);
+
+/** Three-bar step indicator: record, check, done. */
+function StepBars({ n }: { n: 1 | 2 | 3 }) {
+  return (
+    <div className="flex gap-1.5" role="img" aria-label={`Step ${n} of 3`}>
+      {[1, 2, 3].map((i) => (
+        <span key={i} className={`h-1.5 flex-1 rounded-full ${i <= n ? "bg-saffron" : "bg-current opacity-20"}`} />
+      ))}
+    </div>
+  );
+}
 
 export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
   const [step, setStep] = useState<Step>("capture");
@@ -223,7 +235,8 @@ export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
   if (step === "done" && done) {
     const url = `${window.location.origin}${done.editUrl}`;
     return (
-      <div className="space-y-4" data-testid="onboard-done">
+      <div className="space-y-4 rounded-card bg-paper p-4 text-on-paper" data-testid="onboard-done">
+        <StepBars n={3} />
         <p className="rounded-2xl bg-lake/25 p-4 text-lg">
           {done.status === "published" ? "Your listing is published." : "Your listing is saved as a draft. It is not public yet."}
         </p>
@@ -246,7 +259,7 @@ export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
 
   if (step === "review") {
     const input = (k: keyof Fields) =>
-      `w-full rounded-xl border bg-white px-3 ${uncertain.has(k) ? "border-saffron ring-2 ring-saffron/60" : "border-ink/25"}`;
+      `w-full rounded-xl border bg-white px-3 ${uncertain.has(k) ? "border-rose ring-2 ring-rose" : "border-ink/25"}`;
     const err = (k: string) => fieldErrors[k] && <p className="text-sm text-[#9b3b28]">{fieldErrors[k]}</p>;
     const field = (k: keyof Fields, label: string, multiline = false) => (
       <div data-uncertain={uncertain.has(k) || undefined}>
@@ -272,18 +285,19 @@ export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
           {label}
         </label>
         <input id={name} name={name} className="min-h-11 w-full rounded-xl border border-ink/25 bg-white px-3" />
-        {help && <p className="text-xs text-ink-soft">{help}</p>}
+        {help && <p className="text-xs opacity-80">{help}</p>}
         {err(name)}
       </div>
     );
 
     return (
-      <form className="space-y-4" onSubmit={submit} data-testid="onboard-review">
+      <form className="space-y-4 rounded-card bg-paper p-4 text-on-paper" onSubmit={submit} data-testid="onboard-review">
+        <StepBars n={2} />
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-2xl">Check your listing</h2>
           {demo && <Label tone="warn">Demo response</Label>}
         </div>
-        <p className="text-sm text-ink-soft">
+        <p className="text-sm opacity-80">
           Edit anything that is wrong. Fields marked <Label tone="warn">Please check</Label> are ones the assistant was unsure about. Nothing is
           public until you tap Publish.
         </p>
@@ -326,33 +340,56 @@ export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
             Publish
           </Button>
         </div>
-        {!consent && <p className="text-xs text-ink-soft">Publish needs your consent above. You can save a draft without it.</p>}
+        {!consent && <p className="text-xs opacity-80">Publish needs your consent above. You can save a draft without it.</p>}
       </form>
     );
   }
 
   return (
     <div className="space-y-5">
+      <StepBars n={1} />
       <ol className="space-y-4">
-        <li className="rounded-2xl border border-line bg-white/60 p-4">
+        <li className="rounded-card border border-line-dark bg-ink-2 p-4">
           <p className="font-medium">1. Tell us about your work / अपने काम के बारे में बताइए</p>
-          <p className="text-sm text-ink-soft">Up to {MAX_SECONDS} seconds, in Hindi or English: what you make, the materials, and where.</p>
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            {recording ? (
-              <Button type="button" variant="accent" onClick={stopRecording}>
-                Stop ({seconds}s)
-              </Button>
-            ) : (
-              <Button type="button" onClick={startRecording} disabled={step === "drafting"}>
-                {audio ? "Record again" : "Start recording / रिकॉर्ड करें"}
-              </Button>
-            )}
+          <p className="text-sm opacity-80">Up to {MAX_SECONDS} seconds, in Hindi or English: what you make, the materials, and where.</p>
+          <div className="mt-4 flex flex-col items-center gap-3">
+            <div className="relative grid h-28 w-28 place-items-center">
+              {recording && <span className="anim-pulse absolute inset-0 rounded-full bg-saffron/40" aria-hidden="true" />}
+              {recording ? (
+                <button type="button" onClick={stopRecording} aria-label={`Stop (${seconds}s)`} className="relative grid h-24 w-24 place-items-center rounded-full bg-rose text-ink">
+                  <span className="block h-7 w-7 rounded-md bg-ink" aria-hidden="true" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  disabled={step === "drafting"}
+                  aria-label={audio ? "Record again" : "Start recording / रिकॉर्ड करें"}
+                  className="relative grid h-24 w-24 place-items-center rounded-full bg-saffron text-ink disabled:opacity-50"
+                >
+                  <MicIcon size={36} />
+                </button>
+              )}
+            </div>
+            <div className="flex h-8 items-center gap-[3px]" aria-hidden="true">
+              {[10, 18, 26, 14, 30, 20, 12, 24, 16, 28, 12, 20].map((h, i) => (
+                <span
+                  key={i}
+                  className={`w-1 rounded-full ${recording ? "anim-pulse bg-saffron" : "bg-current opacity-30"}`}
+                  style={{ height: `${h}px`, animationDelay: `${i * 90}ms` }}
+                />
+              ))}
+            </div>
+            <p className="tnum text-lg" aria-live="off">
+              {`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`} / 1:00
+            </p>
+            <p className="text-sm">{recording ? "Recording… tap to stop" : audio ? "Tap to record again" : "Tap to start / रिकॉर्ड करें"}</p>
             {audio && !recording && <Label tone="info">Recording ready</Label>}
           </div>
         </li>
-        <li className="rounded-2xl border border-line bg-white/60 p-4">
+        <li className="rounded-card border border-line-dark bg-ink-2 p-4">
           <p className="font-medium">2. One photo of your work (optional)</p>
-          <p className="text-sm text-ink-soft">Your work only, no faces. It is made smaller before upload.</p>
+          <p className="text-sm opacity-80">Your work only, no faces. It is made smaller before upload.</p>
           <input
             type="file"
             accept="image/*"

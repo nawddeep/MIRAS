@@ -9,9 +9,9 @@ export default async function OnboardPage() {
   const lang = await getLang();
   const ai = aiStatus();
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl">{t(lang, "onboardTitle")}</h1>
-      <p className="text-ink-soft">
+    <div className="on-dark -mx-5 -mt-5 min-h-[100svh] space-y-4 bg-ink px-5 py-5 text-on-dark">
+      <h1 className="t-title">{t(lang, "onboardTitle")}</h1>
+      <p className="text-muted-dark">
         Speak for a minute about your work. An assistant turns it into a draft listing. You check and edit every word, and nothing is public
         until you tap Publish.
       </p>

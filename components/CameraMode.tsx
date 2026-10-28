@@ -112,19 +112,21 @@ export function CameraMode({
 
   return (
     <div className="space-y-4">
-      <ArchFrame className="mx-auto aspect-[3/4] w-full max-w-sm">
-        <div className="relative h-full w-full bg-ink-3">
-          <video ref={video} playsInline muted className={`h-full w-full object-cover ${live ? "" : "hidden"}`} />
-          {!live && (
-            <div className="grid h-full place-items-center p-6 text-center">
-              <Button type="button" variant="accent" onClick={startCamera}>
-                Open camera
-              </Button>
-            </div>
-          )}
-          <Brackets snapped={Boolean(result?.known)} />
-        </div>
-      </ArchFrame>
+      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm">
+        <ArchFrame className="h-full w-full">
+          <div className="h-full w-full bg-ink-3">
+            <video ref={video} playsInline muted className={`h-full w-full object-cover ${live ? "" : "hidden"}`} />
+            {!live && (
+              <div className="grid h-full place-items-center p-6 text-center">
+                <Button type="button" variant="accent" onClick={startCamera}>
+                  Open camera
+                </Button>
+              </div>
+            )}
+          </div>
+        </ArchFrame>
+        <Brackets snapped={Boolean(result?.known)} />
+      </div>
       <p className="text-center text-on-dark">{t(lang, "pointAtMonument")}</p>
 
       <div className="flex items-center justify-between gap-3">

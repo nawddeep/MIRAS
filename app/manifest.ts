@@ -55,7 +55,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "Local Artisans",
         short_name: "Artisans",
-        description: "Meet verified traditional artisans",
+        description: "Meet local makers",
         url: "/artisans",
         icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
       },
