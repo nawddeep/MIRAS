@@ -4,7 +4,7 @@ import { CONFIG } from './config.js';
 import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo } from './panorama.js';
 import { LookControls } from './look-controls.js';
 import { detectImmersiveVR, XRSessionController } from './xr.js';
-import { TrumpCompanionGuide } from './companion-guide.js';
+import { TrumpCompanionGuide, TOUR_STATES } from './companion-guide.js';
 import { GazeHotspots } from './gaze.js';
 import { DevHud } from './dev-hud.js';
 import { HotspotMarkers } from './hotspot-markers.js';
@@ -66,6 +66,81 @@ const gaze = new GazeHotspots(HOTSPOTS, {
 });
 const markers = new HotspotMarkers(scene, gaze);
 const devHud = new URLSearchParams(location.search).has('dev') ? new DevHud(gaze) : null;
+
+// ---------------------------------------------------------------- tour guide controls
+const hudStatus = $('tour-guide-status');
+const hudButtons = {
+  idle: $('btn-guide-idle'),
+  walk: $('btn-guide-walk'),
+  stop: $('btn-guide-stop'),
+  explain: $('btn-guide-explain'),
+  point: $('btn-guide-point'),
+  welcome: $('btn-guide-welcome'),
+  look: $('btn-guide-look'),
+  listen: $('btn-guide-listen'),
+  tour: $('btn-guide-tour'),
+};
+
+function setActiveHudBtn(activeId) {
+  Object.entries(hudButtons).forEach(([id, btn]) => {
+    if (!btn) return;
+    btn.classList.toggle('active', id === activeId);
+  });
+}
+
+if (hudButtons.idle) {
+  hudButtons.idle.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.IDLE);
+    setActiveHudBtn('idle');
+  });
+  hudButtons.walk.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.WALKING);
+    setActiveHudBtn('walk');
+  });
+  hudButtons.stop.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.TURNING);
+    setActiveHudBtn('stop');
+  });
+  hudButtons.explain.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.EXPLAINING);
+    setActiveHudBtn('explain');
+  });
+  hudButtons.point.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.POINTING);
+    setActiveHudBtn('point');
+  });
+  hudButtons.welcome.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.WELCOMING);
+    setActiveHudBtn('welcome');
+  });
+  hudButtons.look.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.LOOK_AROUND);
+    setActiveHudBtn('look');
+  });
+  hudButtons.listen.addEventListener('click', () => {
+    guide.stopTour();
+    guide.setState(TOUR_STATES.LISTENING);
+    setActiveHudBtn('listen');
+  });
+  hudButtons.tour.addEventListener('click', () => {
+    if (guide.tourActive) {
+      guide.stopTour();
+      hudButtons.tour.textContent = 'Start Guided Tour';
+      setActiveHudBtn('idle');
+    } else {
+      guide.startTour();
+      hudButtons.tour.textContent = 'Stop Tour';
+      setActiveHudBtn('tour');
+    }
+  });
+}
 
 // Desktop: a mouse resting on a dot counts as looking at it (VR uses the headset only).
 const pointerNdc = new THREE.Vector2();
@@ -352,6 +427,9 @@ renderer.setAnimationLoop(() => {
   if (!vrMenu.open) gaze.update(forward, dt, now, pointer); // menu up: no hotspot triggers
   markers.update(dt, now);
   guide.update(dt, now);
+  if (hudStatus && hudStatus.textContent !== guide.state) {
+    hudStatus.textContent = guide.state;
+  }
   devHud?.update(forward);
 
   renderer.render(scene, camera);

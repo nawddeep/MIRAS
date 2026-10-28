@@ -62,6 +62,25 @@
       </div>
     </div>
 
+    <!-- Tour Guide Controller & Waypoint Demonstration HUD -->
+    <aside id="tour-guide-hud" class="tour-guide-hud" aria-label="Tour Guide Behavior Controls">
+      <div class="hud-top">
+        <span class="hud-badge">HERITAGE GUIDE</span>
+        <span class="hud-status" id="tour-guide-status">IDLE</span>
+      </div>
+      <div class="hud-actions">
+        <button id="btn-guide-idle" type="button" class="hud-btn active" title="Relaxed idle posture">Idle</button>
+        <button id="btn-guide-walk" type="button" class="hud-btn" title="Walking locomotion cycle">Walk</button>
+        <button id="btn-guide-stop" type="button" class="hud-btn" title="Stop and face visitor">Stop & Turn</button>
+        <button id="btn-guide-explain" type="button" class="hud-btn" title="Conversational hand gestures">Explain</button>
+        <button id="btn-guide-point" type="button" class="hud-btn" title="Point at historical landmark">Point</button>
+        <button id="btn-guide-welcome" type="button" class="hud-btn" title="Welcoming gesture">Welcome</button>
+        <button id="btn-guide-look" type="button" class="hud-btn" title="Survey surroundings">Look Around</button>
+        <button id="btn-guide-listen" type="button" class="hud-btn" title="Attentive listening">Listen</button>
+        <button id="btn-guide-tour" type="button" class="hud-btn hud-btn-tour" title="Start automated guided tour">Start Guided Tour</button>
+      </div>
+    </aside>
+
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

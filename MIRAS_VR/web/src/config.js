@@ -26,9 +26,10 @@ export const CONFIG = {
     dragSensitivity: 0.12, // degrees per pixel
   },
 
-  // Contextual Donald Trump tour guide (loaded from trump_tour_guide.stl)
+  // Contextual Donald Trump tour guide (loaded from rigged animated GLB or STL)
   guide: {
-    url: 'assets/models/trump_tour_guide.stl',
+    url: 'assets/models/trump_tour_guide_rigged.glb',
+    stlUrl: 'assets/models/trump_tour_guide.stl',
     character: true,
   },
 };
