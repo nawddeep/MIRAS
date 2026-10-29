@@ -274,3 +274,10 @@ Times are IST.
 - One existing test needed a fixture change, not an assertion change: `tests/unit/memories.test.ts` "API rejects more than 5 frames and rate-limits" uploaded 10 zero bytes labelled `image/jpeg`; the bytes now start with a JPEG header. Its assertions are the same.
 - Behaviour change to know about: a HEIC/HEIF photo sent straight to the camera route is now rejected (415) instead of being passed to Gemini. The browser normally converts HEIC to JPEG for `<input type=file accept=image/*>`, and the app re-encodes frames in the page, but this is not verified on a real iPhone.
 - 22 new unit tests (189 pass).
+
+## Overnight S4: token comparison, security headers, owner enquiries: 2026-10-29 22:50
+
+- Edit-token comparison now uses `crypto.timingSafeEqual` on SHA-256 digests (`lib/repos/index.ts`). Existing tokens, including the shorter ones in content files, still work. New tokens were already `crypto.randomBytes(24)` base64url (192 bits), so that part needed no change; a test now pins it.
+- `next.config.ts` sends `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` and `Permissions-Policy: camera=(self), microphone=(self), geolocation=(self)` on every path. No Content-Security-Policy, as instructed.
+- Owner enquiries: no change needed. The owner page already lists that artisan's enquiries (message, reply-to contact, time, kind), newest first, only for a valid token, and `/admin` already shows enquiry counts per artisan. Tests now cover a valid token (own enquiries only, newest first) and a wrong token (404).
+- 5 new tests. The headers on a real running server are checked in S8, not here.

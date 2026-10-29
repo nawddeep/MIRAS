@@ -70,3 +70,9 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 - First-byte type checks on all four upload routes; media route traversal tests. 22 new tests; 189 unit tests pass.
 - Conflict reported: one existing test's fixture bytes (not assertions) changed (see BUILD_LOG). HEIC sent directly to the camera route is now rejected; not verified on a real iPhone.
 
+### S4 Tokens, headers, owner enquiries: done
+- Token comparison is constant-time. New tokens were already 192-bit random; no change. Existing tokens keep working (tested).
+- Four security headers added, no CSP. Headers on a real server are checked in S8.
+- Owner enquiry list and `/admin` per-artisan counts already existed; only tests were added. 5 new tests.
+- Merge note: the shared folder has an uncommitted change to `next.config.ts` (`devIndicators: false`). It will conflict with this branch's `headers()` addition in the same file; both hunks should be kept.
+

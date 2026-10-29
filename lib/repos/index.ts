@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import path from "node:path";
 import { getConfig } from "@/lib/config";
 import { Artisan, EventItem, MediaAsset, Phrase, Pick, Place, StoryEntry, Trail, Workshop, type Enquiry } from "@/lib/schemas";
@@ -6,6 +7,10 @@ import { openDb, type Db } from "./sqlite";
 import type { Repos } from "./types";
 
 export type { Repos } from "./types";
+
+/** Constant-time comparison of edit tokens. Hashing first keeps the length from leaking and gives timingSafeEqual equal-size inputs. */
+const sameToken = (a: string, b: string) =>
+  crypto.timingSafeEqual(crypto.createHash("sha256").update(a).digest(), crypto.createHash("sha256").update(b).digest());
 
 /**
  * Content JSON is the base layer; SQLite rows with the same id override it.
@@ -48,7 +53,7 @@ export function createRepos(contentDir: string, db: Db): Repos {
     artisans: {
       list: artisans,
       get: (id) => artisans().find((a) => a.id === id),
-      getByEditToken: (token) => artisans().find((a) => a.editToken === token),
+      getByEditToken: (token) => artisans().find((a) => sameToken(a.editToken, token)),
       save: (a) => {
         const valid = Artisan.parse(a);
         db.prepare(
