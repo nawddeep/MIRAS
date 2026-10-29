@@ -76,3 +76,8 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 - Owner enquiry list and `/admin` per-artisan counts already existed; only tests were added. 5 new tests.
 - Merge note: the shared folder has an uncommitted change to `next.config.ts` (`devIndicators: false`). It will conflict with this branch's `headers()` addition in the same file; both hunks should be kept.
 
+### S5 Camera fallback: done
+- One small change in `components/CameraMode.tsx` (missing `navigator.mediaDevices` now shows the same blocked state and place picker as a denied permission, with an https-specific message). Re-implemented, not copied. 3 new browser tests pass.
+- Merge note: the shared folder has uncommitted edits in the same file, and its own earlier version of this fix. When merging, keep one version; this branch's is the smaller one.
+- Note for `tests/e2e/phone-fallbacks.spec.ts`: an untracked file with the same name exists in the shared folder; git will refuse to merge over it until it is moved or deleted by its owner.
+

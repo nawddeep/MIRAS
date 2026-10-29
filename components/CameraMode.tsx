@@ -60,7 +60,13 @@ export function CameraMode({
     setResult(null);
     setDenied(false);
     if (!navigator.mediaDevices?.getUserMedia) {
-      setMessage("This browser cannot open the camera here. Choose a photo instead.");
+      // Plain http:// pages have no navigator.mediaDevices at all. Say why, and offer the same way forward as a denied permission.
+      setMessage(
+        window.isSecureContext
+          ? "This browser cannot open the camera here. Choose a photo instead."
+          : "The camera needs a secure (https) connection. Choose a photo instead.",
+      );
+      setDenied(true);
       return;
     }
     try {

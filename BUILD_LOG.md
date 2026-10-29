@@ -281,3 +281,10 @@ Times are IST.
 - `next.config.ts` sends `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` and `Permissions-Policy: camera=(self), microphone=(self), geolocation=(self)` on every path. No Content-Security-Policy, as instructed.
 - Owner enquiries: no change needed. The owner page already lists that artisan's enquiries (message, reply-to contact, time, kind), newest first, only for a valid token, and `/admin` already shows enquiry counts per artisan. Tests now cover a valid token (own enquiries only, newest first) and a wrong token (404).
 - 5 new tests. The headers on a real running server are checked in S8, not here.
+
+## Overnight S5: camera fallback when the camera cannot start: 2026-10-29 22:58
+
+- Re-implemented from `known-good-1` (the earlier edit in the shared folder was not copied, because it sits inside someone else's uncommitted `CameraMode.tsx`). When `navigator.mediaDevices` is missing, `startCamera` now sets the message and also shows the existing `PermissionDenied` state with the manual place list, the same as a denied permission. On a page that is not a secure context the message says "The camera needs a secure (https) connection. Choose a photo instead."
+- Photo and Upload stay available in both cases.
+- 3 new browser tests in `tests/e2e/phone-fallbacks.spec.ts` (missing `mediaDevices`, not https, permission denied): pass.
+- Not verified: a real phone over plain http, and a real "Don't allow" tap on iPhone or Android.
