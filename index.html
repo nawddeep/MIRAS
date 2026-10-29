@@ -59,7 +59,6 @@
             <span class="sub"><span class="hi" lang="hi">उदयपुर</span><span class="country">INDIA</span></span>
           </h1>
           <div class="divider" aria-hidden="true"><span class="ln l"></span><i class="star"></i><span class="ln r"></span></div>
-          <p class="tagline">Lakes, palaces and slow golden evenings in the old city of Mewar.</p>
           <a class="btn" href="#plan">Plan your journey</a>
         </div>
 
@@ -117,7 +116,7 @@
 
         <div class="cards">
           <article class="card">
-            <div class="card-art" data-art="palace"></div>
+            <div class="card-art"><img src="/img/places/city-palace.png" alt="City Palace on the shores of Lake Pichola"></div>
             <div class="card-body">
               <p class="card-tag">Palace · Old City</p>
               <h3>City Palace <span lang="hi">सिटी पैलेस</span></h3>
@@ -125,7 +124,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art" data-art="pichola"></div>
+            <div class="card-art"><img src="/img/places/lake-pichola.png" alt="Boat on Lake Pichola at sunset"></div>
             <div class="card-body">
               <p class="card-tag">Lake · Sunset</p>
               <h3>Lake Pichola <span lang="hi">पिछोला झील</span></h3>
@@ -133,7 +132,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art" data-art="jagdish"></div>
+            <div class="card-art"><img src="/img/places/jagdish-temple.png" alt="Jagdish Temple and its carved stone entrance"></div>
             <div class="card-body">
               <p class="card-tag">Temple · 1651</p>
               <h3>Jagdish Temple <span lang="hi">जगदीश मंदिर</span></h3>
@@ -141,7 +140,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art" data-art="bagore"></div>
+            <div class="card-art"><img src="/img/places/bagore-ki-haveli.png" alt="Historic facade of Bagore Ki Haveli"></div>
             <div class="card-body">
               <p class="card-tag">Haveli · Gangaur Ghat</p>
               <h3>Bagore Ki Haveli <span lang="hi">बागोर की हवेली</span></h3>
@@ -149,7 +148,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art" data-art="fateh"></div>
+            <div class="card-art"><img src="/img/places/fateh-sagar.png" alt="Fateh Sagar Lake with hills in the distance"></div>
             <div class="card-body">
               <p class="card-tag">Lake · Promenade</p>
               <h3>Fateh Sagar <span lang="hi">फतेह सागर</span></h3>
@@ -157,7 +156,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art" data-art="sajjangarh"></div>
+            <div class="card-art"><img src="/img/places/sajjangarh.png" alt="Sajjangarh Monsoon Palace on its hilltop"></div>
             <div class="card-body">
               <p class="card-tag">Hilltop · 1884</p>
               <h3>Sajjangarh <span lang="hi">सज्जनगढ़</span></h3>
@@ -343,6 +342,20 @@
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </div>
         </form>
+      </div>
+    </section>
+
+    <section class="section journal" id="journal">
+      <div class="wrap">
+        <header class="sec-head"><p class="eyebrow">MIRAS field guide</p><h2>Discover, keep, return</h2><p class="journal-intro">A frontend demonstration of the wider MIRAS platform. Listings, stories and availability below are clearly marked as sample or illustrative.</p></header>
+        <div class="guide-nav" role="tablist" aria-label="MIRAS guide areas">
+          <button class="guide-tab" role="tab" aria-selected="true" data-guide="discover">Explore</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="stories">Stories</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="makers">Makers</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="plan">Plan</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="memories">Memories</button>
+        </div>
+        <div class="guide-panel" id="discover-panel"><div class="finder"><label class="sr" for="placeSearch">Search places</label><input id="placeSearch" type="search" placeholder="Search places, lakes, art or architecture"><div class="filter-row" id="placeFilters"><button data-filter="All" class="active">All</button><button data-filter="Architecture">Architecture</button><button data-filter="Lakes">Lakes</button><button data-filter="Art">Art</button><button data-filter="Photography">Photography</button></div></div><div class="guide-grid" id="placeResults"></div><p class="demo-note">Map, directions, camera-story and 360 views are local demonstrations. No location or camera media is stored.</p></div>
+        <div class="guide-panel" id="stories-panel" hidden><div class="story-layout" id="storyResults"></div><aside class="demo-note"><strong>Audio narration</strong><br>Demonstration only. Narration is unavailable until a rights-cleared audio source is supplied. A text alternative is shown on every story.</aside></div>
+        <div class="guide-panel" id="makers-panel" hidden><div class="maker-tools"><input id="makerSearch" type="search" placeholder="Search a craft or studio"><button class="btn btn-sm" id="voiceDemo">Try voice-first listing</button></div><div class="guide-grid" id="makerResults"></div><form class="voice-draft" id="voiceDraft" hidden><p class="card-tag">Demo workflow · nothing is recorded or published</p><h3>Draft a craft listing</h3><label>Craft description in Hindi or English<textarea placeholder="Type instead of recording…"></textarea></label><label>Photograph<input type="file" accept="image/*"></label><div><button class="btn btn-sm" type="button" id="showDraft">Preview draft</button><button class="btn btn-sm secondary" type="button" id="closeDraft">Cancel</button></div><p class="form-status" id="draftStatus" aria-live="polite"></p></form></div>
+        <div class="guide-panel" id="plan-panel" hidden><div class="planner"><div><p class="card-tag">Deterministic sample planner</p><h3>Build a day with the places you save</h3><label>Available time<select id="plannerTime"><option value="short">2–3 hours</option><option value="day" selected>One day</option></select></label><label>Focus<select id="plannerFocus"><option>Architecture</option><option>Lakes</option><option>Art</option></select></label><button class="btn btn-sm" id="makePlan">Create sample route</button></div><div id="plannerOutput" class="itinerary-output" aria-live="polite">Choose a focus to see an illustrative, data-led route.</div></div><div class="concept-grid"><div><b>Offline pack</b><p>Simulated download only; no offline files are stored.</p><button class="btn btn-sm download-demo">Download demo</button></div><div><b>Audio walk</b><p>Opt-in location triggers are a concept; use the numbered stops instead.</p><button class="btn btn-sm secondary">View stops</button></div><div><b>Responsible visits</b><p>Ask before photographing people, respect worship, and check site guidance.</p></div></div></div>
+        <div class="guide-panel" id="memories-panel" hidden><div class="memory-board"><div class="memory-card"><span>01</span><h3>Save a moment</h3><p>Keep places and stories in a local, illustrative collection.</p></div><div class="memory-card"><span>02</span><h3>Review privacy</h3><p>Face flags are not detected here; this is a manual demonstration state.</p></div><div class="memory-card"><span>03</span><h3>Make a reel</h3><p>Choose up to five sample moments. Sharing remains local and simulated.</p></div></div><div class="passport"><p class="card-tag">Digital heritage passport · demonstration</p><h3>Your first stamp is waiting</h3><p>Collecting is never location-verified. Badges are local UI states, not proof of a visit.</p><button class="btn btn-sm" id="stampPassport">Add a sample stamp</button><p id="passportStatus" aria-live="polite"></p></div></div>
       </div>
     </section>
   </main>

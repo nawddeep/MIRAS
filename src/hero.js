@@ -122,10 +122,10 @@ function makeActor(L, i) {
   if (WALKERS[id]) {
     a.speed = WALKERS[id];
     a.step = rand(0, 1);
-    a.update = (t, dt) => {
+    a.update = (t, dt, view) => {
       a.ox -= a.speed * dt;
-      // walked off the left edge: come back in from the right after a pause
-      if (L.x + a.ox + L.w < -60) a.ox = IMG_W + rand(150, 900) - L.x;
+      // walked off the visible left edge: come straight back in from the visible right edge
+      if (L.x + a.ox + L.w < view.x0 - 20) a.ox = view.x1 + rand(20, 160) - L.x;
       a.step += dt * (a.speed / 52);
       const s = Math.sin(a.step * Math.PI);
       a.oy = -Math.abs(s) * 4.5;
@@ -133,9 +133,9 @@ function makeActor(L, i) {
       a.shear = Math.sin(a.step * Math.PI * 2) * 5.5;
     };
   } else if (id === 'cyclist') {
-    a.update = (t, dt) => {
+    a.update = (t, dt, view) => {
       a.ox -= 52 * dt;
-      if (L.x + a.ox + L.w < -60) a.ox = IMG_W + rand(300, 1400) - L.x;
+      if (L.x + a.ox + L.w < view.x0 - 20) a.ox = view.x1 + rand(60, 400) - L.x;
       a.oy = Math.sin(t * 3.1) * 1.2;
       a.rot = Math.sin(t * 1.55) * 0.003;
     };
@@ -153,11 +153,12 @@ function makeActor(L, i) {
     };
   } else if (L.group === 'boats') {
     a.speed = rand(7, 15) * (i % 3 === 0 ? -1 : 1);
-    a.update = (t, dt) => {
+    a.update = (t, dt, view) => {
       a.ox += a.speed * dt;
       const x = L.x + a.ox;
-      if (a.speed > 0 && x > FRAME.x1 + 10) a.ox = FRAME.x0 - L.w - 10 - L.x;
-      if (a.speed < 0 && x + L.w < FRAME.x0 - 10) a.ox = FRAME.x1 + 10 - L.x;
+      const left = Math.max(FRAME.x0, view.x0), right = Math.min(FRAME.x1, view.x1);
+      if (a.speed > 0 && x > right + 10) a.ox = left - L.w - 10 - L.x;
+      if (a.speed < 0 && x + L.w < left - 10) a.ox = right + 10 - L.x;
       a.oy = Math.sin(t * 0.85 + a.seed) * 2.4;
       a.rot = Math.sin(t * 0.62 + a.seed) * 0.009;
     };
@@ -385,8 +386,9 @@ export async function initHero({ canvas, birdCanvas, lite = false, reduced = fal
     if (dt < frameGap) return;
     state.last = t;
     state.time += dt;
-    for (const a of actors) a.update(state.time, dt);
-    flocks.update(dt, visibleRange());
+    const view = visibleRange();
+    for (const a of actors) a.update(state.time, dt, view);
+    flocks.update(dt, view);
     render();
   }
 

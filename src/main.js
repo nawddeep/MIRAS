@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initHero } from './hero.js';
 import { places, icons } from './art.js';
+import { places as guidePlaces, stories, artisans, events } from './data.js';
 import './style.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -86,7 +87,6 @@ intro
   .from('.sub > *', { opacity: 0, y: 10, duration: 0.9, stagger: 0.15 }, '-=0.6')
   .from('.divider .star', { opacity: 0, scale: 0, rotate: -90, duration: 0.8 }, '-=0.4')
   .from('.divider .ln', { scaleX: 0, duration: 1.4, ease: 'power2.inOut' }, '-=0.35')
-  .from('.tagline', { opacity: 0, y: 10, duration: 1 }, '-=0.9')
   .from('.hero-title .btn', { opacity: 0, y: 10, duration: 0.9 }, '-=0.7')
   .from('.scroll-cue', { opacity: 0, duration: 1 }, '-=0.4');
 
@@ -217,3 +217,29 @@ form.addEventListener('submit', (e) => {
 
 // fonts change line heights: re-measure once they arrive
 document.fonts?.ready.then(() => ScrollTrigger.refresh());
+
+// ---------- MIRAS field guide (local demonstration data only) ----------
+const placeResults = $('#placeResults');
+const renderPlaces = (query = '', category = 'All') => {
+  const q = query.toLowerCase();
+  const results = guidePlaces.filter((p) => (category === 'All' || p.category === category) && `${p.name} ${p.category} ${p.note}`.toLowerCase().includes(q));
+  placeResults.innerHTML = results.length ? results.map((p) => `<article class="guide-card"><img src="${p.image}" alt="Illustrative view of ${p.name}" loading="lazy"><p class="card-tag">${p.category} · ${p.duration}</p><h3>${p.name}</h3><p>${p.note}</p><p class="meta">${p.access}</p><button class="btn btn-sm" data-save-place="${p.id}">Save to trip</button></article>`).join('') : '<p class="demo-note">No places match this search. Try a broader word or another category.</p>';
+};
+renderPlaces();
+let activeFilter = 'All';
+$('#placeSearch')?.addEventListener('input', (e) => renderPlaces(e.target.value, activeFilter));
+$('#placeFilters')?.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; activeFilter = b.dataset.filter; $$('#placeFilters button').forEach((x) => x.classList.toggle('active', x === b)); renderPlaces($('#placeSearch').value, activeFilter); });
+placeResults?.addEventListener('click', (e) => { const b = e.target.closest('[data-save-place]'); if (!b) return; b.textContent = 'Saved locally'; b.disabled = true; });
+
+$('#storyResults').innerHTML = stories.map((s) => `<article class="story-card"><p class="type">${s.type} · ${s.status}</p><h3>${s.title}</h3><p>${s.place}</p><p class="meta"><strong>Source:</strong> ${s.source}</p><button class="btn btn-sm secondary">Read text version</button></article>`).join('');
+const renderMakers = (q = '') => { const needle = q.toLowerCase(); $('#makerResults').innerHTML = artisans.filter((a) => `${a.name} ${a.craft} ${a.location}`.toLowerCase().includes(needle)).map((a) => `<article class="guide-card"><img src="${a.image}" alt="Illustrative craft image"><p class="card-tag">${a.craft} · illustrative</p><h3>${a.name}</h3><p>${a.location}</p><p class="meta">${a.detail}</p><button class="btn btn-sm secondary" data-enquire="${a.name}">Demonstration enquiry</button></article>`).join('') || '<p class="demo-note">No makers match this search.</p>'; };
+renderMakers(); $('#makerSearch')?.addEventListener('input', (e) => renderMakers(e.target.value));
+$('#makerResults')?.addEventListener('click', (e) => { const b = e.target.closest('[data-enquire]'); if (b) b.textContent = 'Enquiry demo opened'; });
+
+$$('.guide-tab').forEach((tab) => tab.addEventListener('click', () => { $$('.guide-tab').forEach((t) => t.setAttribute('aria-selected', String(t === tab))); $$('.guide-panel').forEach((panel) => panel.hidden = panel.id !== `${tab.dataset.guide}-panel`); }));
+$('#voiceDemo')?.addEventListener('click', () => $('#voiceDraft').hidden = false);
+$('#closeDraft')?.addEventListener('click', () => $('#voiceDraft').hidden = true);
+$('#showDraft')?.addEventListener('click', () => { $('#draftStatus').textContent = 'Draft preview ready. Review, edit, or reject it before any simulated publication.'; });
+$('#makePlan')?.addEventListener('click', () => { const focus = $('#plannerFocus').value; const picks = guidePlaces.filter((p) => p.category === focus).slice(0, 2); $('#plannerOutput').innerHTML = `<p class="card-tag">Illustrative ${$('#plannerTime').value === 'day' ? 'day' : 'short'} route</p>${picks.map((p, i) => `<p><strong>${i + 1}. ${p.name}</strong><br>${p.duration} · ${p.note}</p>`).join('')}<p class="meta">This route is deterministic sample data. Confirm access, hours and transport directly.</p>`; });
+$$('.download-demo').forEach((b) => b.addEventListener('click', () => { b.textContent = 'Demo download ready'; b.disabled = true; }));
+$('#stampPassport')?.addEventListener('click', () => { $('#passportStatus').textContent = 'Sample stamp added locally — it is not proof of a visit.'; });
