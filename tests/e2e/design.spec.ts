@@ -79,7 +79,7 @@ test.describe("screenshots for the team", () => {
   for (const width of [360, 390]) {
     test(`save screens at ${width}px into docs/ui`, async ({ page }) => {
       await page.setViewportSize({ width, height: 844 });
-      const shots: [string, string][] = [...SCREENS, ["home-golden", "/?nosplash&hour=17"], ["home-night", "/?nosplash&hour=22"]];
+      const shots: [string, string][] = [...SCREENS, ["home-golden", "/?nosplash&hour=17"], ["home-night", "/?nosplash&hour=22"], ["roadmap", "/roadmap"]];
       for (const [name, path] of shots) {
         await page.goto(path);
         await page.waitForTimeout(400);

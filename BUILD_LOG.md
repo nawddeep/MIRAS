@@ -331,3 +331,8 @@ Times are IST.
 - Existing issue found, not changed: `app/memories/page.tsx` says "Your photos stay on this device." That is not fully true, because frames are sent to the server and the AI model for captions.
 - 7 new unit tests and 5 new browser tests (nine cards, one label each, counts equal the data, no rupee sign or rating, no buttons or book/buy/pay/follow/rent/chat links, built cards name a route whose file exists, footer link only, no sideways scroll at 360 px).
 - Runs on a clean build: typecheck, lint, 215 unit tests, content:check (0 errors, 51 items), 93 browser tests, demo path 3 of 3: all passed.
+
+## Roadmap pitch support: screenshots and notes: 2026-10-29 23:08
+
+- `tests/e2e/design.spec.ts` now also saves `/roadmap` with the other screens: `docs/ui/360/roadmap.png` and `docs/ui/390/roadmap.png` (full page). No assertion changed.
+- New `docs/PITCH_NOTES.md`: the three sentences, the answers to "Why no payments?" and "Why no social features?" (from the page and `docs/PHASE6_NOT_BUILT.md`), and a short list of things not to say (for example, do not say Memories photos never leave the phone).
