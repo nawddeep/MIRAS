@@ -6,14 +6,14 @@ One page. Plain language. Written from the code and `BUILD_LOG.md`, not from hop
 
 1. The server runs in production mode (`npm run start`, never `npm run dev`) and its terminal is visible.
 2. The HTTPS tunnel is up and its address opens on both phones. Do not restart the tunnel after installing the home-screen icon: a quick tunnel gets a new address each time, and the old icon stops working.
-3. `<address>/admin` says **Gemini configured** with the right model name. That only proves the values are set. Take one camera photo of a real place: it must come back with the right match, and the terminal must show no `[ai]` lines.
+3. `<address>/admin` says **Gemini configured** with the right model name. That only proves the values are set. Prove it works: run `npm run ai:check` (it must print `ai:check: ok`), or sign in at `/admin/moderation` and press "Run the check" on `/admin`. Then take one camera photo of a real place: it must come back with the right match, and the terminal must show no `[ai]` lines. `npm run preflight` lists all of these checks in one go.
 4. Demo mode is on: the dark "Demo mode" bar shows at the top of the pages.
 5. Both phones are charged, screen lock is long, notifications are off, volume is up. Play one story's audio to check.
 6. The backup screen recording is on the phone and plays with sound.
 7. The MIRAS icon is installed on the home screen and opens full screen.
 8. Mic and camera are already allowed for this address: open Onboarding and Camera once on each phone.
-9. Test data is cleared. Stop the server, run `mv data data-test`, start it again. This removes test enquiries, test listings and uploaded photos. Sample content is not affected.
-10. Do not hammer the buttons. Limits per phone: camera 20 photos a minute, voice drafts 10 in 10 minutes, enquiries 3 in 10 minutes. "Too many requests" means wait.
+9. Test data is cleared. Stop the server, then run `npm run data:backup` and `npm run data:reset -- --yes`, then start it again. This keeps a backup in `backups/`, then removes test enquiries, picks, draft listings and uploaded photos. Published listings and sample content are not affected.
+10. Do not hammer the buttons. Limits per phone: camera 20 photos a minute, voice drafts 10 in 10 minutes, enquiries 3 in 10 minutes. With `TRUST_PROXY=true` behind a tunnel, two phones on the same Wi-Fi count as one visitor and share these limits. All visitors together are also capped (camera 120 a minute, voice drafts and memories 60 in 10 minutes). "Too many requests" means wait.
 
 ## 2. The 60-second path
 
@@ -28,7 +28,7 @@ One page. Plain language. Written from the code and `BUILD_LOG.md`, not from hop
 
 ## 3. If Gemini fails on stage
 
-Be exact about what the app does. It does **not** switch to demo responses by itself.
+Be exact about what the app does. It does **not** switch to demo responses by itself. A call that gets no answer is given up after 25 seconds (`GEMINI_TIMEOUT_MS`), and a busy or broken reply (429 or a 5xx error) is tried once more, so a failure can take up to about 25 seconds to show.
 
 - Camera: shows "I don't know this one yet", the same as a photo it cannot place. If a clear photo keeps getting that, look at the terminal for an `[ai]` line.
 - Voice: "The assistant is not reachable right now. Please fill in the form yourself." and the typed form opens. Use it.

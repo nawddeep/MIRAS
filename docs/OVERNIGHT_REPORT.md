@@ -87,3 +87,7 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 - Decision: the brief limits exit-code blockers to the data folder and the build, so a busy port or a failed Gemini check shows as FAIL but still exits 0. The morning checklist therefore tells the reader to read the list, not only the exit code.
 - Limit: stories carry no writer field, so "verified by a second person" can only be checked as "named verifier plus date".
 
+### S7 Documents: done
+- `docs/HOSTING.md`, `docs/MORNING_CHECKLIST.md` written. `docs/DEMO_RUNBOOK.md` updated in three places where a fact was now wrong (Gemini proof, clearing test data, shared limits) plus the 25-second timeout note. `docs/PHONE_TEST.md` untouched.
+- The checklist mentions `docs/MIRAS_Content_Intake_Sheet.*` only "if it exists"; no such file exists in this branch.
+

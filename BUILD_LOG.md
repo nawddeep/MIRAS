@@ -299,3 +299,10 @@ Times are IST.
 - Decision: a failed Gemini check or a busy port is a FAIL line but not an exit-code blocker, as the brief limits blockers to the data folder and the build.
 - Limit: the content schema has no writer field for stories, so "verified by a second person" is checked as "has a named verifier and a date", not "differs from the writer".
 - 14 new unit tests (208 pass). Verified on a real production server started with `MIRAS_DATA_DIR=/dev/null/nope`: one `[miras]` line naming the folder, `/api/health` gives 503 `{"ok":false,"db":"error",...}` with no error detail, and the four security headers from S4 are on the real response.
+
+## Overnight S7: hosting and morning documents: 2026-10-29 23:25
+
+- New `docs/HOSTING.md`: the laptop plus an HTTPS tunnel with `TRUST_PROXY=true` is the demo default; a public link needs one VM or container with a persistent disk at `MIRAS_DATA_DIR`; serverless hosts (including Vercel) lose SQLite and uploads, so MIRAS must not be deployed there. Notes that two phones on one Wi-Fi share a rate limit behind a tunnel.
+- New `docs/MORNING_CHECKLIST.md`: nine numbered steps with the exact commands and what a good result looks like, including the merge and discard commands for `overnight-finish`.
+- `docs/DEMO_RUNBOOK.md`: three facts were out of date and are corrected (proof that Gemini works is now `npm run ai:check` or the admin button; clearing test data is now `data:backup` then `data:reset -- --yes` instead of `mv data data-test`; limits are shared by phones on one Wi-Fi behind a tunnel, plus the all-visitor ceilings), and a failure can take up to about 25 seconds to show because of the new timeout. The Gemini-failure behaviour itself did not change.
+- `docs/PHONE_TEST.md` was not changed: nothing in it became wrong.
