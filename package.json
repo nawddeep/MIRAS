@@ -11,7 +11,10 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "content:check": "tsx scripts/content-check.ts",
-    "ai:check": "tsx scripts/ai-check.ts"
+    "ai:check": "tsx scripts/ai-check.ts",
+    "data:backup": "tsx scripts/data-backup.ts",
+    "data:reset": "tsx scripts/data-reset.ts",
+    "preflight": "tsx scripts/preflight.ts"
   },
   "dependencies": {
     "@google/genai": "2.31.0",

@@ -288,3 +288,14 @@ Times are IST.
 - Photo and Upload stay available in both cases.
 - 3 new browser tests in `tests/e2e/phone-fallbacks.spec.ts` (missing `mediaDevices`, not https, permission denied): pass.
 - Not verified: a real phone over plain http, and a real "Don't allow" tap on iPhone or Android.
+
+## Overnight S6: backup, reset, health, preflight: 2026-10-29 23:10
+
+- `npm run data:backup` (`lib/data-tools.ts`): copies the database with `VACUUM INTO` (a consistent copy even while the server runs, never a raw copy of a WAL file) and the uploads folder into `backups/<timestamp>/`. `backups/` is in `.gitignore`.
+- `npm run data:reset -- --yes`: takes a backup first, then removes test data only: all enquiries and picks, draft artisan listings and draft workshops, upload records and the uploaded files. Without `--yes` it prints the counts and deletes nothing. Published listings and everything under `/content` are never touched. Stop the server before running it.
+- Server start (`instrumentation.ts`, `lib/data-dir.ts`): if `MIRAS_DATA_DIR` cannot be created or written, one plain line naming the folder is printed. No stack trace, and the server still starts.
+- `GET /api/health` returns `{ ok, db, ai, demoMode, time }` (503 when the database cannot be read). No secrets, no counts, no limiter.
+- `npm run preflight` (`lib/preflight.ts`): PASS/FAIL/WARN/SKIP list covering `.env`, key/model/passcode as set or not set, port 3000, data folder, production build, `/api/health`, the Gemini check, `content:check`, and a content readiness section (places with real coordinates of 3, verified stories of 3, consented artisans of 2, images under 800 px listed). Exit code 1 only for an unwritable data folder or a missing build. Readiness is warnings only.
+- Decision: a failed Gemini check or a busy port is a FAIL line but not an exit-code blocker, as the brief limits blockers to the data folder and the build.
+- Limit: the content schema has no writer field for stories, so "verified by a second person" is checked as "has a named verifier and a date", not "differs from the writer".
+- 14 new unit tests (208 pass). Verified on a real production server started with `MIRAS_DATA_DIR=/dev/null/nope`: one `[miras]` line naming the folder, `/api/health` gives 503 `{"ok":false,"db":"error",...}` with no error detail, and the four security headers from S4 are on the real response.

@@ -81,3 +81,9 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 - Merge note: the shared folder has uncommitted edits in the same file, and its own earlier version of this fix. When merging, keep one version; this branch's is the smaller one.
 - Note for `tests/e2e/phone-fallbacks.spec.ts`: an untracked file with the same name exists in the shared folder; git will refuse to merge over it until it is moved or deleted by its owner.
 
+### S6 Data safety, health, preflight: done
+- `data:backup`, `data:reset` (refuses without `--yes`, backs up first, test data only, never `/content`), start-up data-folder check, `/api/health`, `npm run preflight`. 14 new tests; 208 unit tests pass.
+- Verified on a real production server with an unusable data folder: one plain log line, health 503 without details, and the S4 security headers present on the real response.
+- Decision: the brief limits exit-code blockers to the data folder and the build, so a busy port or a failed Gemini check shows as FAIL but still exits 0. The morning checklist therefore tells the reader to read the list, not only the exit code.
+- Limit: stories carry no writer field, so "verified by a second person" can only be checked as "named verifier plus date".
+
