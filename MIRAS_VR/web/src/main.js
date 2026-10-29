@@ -74,6 +74,7 @@ const guidePills = {
   trump: $('btn-select-trump'),
   salman: $('btn-select-salman'),
   modi: $('btn-select-modi'),
+  babita: $('btn-select-babita'),
 };
 
 function setActiveGuidePill(guideId) {
@@ -104,6 +105,13 @@ if (guidePills.modi) {
   guidePills.modi.addEventListener('click', async () => {
     setActiveGuidePill('modi');
     await guide.switchGuide('modi');
+  });
+}
+
+if (guidePills.babita) {
+  guidePills.babita.addEventListener('click', async () => {
+    setActiveGuidePill('babita');
+    await guide.switchGuide('babita');
   });
 }
 const hudButtons = {

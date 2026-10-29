@@ -112,6 +112,22 @@ export const GUIDES_CONFIG = {
       duration: 8500,
     },
   },
+  babita: {
+    id: 'babita',
+    name: 'Babita Ji',
+    badge: 'GOKULDHAM GUIDE',
+    title: 'Graceful Heritage Hostess',
+    glbUrl: 'assets/models/babita_tour_guide_rigged.glb',
+    stlUrl: 'assets/models/Babita.glb',
+    themeColor: '#d63384',
+    welcomeStory: {
+      title: 'City Palace, Udaipur',
+      lead: 'Namaste Udaipur!',
+      body: 'Namaste! Udaipur ke sundar City Palace mein aapka swagat hai. Yeh royal palace aur Lake Pichola ka nazara sach mein behad khubsurat aur dilkash hai!',
+      caption: 'Namaste! Udaipur ke sundar City Palace mein aapka swagat hai. Yeh royal palace aur Lake Pichola ka nazara sach mein behad khubsurat aur dilkash hai!',
+      duration: 8500,
+    },
+  },
 };
 
 const BUBBLE_FADE_MS = 400;

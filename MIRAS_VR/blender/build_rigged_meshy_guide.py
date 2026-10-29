@@ -43,6 +43,16 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path, name="Tour_Gui
     me = mesh_obj.data
     log(f"Imported mesh: {len(me.vertices)} vertices, {len(me.polygons)} faces")
 
+    # If mesh is overly dense (> 500k polygons), decimate to ~200k for WebGL real-time performance
+    if len(me.polygons) > 500000:
+        target_ratio = 200000.0 / float(len(me.polygons))
+        log(f"Decimating dense mesh ({len(me.polygons)} faces) with ratio {target_ratio:.3f}...")
+        mod = mesh_obj.modifiers.new("Decimate", "DECIMATE")
+        mod.ratio = target_ratio
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+        me = mesh_obj.data
+        log(f"Decimated mesh to {len(me.polygons)} faces")
+
     # 2. Inspect and optimize materials/textures
     for mat in me.materials:
         log(f"Preserving material: {mat.name}")
@@ -143,27 +153,50 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path, name="Tour_Gui
         b_foot.head = Vector((sign * 0.13, 0.02, 0.11))
         b_foot.tail = Vector((sign * 0.12, -0.12, 0.02))
 
+    is_babita = "babita" in name.lower()
+
     # Left & Right Arms
     for side, sign in (("L", 1.0), ("R", -1.0)):
-        b_shoulder = bones.new(f"shoulder.{side}")
-        b_shoulder.parent = b_chest
-        b_shoulder.head = Vector((sign * 0.08, 0.0, 1.48))
-        b_shoulder.tail = Vector((sign * 0.28, 0.0, 1.44))
+        if is_babita:
+            b_shoulder = bones.new(f"shoulder.{side}")
+            b_shoulder.parent = b_chest
+            b_shoulder.head = Vector((sign * 0.07, 0.0, 1.46))
+            b_shoulder.tail = Vector((sign * 0.20, 0.0, 1.42))
 
-        b_upper_arm = bones.new(f"upper_arm.{side}")
-        b_upper_arm.parent = b_shoulder
-        b_upper_arm.head = Vector((sign * 0.28, 0.0, 1.44))
-        b_upper_arm.tail = Vector((sign * 0.44, 0.04, 1.12))
+            b_upper_arm = bones.new(f"upper_arm.{side}")
+            b_upper_arm.parent = b_shoulder
+            b_upper_arm.head = Vector((sign * 0.20, 0.0, 1.42))
+            b_upper_arm.tail = Vector((sign * 0.38, 0.02, 1.14))
 
-        b_forearm = bones.new(f"forearm.{side}")
-        b_forearm.parent = b_upper_arm
-        b_forearm.head = Vector((sign * 0.44, 0.04, 1.12))
-        b_forearm.tail = Vector((sign * 0.54, -0.01, 0.90))
+            b_forearm = bones.new(f"forearm.{side}")
+            b_forearm.parent = b_upper_arm
+            b_forearm.head = Vector((sign * 0.38, 0.02, 1.14))
+            b_forearm.tail = Vector((sign * 0.48, 0.0, 0.94))
 
-        b_hand = bones.new(f"hand.{side}")
-        b_hand.parent = b_forearm
-        b_hand.head = Vector((sign * 0.54, -0.01, 0.90))
-        b_hand.tail = Vector((sign * 0.60, -0.02, 0.76))
+            b_hand = bones.new(f"hand.{side}")
+            b_hand.parent = b_forearm
+            b_hand.head = Vector((sign * 0.48, 0.0, 0.94))
+            b_hand.tail = Vector((sign * 0.53, -0.01, 0.82))
+        else:
+            b_shoulder = bones.new(f"shoulder.{side}")
+            b_shoulder.parent = b_chest
+            b_shoulder.head = Vector((sign * 0.08, 0.0, 1.48))
+            b_shoulder.tail = Vector((sign * 0.28, 0.0, 1.44))
+
+            b_upper_arm = bones.new(f"upper_arm.{side}")
+            b_upper_arm.parent = b_shoulder
+            b_upper_arm.head = Vector((sign * 0.28, 0.0, 1.44))
+            b_upper_arm.tail = Vector((sign * 0.44, 0.04, 1.12))
+
+            b_forearm = bones.new(f"forearm.{side}")
+            b_forearm.parent = b_upper_arm
+            b_forearm.head = Vector((sign * 0.44, 0.04, 1.12))
+            b_forearm.tail = Vector((sign * 0.54, -0.01, 0.90))
+
+            b_hand = bones.new(f"hand.{side}")
+            b_hand.parent = b_forearm
+            b_hand.head = Vector((sign * 0.54, -0.01, 0.90))
+            b_hand.tail = Vector((sign * 0.60, -0.02, 0.76))
 
     bpy.ops.object.mode_set(mode="OBJECT")
     log(f"Created humanoid armature with {len(arm_data.bones)} bones")
@@ -197,10 +230,10 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path, name="Tour_Gui
         "chest": 0.25,
         "neck": 0.14,
         "head": 0.18,
-        "shoulder.L": 0.16, "shoulder.R": 0.16,
-        "upper_arm.L": 0.14, "upper_arm.R": 0.14,
-        "forearm.L": 0.12, "forearm.R": 0.12,
-        "hand.L": 0.11, "hand.R": 0.11,
+        "shoulder.L": 0.13 if is_babita else 0.16, "shoulder.R": 0.13 if is_babita else 0.16,
+        "upper_arm.L": 0.09 if is_babita else 0.14, "upper_arm.R": 0.09 if is_babita else 0.14,
+        "forearm.L": 0.08 if is_babita else 0.12, "forearm.R": 0.08 if is_babita else 0.12,
+        "hand.L": 0.08 if is_babita else 0.11, "hand.R": 0.08 if is_babita else 0.11,
         "thigh.L": 0.16, "thigh.R": 0.16,
         "shin.L": 0.14, "shin.R": 0.14,
         "foot.L": 0.12, "foot.R": 0.12,
@@ -222,7 +255,7 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path, name="Tour_Gui
                 continue
             if ".R" in b_name and p.x > 0.02:
                 continue
-            if ("arm" in b_name or "hand" in b_name) and abs(p.x) < 0.22:
+            if ("arm" in b_name or "hand" in b_name) and abs(p.x) < (0.16 if is_babita else 0.22):
                 continue
 
             if d < r * 2.2:
