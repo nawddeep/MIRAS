@@ -24,6 +24,22 @@ PALETTE = {
     "fabric_fold": (0.0382, 0.0356, 0.0369, 1.0),
     # Swatch 3: Warm Tan Indian Skin Tone (#D8A47C)
     "skin": (0.6867, 0.3712, 0.2016, 1.0),
+    # Subtle jawline 5 o'clock stubble shadow (#B47E5A)
+    "skin_shadow": (0.4578, 0.2086, 0.1022, 1.0),
+    # Salman Khan signature arched dark eyebrows (#1C1410)
+    "eyebrow": (0.0105, 0.0060, 0.0040, 1.0),
+    # Eye sclera / White of the eyes (#EDE8E0)
+    "eye_white": (0.8310, 0.7913, 0.7290, 1.0),
+    # Intense dark brown iris & pupil (#150E0A)
+    "pupil": (0.0060, 0.0035, 0.0020, 1.0),
+    # Eyelid fold and lash line (#281C16)
+    "eyelid": (0.0212, 0.0105, 0.0065, 1.0),
+    # Natural warm lip tone (#BD725A)
+    "lips": (0.5089, 0.1651, 0.1022, 1.0),
+    # Lip crease parting line (#4A2018)
+    "mouth_line": (0.0685, 0.0130, 0.0080, 1.0),
+    # Nostril / under-nose shadow (#4A241A)
+    "nostril": (0.0685, 0.0160, 0.0090, 1.0),
     # Swatch 4: Iconic Turquoise Bracelet Stone (#287277)
     "turquoise": (0.0212, 0.1683, 0.1845, 1.0),
     # Silver curb chain for bracelet (#B0B4B8)
@@ -32,8 +48,6 @@ PALETTE = {
     "shoes": (0.0055, 0.0055, 0.0070, 1.0),
     # Dark slicked hair (#18181A)
     "hair": (0.0080, 0.0080, 0.0100, 1.0),
-    # Natural lip tone (#A85848)
-    "lips": (0.3888, 0.0988, 0.0685, 1.0),
     # Placket buttons (#202022)
     "button": (0.0130, 0.0130, 0.0140, 1.0),
 }
@@ -133,19 +147,19 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
             elif t < 0.27:
                 col = PALETTE["fabric_fold"]
             # Forearm: Bare tan skin
-            elif t < 0.65:
+            elif t < 0.48:
                 col = PALETTE["skin"]
-            # Wrist: Bracelet zone (Right wrist has Salman's iconic turquoise stone & silver chain)
-            elif t <= 0.74:
+            # Wrist Joint Narrowing: Bracelet zone (Right wrist has Salman's turquoise stone & silver chain)
+            elif t <= 0.56:
                 if side_name == "R":
-                    # Turquoise stone on outer/anterior face of wrist
-                    if y < -0.015 and x < -0.45:
+                    # Turquoise stone on anterior/outer face of wrist
+                    if y < 0.005:
                         col = PALETTE["turquoise"]
                     else:
                         col = PALETTE["silver_chain"]
                 else:
                     col = PALETTE["skin"]
-            # Hand, Palm & All Fingers: 100% Clean Skin
+            # Hand, Palm, Thumb & All 10 Fingers: 100% Clean Skin
             else:
                 col = PALETTE["skin"]
 
@@ -157,10 +171,10 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
             else:
                 col = PALETTE["kurta_black"]
 
-        # 5. Neck & Mandarin Collar (V-neck opening exposing throat)
+        # 5. Neck & Throat (Clean V-opening without black jagged spikes)
         elif z < 1.58:
-            if y < -0.01 and ax < 0.05:
-                col = PALETTE["skin"]  # Throat / base of neck
+            if y < 0.035 and ax < 0.065:
+                col = PALETTE["skin"]  # Smooth throat and neck
             else:
                 col = PALETTE["kurta_black"]  # Mandarin collar around sides and back
 
@@ -171,10 +185,46 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
             else:
                 col = PALETTE["hair"]  # Back of head / nape
 
-        # 7. Facial Features (Cheeks, Nose, Mouth, Eyes & Forehead)
+        # 7. Detailed Facial Features & Expressive Eyes
         elif z < 1.82:
-            if y < -0.035 and ax < 0.082:
-                col = PALETTE["skin"]  # Smooth tan face without artificial headband or lipstick
+            is_face_front = (y < -0.035) and (ax < 0.085)
+            if is_face_front:
+                # Calculate distance to Left and Right eye centers
+                d_eye_l = (Vector((x, y, z)) - Vector((0.0344, -0.0929, 1.7330))).length
+                d_eye_r = (Vector((x, y, z)) - Vector((-0.0339, -0.0908, 1.7324))).length
+                d_eye = min(d_eye_l, d_eye_r)
+
+                # Expressive Eyes (Iris, Pupil, Sclera, Eyelid Line)
+                if d_eye < 0.015:
+                    if d_eye < 0.0055:
+                        col = PALETTE["pupil"]  # Intense dark brown iris & pupil
+                    elif z > 1.737:
+                        col = PALETTE["eyelid"]  # Eyelid crease & dark lash line
+                    else:
+                        col = PALETTE["eye_white"]  # Eye sclera white
+
+                # Signature Dark Arched Eyebrows
+                elif (1.748 <= z <= 1.774) and (0.012 <= ax <= 0.062) and (y < -0.086):
+                    col = PALETTE["eyebrow"]
+
+                # Nostril Depth & Under-Nose Shadow
+                elif (1.666 <= z <= 1.685) and (ax <= 0.018) and (-0.126 <= y <= -0.108):
+                    col = PALETTE["nostril"]
+
+                # Natural Lips & Mouth Parting Crease
+                elif (1.632 <= z <= 1.658) and (ax <= 0.026) and (y < -0.090):
+                    if abs(z - 1.646) < 0.0035:
+                        col = PALETTE["mouth_line"]
+                    else:
+                        col = PALETTE["lips"]
+
+                # Subtle Rugged 5 o'clock Jawline Shadow
+                elif (1.58 <= z <= 1.64) and (y < 0.0) and (ax <= 0.065):
+                    col = PALETTE["skin_shadow"]
+
+                # Smooth Warm Tan Complexion
+                else:
+                    col = PALETTE["skin"]
             else:
                 col = PALETTE["hair"]  # Temples, ears, and hair
 

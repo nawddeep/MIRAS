@@ -993,6 +993,14 @@ function applySalmanAttireColors(geometry) {
   const cBlack = new THREE.Color('#262424');
   const cCharcoal = new THREE.Color('#373536');
   const cSkin = new THREE.Color('#D8A47C');
+  const cSkinShadow = new THREE.Color('#B47E5A');
+  const cEyebrow = new THREE.Color('#1C1410');
+  const cEyeWhite = new THREE.Color('#EDE8E0');
+  const cPupil = new THREE.Color('#150E0A');
+  const cEyelid = new THREE.Color('#281C16');
+  const cLips = new THREE.Color('#BD725A');
+  const cMouthLine = new THREE.Color('#4A2018');
+  const cNostril = new THREE.Color('#4A241A');
   const cTurquoise = new THREE.Color('#287277');
   const cSilver = new THREE.Color('#B0B4B8');
   const cShoes = new THREE.Color('#141416');
@@ -1000,6 +1008,9 @@ function applySalmanAttireColors(geometry) {
   const cButton = new THREE.Color('#202022');
 
   const c = new THREE.Color();
+
+  const eyeL = new THREE.Vector3(0.0344, 1.7330, 0.0929);
+  const eyeR = new THREE.Vector3(-0.0339, 1.7324, 0.0908);
 
   const elbowR = new THREE.Vector3(-0.38, 0.04, 1.22);
   const handR = new THREE.Vector3(-0.56, -0.05, 0.86);
@@ -1010,8 +1021,6 @@ function applySalmanAttireColors(geometry) {
   const handL = new THREE.Vector3(0.56, -0.05, 0.86);
   const armVecL = new THREE.Vector3().subVectors(handL, elbowL);
   const armLen2L = armVecL.lengthSq();
-
-  const pt = new THREE.Vector3();
 
   for (let i = 0; i < count; i++) {
     const x = pos.getX(i);
@@ -1029,9 +1038,6 @@ function applySalmanAttireColors(geometry) {
     }
     // Bilateral Arms & Hands (Continuous Arm Axis Projection)
     else if (ax > 0.24 && y > 0.75 && y < 1.45) {
-      pt.set(x, z, y); // pos in Three.js space: Y is up, Z is depth, but in STL coordinate space:
-      // Note: in loadSTLFallback, geometry.rotateX(-PI/2) was applied, so Three.js Y is height, -Z is front.
-      // Let's compute t along arm:
       const sideIsRight = x < 0;
       const elbow = sideIsRight ? elbowR : elbowL;
       const armVec = sideIsRight ? armVecR : armVecL;
@@ -1044,11 +1050,11 @@ function applySalmanAttireColors(geometry) {
         c.copy(cBlack);
       } else if (t < 0.27) {
         c.copy(cCharcoal);
-      } else if (t < 0.65) {
+      } else if (t < 0.48) {
         c.copy(cSkin);
-      } else if (t <= 0.74) {
+      } else if (t <= 0.56) {
         if (sideIsRight) {
-          if (z < -0.015 && x < -0.45) {
+          if (z < 0.005) {
             c.copy(cTurquoise);
           } else {
             c.copy(cSilver);
@@ -1068,9 +1074,9 @@ function applySalmanAttireColors(geometry) {
         c.copy(cBlack);
       }
     }
-    // Neck & Collar
+    // Neck & Throat
     else if (y < 1.58) {
-      if (z > 0.01 && ax < 0.05) {
+      if (z > -0.035 && ax < 0.065) {
         c.copy(cSkin);
       } else {
         c.copy(cBlack);
@@ -1084,10 +1090,46 @@ function applySalmanAttireColors(geometry) {
         c.copy(cHair);
       }
     }
-    // Face Features (Cheeks, Nose, Mouth, Eyes, Forehead)
+    // Detailed Facial Features & Expressive Eyes
     else if (y < 1.82) {
-      if (z > 0.035 && ax < 0.082) {
-        c.copy(cSkin);
+      const isFaceFront = z > 0.035 && ax < 0.085;
+      if (isFaceFront) {
+        const dEyeL = Math.hypot(x - eyeL.x, y - eyeL.y, z - eyeL.z);
+        const dEyeR = Math.hypot(x - eyeR.x, y - eyeR.y, z - eyeR.z);
+        const dEye = Math.min(dEyeL, dEyeR);
+
+        // Expressive Eyes
+        if (dEye < 0.015) {
+          if (dEye < 0.0055) {
+            c.copy(cPupil);
+          } else if (y > 1.737) {
+            c.copy(cEyelid);
+          } else {
+            c.copy(cEyeWhite);
+          }
+        }
+        // Signature Dark Eyebrows
+        else if (y >= 1.748 && y <= 1.774 && ax >= 0.012 && ax <= 0.062 && z > 0.086) {
+          c.copy(cEyebrow);
+        }
+        // Nostril Depth
+        else if (y >= 1.666 && y <= 1.685 && ax <= 0.018 && z >= 0.108 && z <= 0.126) {
+          c.copy(cNostril);
+        }
+        // Natural Lips
+        else if (y >= 1.632 && y <= 1.658 && ax <= 0.026 && z > 0.090) {
+          if (Math.abs(y - 1.646) < 0.0035) {
+            c.copy(cMouthLine);
+          } else {
+            c.copy(cLips);
+          }
+        }
+        // Stubble Shadow
+        else if (y >= 1.58 && y <= 1.64 && z > 0.0 && ax <= 0.065) {
+          c.copy(cSkinShadow);
+        } else {
+          c.copy(cSkin);
+        }
       } else {
         c.copy(cHair);
       }
