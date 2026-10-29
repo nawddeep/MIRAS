@@ -98,58 +98,95 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
 
     # 5. Apply Salman Khan Pathani Attire Vertex Colors
     attr = me.color_attributes.new("Col", "FLOAT_COLOR", "CORNER")
+
+    # Define arm bone axes for smooth perpendicular sleeve cuffs and isolated wrist bracelet
+    arm_axes = {}
+    for side_sign, s_name in [(-1.0, "R"), (1.0, "L")]:
+        elbow_pt = Vector((side_sign * 0.38, 0.04, 1.22))
+        hand_pt = Vector((side_sign * 0.56, -0.05, 0.86))
+        vec = hand_pt - elbow_pt
+        arm_axes[s_name] = (elbow_pt, vec, vec.length_squared)
+
     for poly in me.polygons:
         c = poly.center
         x, y, z = c.x, c.y, c.z
         ax = abs(x)
 
-        # 1. Footwear: Black formal loafers
+        # 1. Footwear: Black formal dress loafers
         if z < 0.11:
             col = PALETTE["shoes"]
-        # 2. Black Salwar trousers: Ankles to lower torso
+
+        # 2. Black Salwar trousers: Ankles to waist
         elif z < 0.52:
             col = PALETTE["kurta_black"]
-        # 3. Arms: Salman Khan has 3/4 rolled sleeves
-        # Forearms and hands exposed with warm tan skin
-        elif 0.70 <= z < 1.15 and ax >= 0.38:
-            # Right wrist (negative X in Blender coordinate space) has the iconic turquoise bracelet
-            if x < -0.42 and 0.86 <= z <= 0.92:
-                # Turquoise stone is facing forward/top
-                if y < -0.01:
-                    col = PALETTE["turquoise"]
+
+        # 3. Bilateral Arms & Hands (Continuous Arm Axis Projection)
+        elif ax > 0.24 and 0.75 < z < 1.45:
+            side_name = "L" if x > 0 else "R"
+            elbow_pt, vec, l2 = arm_axes[side_name]
+            t = (Vector((x, y, z)) - elbow_pt).dot(vec) / l2
+
+            # Upper arm: Black Kurta sleeve
+            if t < 0.24:
+                col = PALETTE["kurta_black"]
+            # Rolled sleeve cuff rim
+            elif t < 0.27:
+                col = PALETTE["fabric_fold"]
+            # Forearm: Bare tan skin
+            elif t < 0.65:
+                col = PALETTE["skin"]
+            # Wrist: Bracelet zone (Right wrist has Salman's iconic turquoise stone & silver chain)
+            elif t <= 0.74:
+                if side_name == "R":
+                    # Turquoise stone on outer/anterior face of wrist
+                    if y < -0.015 and x < -0.45:
+                        col = PALETTE["turquoise"]
+                    else:
+                        col = PALETTE["silver_chain"]
                 else:
-                    col = PALETTE["silver_chain"]
+                    col = PALETTE["skin"]
+            # Hand, Palm & All Fingers: 100% Clean Skin
             else:
                 col = PALETTE["skin"]
-        # 4. Upper arm Kurta sleeves (rolled up to ~elbow level)
-        elif 1.15 <= z < 1.50 and ax >= 0.28:
-            col = PALETTE["kurta_black"]
-        # 5. Torso: Long Black Pathani Kurta
-        elif 0.52 <= z < 1.55:
-            # Front placket buttons
-            if y < -0.08 and ax < 0.015 and z >= 1.10 and (abs((z - 1.20) % 0.08) < 0.015):
+
+        # 4. Torso: Black Pathani Kurta with buttons
+        elif z < 1.52:
+            # Front placket button accents
+            if y < -0.08 and ax < 0.015 and z >= 1.08 and (abs((z - 1.18) % 0.08) < 0.015):
                 col = PALETTE["button"]
             else:
                 col = PALETTE["kurta_black"]
-        # 6. Neck and Collar
-        elif 1.55 <= z < 1.64:
-            if y < -0.02 and ax < 0.075:
-                col = PALETTE["skin"]  # Salman Khan jawline & throat
-            elif y > 0.03 or ax > 0.09:
-                col = PALETTE["hair"]
+
+        # 5. Neck & Mandarin Collar (V-neck opening exposing throat)
+        elif z < 1.58:
+            if y < -0.01 and ax < 0.05:
+                col = PALETTE["skin"]  # Throat / base of neck
             else:
-                col = PALETTE["kurta_black"]  # Mandarin collar
-        # 7. Head, Face & Slicked Dark Hair
+                col = PALETTE["kurta_black"]  # Mandarin collar around sides and back
+
+        # 6. Chin & Jawline
+        elif z < 1.66:
+            if y < 0.01 and ax < 0.08:
+                col = PALETTE["skin"]  # Strong Salman Khan chin & jawline
+            else:
+                col = PALETTE["hair"]  # Back of head / nape
+
+        # 7. Facial Features (Cheeks, Nose, Mouth, Eyes & Forehead)
+        elif z < 1.82:
+            if y < -0.035 and ax < 0.082:
+                col = PALETTE["skin"]  # Smooth tan face without artificial headband or lipstick
+            else:
+                col = PALETTE["hair"]  # Temples, ears, and hair
+
+        # 8. Forehead Hairline & Slicked Dark Hair
         else:
-            is_front = y < -0.025 and ax < 0.095
-            is_hair = (z >= 1.74 and y > -0.085) or z >= 1.76 or not is_front
-            if is_hair:
-                col = PALETTE["hair"]
+            if z < 1.835 and y < -0.095 and ax < 0.045:
+                col = PALETTE["skin"]  # Upper forehead up to natural hairline
             else:
-                if 1.635 <= z <= 1.66 and ax < 0.032 and y < -0.08:
-                    col = PALETTE["lips"]
-                else:
-                    col = PALETTE["skin"]
+                col = PALETTE["hair"]  # Slicked black hairstyle
+
+        for li in poly.loop_indices:
+            attr.data[li].color = col
 
         for li in poly.loop_indices:
             attr.data[li].color = col

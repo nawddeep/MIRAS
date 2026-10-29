@@ -997,10 +997,21 @@ function applySalmanAttireColors(geometry) {
   const cSilver = new THREE.Color('#B0B4B8');
   const cShoes = new THREE.Color('#141416');
   const cHair = new THREE.Color('#18181A');
-  const cLips = new THREE.Color('#A85848');
   const cButton = new THREE.Color('#202022');
 
   const c = new THREE.Color();
+
+  const elbowR = new THREE.Vector3(-0.38, 0.04, 1.22);
+  const handR = new THREE.Vector3(-0.56, -0.05, 0.86);
+  const armVecR = new THREE.Vector3().subVectors(handR, elbowR);
+  const armLen2R = armVecR.lengthSq();
+
+  const elbowL = new THREE.Vector3(0.38, 0.04, 1.22);
+  const handL = new THREE.Vector3(0.56, -0.05, 0.86);
+  const armVecL = new THREE.Vector3().subVectors(handL, elbowL);
+  const armLen2L = armVecL.lengthSq();
+
+  const pt = new THREE.Vector3();
 
   for (let i = 0; i < count; i++) {
     const x = pos.getX(i);
@@ -1016,53 +1027,77 @@ function applySalmanAttireColors(geometry) {
     else if (y < 0.52) {
       c.copy(cBlack);
     }
-    // Arms: 3/4 rolled sleeves exposing forearms and wrists with bracelet
-    else if (y >= 0.70 && y < 1.15 && ax >= 0.38) {
-      // Right wrist (negative X in standard mirror) has turquoise bracelet
-      if (x < -0.42 && y >= 0.86 && y <= 0.92) {
-        if (z > 0.01) {
-          c.copy(cTurquoise);
+    // Bilateral Arms & Hands (Continuous Arm Axis Projection)
+    else if (ax > 0.24 && y > 0.75 && y < 1.45) {
+      pt.set(x, z, y); // pos in Three.js space: Y is up, Z is depth, but in STL coordinate space:
+      // Note: in loadSTLFallback, geometry.rotateX(-PI/2) was applied, so Three.js Y is height, -Z is front.
+      // Let's compute t along arm:
+      const sideIsRight = x < 0;
+      const elbow = sideIsRight ? elbowR : elbowL;
+      const armVec = sideIsRight ? armVecR : armVecL;
+      const armLen2 = sideIsRight ? armLen2R : armLen2L;
+
+      const dot = (x - elbow.x) * armVec.x + (z - elbow.y) * armVec.y + (y - elbow.z) * armVec.z;
+      const t = dot / armLen2;
+
+      if (t < 0.24) {
+        c.copy(cBlack);
+      } else if (t < 0.27) {
+        c.copy(cCharcoal);
+      } else if (t < 0.65) {
+        c.copy(cSkin);
+      } else if (t <= 0.74) {
+        if (sideIsRight) {
+          if (z < -0.015 && x < -0.45) {
+            c.copy(cTurquoise);
+          } else {
+            c.copy(cSilver);
+          }
         } else {
-          c.copy(cSilver);
+          c.copy(cSkin);
         }
       } else {
         c.copy(cSkin);
       }
     }
-    // Upper arm Kurta sleeves
-    else if (y >= 1.15 && y < 1.50 && ax >= 0.28) {
-      c.copy(cBlack);
-    }
     // Torso: Black Pathani Kurta with buttons
-    else if (y >= 0.52 && y < 1.55) {
-      if (z > 0.08 && ax < 0.015 && y >= 1.10 && Math.abs((y - 1.20) % 0.08) < 0.015) {
+    else if (y < 1.52) {
+      if (z > 0.08 && ax < 0.015 && y >= 1.08 && Math.abs((y - 1.18) % 0.08) < 0.015) {
         c.copy(cButton);
       } else {
         c.copy(cBlack);
       }
     }
     // Neck & Collar
-    else if (y >= 1.55 && y < 1.64) {
-      if (z > 0.015 && ax < 0.075) {
+    else if (y < 1.58) {
+      if (z > 0.01 && ax < 0.05) {
         c.copy(cSkin);
-      } else if (z < -0.03 || ax > 0.09) {
-        c.copy(cHair);
       } else {
         c.copy(cBlack);
       }
     }
-    // Head, Face & Hair
-    else {
-      const isFront = z > 0.025 && ax < 0.095;
-      const isHair = (y >= 1.74 && z < 0.085) || y >= 1.76 || !isFront;
-      if (isHair) {
-        c.copy(cHair);
+    // Chin & Jawline
+    else if (y < 1.66) {
+      if (z > -0.01 && ax < 0.08) {
+        c.copy(cSkin);
       } else {
-        if (y >= 1.635 && y <= 1.66 && ax < 0.032 && z > 0.08) {
-          c.copy(cLips);
-        } else {
-          c.copy(cSkin);
-        }
+        c.copy(cHair);
+      }
+    }
+    // Face Features (Cheeks, Nose, Mouth, Eyes, Forehead)
+    else if (y < 1.82) {
+      if (z > 0.035 && ax < 0.082) {
+        c.copy(cSkin);
+      } else {
+        c.copy(cHair);
+      }
+    }
+    // Forehead Hairline & Slicked Dark Hair
+    else {
+      if (y < 1.835 && z > 0.095 && ax < 0.045) {
+        c.copy(cSkin);
+      } else {
+        c.copy(cHair);
       }
     }
 
