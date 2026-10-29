@@ -121,88 +121,41 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         vec = hand_pt - elbow_pt
         arm_axes[s_name] = (elbow_pt, vec, vec.length_squared)
 
-    # Load high-resolution photographic portrait of Salman Khan for smooth bilinear facial sampling
-    portrait_candidates = [
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "models", "salman_face_portrait.png"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "web", "public", "assets", "models", "salman_face_portrait.png"),
-    ]
-    portrait_img = None
-    for pc in portrait_candidates:
-        if os.path.exists(pc):
-            portrait_img = bpy.data.images.load(os.path.abspath(pc))
-            log(f"Loaded face portrait: {pc} ({portrait_img.size[0]}x{portrait_img.size[1]})")
-            break
+    # Reference Turnaround Color Palette (Linear sRGB)
+    c_kurta = PALETTE["kurta_black"]
+    c_fabric_fold = PALETTE["fabric_fold"]
+    c_skin = PALETTE["skin"]
+    c_skin_shadow = PALETTE["skin_shadow"]
+    c_hair = PALETTE["hair"]
+    c_eyebrow = PALETTE["eyebrow"]
+    c_eye_white = (0.8800, 0.8500, 0.8100, 1.0)
+    c_iris = (0.0900, 0.0450, 0.0200, 1.0)
+    c_pupil = (0.0040, 0.0025, 0.0015, 1.0)
+    c_eyelid = (0.0350, 0.0180, 0.0120, 1.0)
+    c_lips = PALETTE["lips"]
+    c_mouth_line = PALETTE["mouth_line"]
+    c_shoes = PALETTE["shoes"]
+    c_button = PALETTE["button"]
+    c_turquoise = PALETTE["turquoise"]
+    c_silver = PALETTE["silver_chain"]
 
-    px_data = None
-    pw = 512
-    ph = 512
-    if portrait_img:
-        pw, ph = portrait_img.size
-        px_data = list(portrait_img.pixels)
+    eye_l = Vector((0.0335, -0.0931, 1.7335))
+    eye_r = Vector((-0.0332, -0.0899, 1.7346))
 
-    def srgb_to_lin(c):
-        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-
-    def clamp(val, low=0.0, high=1.0):
-        return max(low, min(high, val))
-
-    def lerp_color(c1, c2, t):
-        t = clamp(t, 0.0, 1.0)
-        return (
-            c1[0] * (1.0 - t) + c2[0] * t,
-            c1[1] * (1.0 - t) + c2[1] * t,
-            c1[2] * (1.0 - t) + c2[2] * t,
-            1.0,
-        )
-
-    def sample_portrait(x, y, z):
-        if not px_data:
-            return PALETTE["skin"]
-        # Aligned anatomical projection from 3D head to 512x512 portrait
-        u = 256.0 + x * 1800.0
-        v_top = 210.0 - (z - 1.7327) * 1500.0
-        v_blender = (ph - 1) - v_top
-
-        u = clamp(u, 1.0, float(pw - 2))
-        v_blender = clamp(v_blender, 1.0, float(ph - 2))
-
-        u0 = int(u)
-        u1 = u0 + 1
-        fu = u - u0
-
-        v0 = int(v_blender)
-        v1 = v0 + 1
-        fv = v_blender - v0
-
-        idx00 = (v0 * pw + u0) * 4
-        idx10 = (v0 * pw + u1) * 4
-        idx01 = (v1 * pw + u0) * 4
-        idx11 = (v1 * pw + u1) * 4
-
-        r0 = px_data[idx00] * (1.0 - fu) + px_data[idx10] * fu
-        r1 = px_data[idx01] * (1.0 - fu) + px_data[idx11] * fu
-        r = r0 * (1.0 - fv) + r1 * fv
-
-        g0 = px_data[idx00 + 1] * (1.0 - fu) + px_data[idx10 + 1] * fu
-        g1 = px_data[idx01 + 1] * (1.0 - fu) + px_data[idx11 + 1] * fu
-        g = g0 * (1.0 - fv) + g1 * fv
-
-        b0 = px_data[idx00 + 2] * (1.0 - fu) + px_data[idx10 + 2] * fu
-        b1 = px_data[idx01 + 2] * (1.0 - fu) + px_data[idx11 + 2] * fu
-        b = b0 * (1.0 - fv) + b1 * fv
-
-        return (srgb_to_lin(r), srgb_to_lin(g), srgb_to_lin(b), 1.0)
+    def lerp_col(c1, c2, t):
+        t = max(0.0, min(1.0, t))
+        return (c1[0] * (1.0 - t) + c2[0] * t, c1[1] * (1.0 - t) + c2[1] * t, c1[2] * (1.0 - t) + c2[2] * t, 1.0)
 
     def compute_vertex_color(x, y, z):
         ax = abs(x)
 
         # 1. Footwear: Black formal dress loafers
         if z < 0.11:
-            return PALETTE["shoes"]
+            return c_shoes
 
         # 2. Black Salwar trousers: Ankles to waist
         if z < 0.52:
-            return PALETTE["kurta_black"]
+            return c_kurta
 
         # 3. Bilateral Arms & Hands (Continuous Arm Axis Projection)
         if ax > 0.22 and 0.70 < z < 1.45:
@@ -212,66 +165,91 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
 
             # Upper arm: Black Kurta sleeve
             if t < 0.24:
-                return PALETTE["kurta_black"]
+                return c_kurta
             # Rolled sleeve cuff rim
             if t < 0.27:
-                return PALETTE["fabric_fold"]
+                return c_fabric_fold
             # Forearm: Bare tan skin
             if t < 0.38:
-                return PALETTE["skin"]
+                return c_skin
             # Wrist Joint Narrowing: Bracelet zone strictly on Right wrist
             if side_name == "R" and 0.38 <= t <= 0.44 and 1.06 <= z <= 1.10 and -0.02 <= y <= 0.08:
                 if y < 0.005 and x < -0.42:
-                    return PALETTE["turquoise"]  # Turquoise stone on outer wrist
-                return PALETTE["silver_chain"]    # Silver curb chain
+                    return c_turquoise  # Iconic turquoise cabochon stone
+                return c_silver         # Silver curb link chain
             # Hand, Palm, Thumb & All 10 Fingers: 100% Clean Skin
-            return PALETTE["skin"]
+            return c_skin
 
-        # 4. Torso: Black Pathani Kurta with buttons (Z < 1.565)
-        if z < 1.565:
+        # 4. Torso: Black Pathani Kurta with buttons (Z < 1.585)
+        if z < 1.585:
             # Front placket button accents
             if y < -0.08 and ax < 0.015 and 1.08 <= z <= 1.48 and (abs((z - 1.18) % 0.08) < 0.015):
-                return PALETTE["button"]
-            return PALETTE["kurta_black"]
+                return c_button
+            return c_kurta
 
-        # 5. Standing Mandarin Collar & Neck Opening (1.565 <= Z < 1.590)
-        if z < 1.590:
-            # Collar band wraps around exterior
-            if y <= -0.035 or ax >= 0.045:
-                return PALETTE["kurta_black"]
-            # Inner throat skin
-            return PALETTE["skin"]
+        # 5. Standing Mandarin Collar Opening (Z between 1.585 and 1.605):
+        if z < 1.605:
+            if y < -0.018 or ax > 0.032 or y > 0.035:
+                return c_kurta  # Collar band encircling neck
+            return c_skin       # Upper throat skin opening
 
-        # 6. Head, Face, Ears, and Hair (Z >= 1.590)
-        # Check bilateral protruding ears first
-        if ax > 0.072 and 1.66 <= z <= 1.76 and -0.035 <= y <= 0.050:
-            return PALETTE["skin"]
+        # 6. Head, Ears, Hair, and Facial Features (Z >= 1.605)
+        # Protruding bilateral ears
+        if ax > 0.068 and 1.66 <= z <= 1.76 and -0.035 <= y <= 0.050:
+            return c_skin
 
-        # Hair on crown, back, nape, temples, and sideburns
-        if z > 1.785:
-            return PALETTE["hair"]
+        # Back of head / nape
         if y > 0.015:
-            return PALETTE["hair"]
-        if z > 1.735 and ax > 0.042:
-            return PALETTE["hair"]
-        if z > 1.670 and ax > 0.052 and y > -0.065:
-            return PALETTE["hair"]
+            return c_hair
 
-        # Front Facial Oval: Bilinear Photographic Portrait Sampling
-        is_face_zone = (1.58 <= z <= 1.785) and (y < -0.025) and (ax < 0.055)
-        if is_face_zone:
-            wx = clamp((0.052 - ax) / 0.012)
-            wy = clamp((-0.025 - y) / 0.020)
-            wz_top = clamp((1.785 - z) / 0.015)
-            wz_bot = clamp((z - 1.580) / 0.015)
-            w = wx * wy * wz_top * wz_bot
+        # Accurate Anatomical Hairline
+        if ax <= 0.046:
+            z_hair = 1.808
+        elif ax <= 0.060:
+            z_hair = 1.808 - (ax - 0.046) * 7.5  # smooth temple curve down to 1.703
+        else:
+            z_hair = 1.665  # sideburns down in front of ear
 
-            if w > 0.0:
-                tex_col = sample_portrait(x, y, z)
-                return lerp_color(PALETTE["skin"], tex_col, w)
+        if z > z_hair:
+            return c_hair
 
-        # Remaining throat and chin skin
-        return PALETTE["skin"]
+        # Expressive Eyes (Sclera, Iris, Pupil, Eyelid line):
+        d_l = (Vector((x, y, z)) - eye_l).length
+        d_r = (Vector((x, y, z)) - eye_r).length
+        d_eye = min(d_l, d_r)
+
+        if d_eye < 0.0165:
+            if d_eye < 0.0045:
+                return c_pupil
+            elif d_eye < 0.0080:
+                return c_iris
+            elif z > 1.737 and d_eye > 0.0115:
+                return c_eyelid
+            elif d_eye < 0.0150:
+                return c_eye_white
+
+        # Salman Khan Signature Arched Eyebrows:
+        z_brow = 1.758 + 0.006 * (1.0 - (ax / 0.035) ** 2) if ax <= 0.035 else 1.758 - 0.012 * ((ax - 0.035) / 0.015)
+        if abs(z - z_brow) < 0.0075 and 0.014 <= ax <= 0.048 and y < -0.090:
+            t_brow = 1.0 - abs(z - z_brow) / 0.0075
+            return lerp_col(c_skin, c_eyebrow, t_brow)
+
+        # Natural Lips:
+        if 1.636 <= z <= 1.662 and ax <= 0.024 and y < -0.088:
+            if abs(z - 1.648) < 0.0025:
+                return c_mouth_line
+            t_lip = min(1.0, (0.024 - ax) / 0.008)
+            return lerp_col(c_skin, c_lips, t_lip)
+
+        # Nostril crease shadow:
+        if 1.668 <= z <= 1.685 and ax <= 0.016 and y < -0.110:
+            return c_skin_shadow
+
+        # Jawline 5 o'clock stubble shadow:
+        if 1.595 <= z <= 1.640 and 0.030 <= ax <= 0.065 and y < -0.010:
+            return lerp_col(c_skin, c_skin_shadow, 0.40)
+
+        return c_skin
 
     # Precompute per-vertex colors for high performance and smooth Gouraud shading
     vert_colors = [compute_vertex_color(v.co.x, v.co.y, v.co.z) for v in me.vertices]

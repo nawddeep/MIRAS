@@ -1063,7 +1063,7 @@ function applySalmanAttireColors(geometry) {
       }
     }
     // Torso: Black Pathani Kurta with buttons
-    else if (y < 1.565) {
+    else if (y < 1.585) {
       if (z > 0.08 && ax < 0.015 && y >= 1.08 && y <= 1.48 && Math.abs((y - 1.18) % 0.08) < 0.015) {
         c.copy(cButton);
       } else {
@@ -1071,57 +1071,63 @@ function applySalmanAttireColors(geometry) {
       }
     }
     // Standing Mandarin Collar Band & Throat Opening
-    else if (y < 1.590) {
-      if (z < 0.035 || ax >= 0.045) {
+    else if (y < 1.605) {
+      if (z < -0.018 || ax > 0.032 || z > 0.035) {
         c.copy(cBlack);
       } else {
         c.copy(cSkin);
       }
     }
-    // Head, Ears, Hair, and Facial Features (y >= 1.590)
+    // Head, Ears, Hair, and Facial Features (y >= 1.605)
     else {
       // 1. Protruding bilateral ears
-      if (ax > 0.072 && y >= 1.66 && y <= 1.76 && z >= -0.050 && z <= 0.035) {
+      if (ax > 0.068 && y >= 1.66 && y <= 1.76 && z >= -0.035 && z <= 0.050) {
         c.copy(cSkin);
       }
-      // 2. Hair: Crown, nape, temples, and sideburns
-      else if (y > 1.785 || z < -0.015 || (y > 1.735 && ax > 0.042) || (y > 1.670 && ax > 0.052 && z < 0.065)) {
+      // 2. Back of head / nape
+      else if (z < -0.015) {
         c.copy(cHair);
       }
-      // 3. Front Facial Features (Eyes, Eyebrows, Lips, Contours)
-      else if (y <= 1.785 && z > 0.025 && ax < 0.055) {
+      // 3. Hairline across crown, temples, and sideburns
+      else if (y > (ax <= 0.046 ? 1.808 : (ax <= 0.060 ? 1.808 - (ax - 0.046) * 7.5 : 1.665))) {
+        c.copy(cHair);
+      }
+      // 4. Front Facial Features (Eyes, Eyebrows, Lips, Contours)
+      else if (z > 0.025 && ax < 0.055) {
         const dEyeL = Math.hypot(x - eyeL.x, y - eyeL.y, z - eyeL.z);
         const dEyeR = Math.hypot(x - eyeR.x, y - eyeR.y, z - eyeR.z);
         const dEye = Math.min(dEyeL, dEyeR);
 
         // Expressive Eyes
-        if (dEye < 0.015) {
-          if (dEye < 0.0055) {
+        if (dEye < 0.0165) {
+          if (dEye < 0.0045) {
             c.copy(cPupil);
-          } else if (y > 1.737) {
+          } else if (dEye < 0.0080) {
+            c.setRGB(0.09, 0.045, 0.02); // Warm Hazel/Brown Iris
+          } else if (y > 1.737 && dEye > 0.0115) {
             c.copy(cEyelid);
           } else {
-            c.copy(cEyeWhite);
+            c.setRGB(0.88, 0.85, 0.81);  // Clean Soft Sclera
           }
         }
-        // Signature Dark Eyebrows
-        else if (y >= 1.748 && y <= 1.774 && ax >= 0.012 && ax <= 0.062 && z > 0.086) {
+        // Salman Khan Arched Eyebrows
+        else if (y >= 1.748 && y <= 1.770 && ax >= 0.014 && ax <= 0.048 && z > 0.086) {
           c.copy(cEyebrow);
         }
         // Nostril Depth
-        else if (y >= 1.666 && y <= 1.685 && ax <= 0.018 && z >= 0.108 && z <= 0.126) {
+        else if (y >= 1.666 && y <= 1.685 && ax <= 0.016 && z >= 0.108) {
           c.copy(cNostril);
         }
         // Natural Lips
-        else if (y >= 1.632 && y <= 1.658 && ax <= 0.026 && z > 0.090) {
-          if (Math.abs(y - 1.646) < 0.0035) {
+        else if (y >= 1.636 && y <= 1.662 && ax <= 0.024 && z > 0.088) {
+          if (Math.abs(y - 1.648) < 0.0025) {
             c.copy(cMouthLine);
           } else {
             c.copy(cLips);
           }
         }
         // Stubble Shadow
-        else if (y >= 1.58 && y <= 1.64 && z > 0.0 && ax <= 0.065) {
+        else if (y >= 1.595 && y <= 1.640 && ax >= 0.030 && ax <= 0.065 && z < 0.010) {
           c.copy(cSkinShadow);
         } else {
           c.copy(cSkin);
