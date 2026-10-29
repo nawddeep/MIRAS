@@ -2,7 +2,7 @@
 // this file fills the data-driven slots from the shared data layer.
 
 import { esc, fmtDuration } from '../lib/dom.js';
-import { places, collections, stories, artisans, workshops, events, hiddenPlaces, trails, memories, badges, getPlace, getStory } from '../data/index.js';
+import { places, collections, artisans, workshops, events, hiddenPlaces, trails, memories, badges, getPlace, getStory } from '../data/index.js';
 import { doodle, icon } from '../ui/icons.js';
 import { drawingFor, sourceBadge, statusBadge, makerCard, workshopRow, eventTicket, tag, sourceBox } from '../ui/components.js';
 

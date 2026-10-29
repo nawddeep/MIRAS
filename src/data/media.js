@@ -45,7 +45,7 @@ export const media = {
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-lake-pichola': {
-    id: 'gen-lake-pichola', src: '/img/places/lake-pichola.png', width: 1586, height: 992,
+    id: 'gen-lake-pichola', src: '/img/places/lake-pichola.webp', width: 1600, height: 1001,
     alt: 'Illustrative image: a lake at sunset with a white island palace and a covered boat',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
@@ -63,7 +63,7 @@ export const media = {
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-fateh-sagar': {
-    id: 'gen-fateh-sagar', src: '/img/places/fateh-sagar.png', width: 1586, height: 992,
+    id: 'gen-fateh-sagar', src: '/img/places/fateh-sagar.webp', width: 1600, height: 1001,
     alt: 'Illustrative image: a lake with a palm-covered island and hills behind',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,

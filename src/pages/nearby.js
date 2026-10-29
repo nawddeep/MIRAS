@@ -11,7 +11,7 @@ export function render(main) {
   const state = {
     /** @type {{lat: number, lng: number, label: string}} */
     from: (() => { const p = /** @type {import('../data/types.js').Place} */ (getPlace(startId)); return { ...p.coords, label: p.name }; })(),
-    view: 'list', show: 'all', /** @type {string | null} */ active: null,
+    view: 'list', show: 'all', active: /** @type {string | null} */ (null),
   };
 
   main.innerHTML = `

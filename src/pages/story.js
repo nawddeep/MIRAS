@@ -64,10 +64,13 @@ export function render(main) {
   mountAudio(/** @type {HTMLElement} */ (main.querySelector('[data-audio]')), {
     title: s.title, full: [s.title, ...s.body].join(' '), simple: s.simple, onListened: done,
   });
-  // Count a story as read once its end has been on screen.
-  const end = main.querySelector('[data-end]');
-  if (end && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { done(); io.disconnect(); } });
-    io.observe(end);
+  // Count a story as read once its end has reached the screen (or been scrolled past).
+  const end = /** @type {HTMLElement | null} */ (main.querySelector('[data-end]'));
+  if (end) {
+    const check = () => {
+      if (end.getBoundingClientRect().top < innerHeight) { done(); removeEventListener('scroll', check); }
+    };
+    addEventListener('scroll', check, { passive: true });
+    check();
   }
 }
