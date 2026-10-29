@@ -65,7 +65,13 @@
     <!-- Tour Guide Controller & Waypoint Demonstration HUD -->
     <aside id="tour-guide-hud" class="tour-guide-hud" aria-label="Tour Guide Behavior Controls">
       <div class="hud-top">
-        <span class="hud-badge">HERITAGE GUIDE</span>
+        <div class="guide-selector-group">
+          <span class="hud-badge" id="hud-guide-badge">HERITAGE GUIDE</span>
+          <div class="guide-switch-pills" role="radiogroup" aria-label="Select Tour Guide">
+            <button id="btn-select-trump" type="button" class="guide-pill active" data-guide="trump" title="Select Donald Trump as Tour Guide">Trump</button>
+            <button id="btn-select-salman" type="button" class="guide-pill" data-guide="salman" title="Select Salman Khan as Tour Guide">Salman</button>
+          </div>
+        </div>
         <span class="hud-status" id="tour-guide-status">IDLE</span>
       </div>
       <div class="hud-actions">

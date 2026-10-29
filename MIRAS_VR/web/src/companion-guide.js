@@ -13,9 +13,9 @@
  * - Strict Zero Emojis.
  */
 import * as THREE from 'three';
-import { TourGuideController, TOUR_STATES } from './tour-guide-controller.js';
+import { TourGuideController, TOUR_STATES, GUIDES_CONFIG } from './tour-guide-controller.js';
 
-export { TOUR_STATES };
+export { TOUR_STATES, GUIDES_CONFIG };
 
 export class TrumpCompanionGuide {
   constructor(scene, camera, renderer, options = {}) {
@@ -23,15 +23,20 @@ export class TrumpCompanionGuide {
     this.camera = camera;
     this.renderer = renderer;
 
+    const guideId = options.guideId || 'trump';
+    const guideDef = GUIDES_CONFIG[guideId] || GUIDES_CONFIG.trump;
+
     const glbUrl = options.url && options.url.endsWith('.glb')
       ? options.url
-      : 'assets/models/trump_tour_guide_rigged.glb';
-    const stlUrl = options.stlUrl || 'assets/models/trump_tour_guide.stl';
+      : guideDef.glbUrl;
+    const stlUrl = options.stlUrl || guideDef.stlUrl;
 
     this.controller = new TourGuideController(scene, camera, renderer, {
+      guideId,
       glbUrl,
       stlUrl,
       onFinished: options.onFinished,
+      onGuideChange: options.onGuideChange,
     });
 
     this.root = this.controller.root;
@@ -40,6 +45,18 @@ export class TrumpCompanionGuide {
 
   async load() {
     return this.controller.load();
+  }
+
+  async switchGuide(guideId) {
+    return this.controller.switchGuide(guideId);
+  }
+
+  get currentGuide() {
+    return this.controller.currentGuideId;
+  }
+
+  get currentGuideDef() {
+    return GUIDES_CONFIG[this.controller.currentGuideId];
   }
 
   get active() {

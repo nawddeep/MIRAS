@@ -4,7 +4,7 @@ import { CONFIG } from './config.js';
 import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo } from './panorama.js';
 import { LookControls } from './look-controls.js';
 import { detectImmersiveVR, XRSessionController } from './xr.js';
-import { TrumpCompanionGuide, TOUR_STATES } from './companion-guide.js';
+import { TrumpCompanionGuide, TOUR_STATES, GUIDES_CONFIG } from './companion-guide.js';
 import { GazeHotspots } from './gaze.js';
 import { DevHud } from './dev-hud.js';
 import { HotspotMarkers } from './hotspot-markers.js';
@@ -69,6 +69,35 @@ const devHud = new URLSearchParams(location.search).has('dev') ? new DevHud(gaze
 
 // ---------------------------------------------------------------- tour guide controls
 const hudStatus = $('tour-guide-status');
+const hudGuideBadge = $('hud-guide-badge');
+const guidePills = {
+  trump: $('btn-select-trump'),
+  salman: $('btn-select-salman'),
+};
+
+function setActiveGuidePill(guideId) {
+  Object.entries(guidePills).forEach(([id, pill]) => {
+    if (!pill) return;
+    pill.classList.toggle('active', id === guideId);
+  });
+  if (hudGuideBadge && GUIDES_CONFIG[guideId]) {
+    hudGuideBadge.textContent = GUIDES_CONFIG[guideId].badge;
+  }
+}
+
+if (guidePills.trump) {
+  guidePills.trump.addEventListener('click', async () => {
+    setActiveGuidePill('trump');
+    await guide.switchGuide('trump');
+  });
+}
+
+if (guidePills.salman) {
+  guidePills.salman.addEventListener('click', async () => {
+    setActiveGuidePill('salman');
+    await guide.switchGuide('salman');
+  });
+}
 const hudButtons = {
   idle: $('btn-guide-idle'),
   walk: $('btn-guide-walk'),

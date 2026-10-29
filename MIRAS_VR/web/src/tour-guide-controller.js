@@ -63,6 +63,41 @@ const DEFAULT_WAYPOINTS = [
   },
 ];
 
+export const GUIDES_CONFIG = {
+  trump: {
+    id: 'trump',
+    name: 'Donald Trump',
+    badge: 'HERITAGE GUIDE',
+    title: 'Presidential Tour Guide',
+    glbUrl: 'assets/models/trump_tour_guide_rigged.glb',
+    stlUrl: 'assets/models/trump_tour_guide.stl',
+    themeColor: '#e0893a',
+    welcomeStory: {
+      title: 'City Palace, Udaipur',
+      lead: 'Courtyard Welcome',
+      body: 'Folks, welcome to City Palace, Udaipur! Believe me, this is one of the most incredible royal palaces in Rajasthan. Absolutely tremendous 400-year history on Lake Pichola.',
+      caption: 'Folks, welcome to City Palace, Udaipur! Believe me, this is one of the most incredible royal palaces in Rajasthan. Absolutely tremendous 400-year history on Lake Pichola.',
+      duration: 8500,
+    },
+  },
+  salman: {
+    id: 'salman',
+    name: 'Salman Khan',
+    badge: 'BOLLYWOOD GUIDE',
+    title: 'Charismatic Heritage Companion',
+    glbUrl: 'assets/models/salman_tour_guide_rigged.glb',
+    stlUrl: 'assets/models/salman_khan_guide.stl',
+    themeColor: '#287277',
+    welcomeStory: {
+      title: 'City Palace, Udaipur',
+      lead: 'Swagat Hai Aapka!',
+      body: 'Welcome to Udaipur! Hum yahan explore karenge Lake Pichola ke kinare khada 400 saal purana shandaar City Palace. Ek baar jo commitment kar di, toh poora tour karke hi jaayenge!',
+      caption: 'Welcome to Udaipur! Hum yahan explore karenge Lake Pichola ke kinare khada 400 saal purana shandaar City Palace. Ek baar jo commitment kar di, toh poora tour karke hi jaayenge!',
+      duration: 8500,
+    },
+  },
+};
+
 const BUBBLE_FADE_MS = 400;
 
 export class TourGuideController {
@@ -71,9 +106,12 @@ export class TourGuideController {
     this.camera = camera;
     this.renderer = renderer;
 
-    this.glbUrl = options.glbUrl || 'assets/models/trump_tour_guide_rigged.glb';
-    this.stlUrl = options.stlUrl || 'assets/models/trump_tour_guide.stl';
+    this.currentGuideId = options.guideId || 'trump';
+    const guideDef = GUIDES_CONFIG[this.currentGuideId] || GUIDES_CONFIG.trump;
+    this.glbUrl = options.glbUrl || guideDef.glbUrl;
+    this.stlUrl = options.stlUrl || guideDef.stlUrl;
     this.onFinished = options.onFinished;
+    this.onGuideChange = options.onGuideChange;
 
     this.root = new THREE.Group();
     this.root.name = 'TOUR_GUIDE_ROOT';
@@ -138,6 +176,61 @@ export class TourGuideController {
   }
 
   /**
+   * Switch the active tour guide character between available guides.
+   * Cleans up existing mesh/animations and dynamically loads the new guide.
+   * @param {string} guideId 'trump' | 'salman'
+   */
+  async switchGuide(guideId) {
+    if (!GUIDES_CONFIG[guideId] || this.currentGuideId === guideId) return;
+
+    log(`Switching guide from ${this.currentGuideId} to ${guideId}`);
+    this.currentGuideId = guideId;
+    const guideDef = GUIDES_CONFIG[guideId];
+    this.glbUrl = guideDef.glbUrl;
+    this.stlUrl = guideDef.stlUrl;
+
+    // Clean up current character model & animation mixer
+    if (this.mixer) {
+      this.mixer.stopAllAction();
+      this.mixer.uncacheRoot(this.model);
+      this.mixer = null;
+    }
+    this.actions = {};
+    this.activeAction = null;
+
+    if (this.model) {
+      this.characterGroup.remove(this.model);
+      this.model.traverse((child) => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+            else child.material.dispose();
+          }
+        }
+      });
+      this.model = null;
+    }
+
+    // Load new guide asset
+    await this.load();
+
+    // Reset state to Idle
+    this.setState(TOUR_STATES.IDLE);
+
+    // Show welcoming dialogue on speech plaque
+    if (guideDef.welcomeStory) {
+      this.show(guideDef.welcomeStory, performance.now());
+    }
+
+    if (this.onGuideChange) {
+      this.onGuideChange(guideDef);
+    }
+
+    return guideDef;
+  }
+
+  /**
    * Load the 3D character asset.
    * Prioritizes the rigged animated GLB model with full bone skinning.
    * Falls back gracefully to the procedural STL pipeline if GLB is missing.
@@ -150,13 +243,13 @@ export class TourGuideController {
       const gltf = await gltfLoader.loadAsync(this.glbUrl);
 
       this.model = gltf.scene;
-      this.model.name = 'Trump_Tour_Guide_Rigged_Model';
+      this.model.name = `${this.currentGuideId}_Tour_Guide_Rigged_Model`;
       this.characterGroup.add(this.model);
 
       // Setup AnimationMixer
       if (gltf.animations && gltf.animations.length > 0) {
         this.mixer = new THREE.AnimationMixer(this.model);
-        log(`Loaded ${gltf.animations.length} animation clips from GLB`);
+        log(`Loaded ${gltf.animations.length} animation clips from GLB for ${this.currentGuideId}`);
 
         for (const clip of gltf.animations) {
           const action = this.mixer.clipAction(clip);
@@ -169,7 +262,7 @@ export class TourGuideController {
       }
 
       this.isRigged = true;
-      log('Rigged Tour Guide character loaded successfully from GLB');
+      log(`Rigged Tour Guide (${this.currentGuideId}) loaded successfully from GLB`);
       return true;
     } catch (glbErr) {
       log('GLB load failed or unrigged, trying fallback STL:', glbErr);
@@ -194,8 +287,12 @@ export class TourGuideController {
       const centerZ = (bb.max.z + bb.min.z) / 2;
       geometry.translate(-centerX, -bb.min.y, -centerZ);
 
-      // Colorize the STL model with calibrated Indian Attire turnaround palette
-      applyTrumpIndianAttireColors(geometry);
+      // Colorize the STL model with calibrated character turnaround palette
+      if (this.currentGuideId === 'salman') {
+        applySalmanAttireColors(geometry);
+      } else {
+        applyTrumpIndianAttireColors(geometry);
+      }
 
       const uniforms = {
         uTime: { value: 0 },
@@ -219,7 +316,7 @@ export class TourGuideController {
       setupProceduralShader(material, uniforms);
 
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.name = 'Trump_Tour_Guide_STL_Mesh';
+      mesh.name = `${this.currentGuideId}_Tour_Guide_STL_Mesh`;
 
       this.model = new THREE.Group();
       this.model.add(mesh);
@@ -873,6 +970,99 @@ function applyTrumpIndianAttireColors(geometry) {
         }
       } else {
         c.copy(cHair);
+      }
+    }
+
+    colors[i * 3] = c.r;
+    colors[i * 3 + 1] = c.g;
+    colors[i * 3 + 2] = c.b;
+  }
+
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+}
+
+/**
+ * Calibrated Salman Khan Pathani Attire Vertex Color Assignment for STL fallback
+ * Exact 4-swatch turnaround palette: Black Kurta/Salwar, Charcoal Fold, Tan Skin, Turquoise Bracelet.
+ */
+function applySalmanAttireColors(geometry) {
+  const pos = geometry.attributes.position;
+  const count = pos.count;
+  const colors = new Float32Array(count * 3);
+
+  const cBlack = new THREE.Color('#262424');
+  const cCharcoal = new THREE.Color('#373536');
+  const cSkin = new THREE.Color('#D8A47C');
+  const cTurquoise = new THREE.Color('#287277');
+  const cSilver = new THREE.Color('#B0B4B8');
+  const cShoes = new THREE.Color('#141416');
+  const cHair = new THREE.Color('#18181A');
+  const cLips = new THREE.Color('#A85848');
+  const cButton = new THREE.Color('#202022');
+
+  const c = new THREE.Color();
+
+  for (let i = 0; i < count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    const ax = Math.abs(x);
+
+    // Footwear: Black formal loafers
+    if (y < 0.11) {
+      c.copy(cShoes);
+    }
+    // Salwar: Black trousers
+    else if (y < 0.52) {
+      c.copy(cBlack);
+    }
+    // Arms: 3/4 rolled sleeves exposing forearms and wrists with bracelet
+    else if (y >= 0.70 && y < 1.15 && ax >= 0.38) {
+      // Right wrist (negative X in standard mirror) has turquoise bracelet
+      if (x < -0.42 && y >= 0.86 && y <= 0.92) {
+        if (z > 0.01) {
+          c.copy(cTurquoise);
+        } else {
+          c.copy(cSilver);
+        }
+      } else {
+        c.copy(cSkin);
+      }
+    }
+    // Upper arm Kurta sleeves
+    else if (y >= 1.15 && y < 1.50 && ax >= 0.28) {
+      c.copy(cBlack);
+    }
+    // Torso: Black Pathani Kurta with buttons
+    else if (y >= 0.52 && y < 1.55) {
+      if (z > 0.08 && ax < 0.015 && y >= 1.10 && Math.abs((y - 1.20) % 0.08) < 0.015) {
+        c.copy(cButton);
+      } else {
+        c.copy(cBlack);
+      }
+    }
+    // Neck & Collar
+    else if (y >= 1.55 && y < 1.64) {
+      if (z > 0.015 && ax < 0.075) {
+        c.copy(cSkin);
+      } else if (z < -0.03 || ax > 0.09) {
+        c.copy(cHair);
+      } else {
+        c.copy(cBlack);
+      }
+    }
+    // Head, Face & Hair
+    else {
+      const isFront = z > 0.025 && ax < 0.095;
+      const isHair = (y >= 1.74 && z < 0.085) || y >= 1.76 || !isFront;
+      if (isHair) {
+        c.copy(cHair);
+      } else {
+        if (y >= 1.635 && y <= 1.66 && ax < 0.032 && z > 0.08) {
+          c.copy(cLips);
+        } else {
+          c.copy(cSkin);
+        }
       }
     }
 
