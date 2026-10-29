@@ -18,7 +18,7 @@ git fetch origin
 git log --oneline known-good-1..origin/overnight-finish
 git diff --stat known-good-1 origin/overnight-finish
 ```
-Good result: about 8 commits, one per task, each with a plain message.
+Good result: 9 commits, one per task (rate limiter, Gemini check, upload checks, tokens and headers, camera fallback, backup and preflight, docs, demo polish, and the final report), each with a plain message.
 
 Merge it (only after you have committed or saved everyone's unfinished work in this folder, because merging changes files):
 ```

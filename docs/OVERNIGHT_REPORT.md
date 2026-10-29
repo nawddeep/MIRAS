@@ -6,7 +6,11 @@ _This report is updated at every stage boundary. If the run stopped early, the s
 
 ## Summary
 
-(filled in at the end, S8)
+- All work is on `overnight-finish` (9 commits). Nothing was merged; `MIRAS` and the tag `known-good-1` (= `22311f3`) are unchanged.
+- Done: a rate limiter that forged headers cannot get around, a real Gemini check, timeout and retry for Gemini calls, upload checks from the first bytes, security headers, backup, reset, health and preflight commands, hosting and morning documents, and the "Demo data" polish.
+- Final clean-build run: typecheck, lint, 208 unit tests (was 140), `content:check` 0 errors, 88 browser tests (was 74), demo path 3 of 3. All passed.
+- **Never run: real Gemini (no `.env` existed), real phones, a real tunnel.** The Gemini check was only run with a fake key (it reached Google and got HTTP 400).
+- Biggest finding: the design CSS hid the "Demo mode" strip on every screen, so per-card badges were the only visible disclosure; the polish makes a pill visible instead of leaving list screens nearly undisclosed.
 
 ## Files NOT mine (uncommitted in the shared folder at the start, never touched)
 
@@ -91,3 +95,77 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 - `docs/HOSTING.md`, `docs/MORNING_CHECKLIST.md` written. `docs/DEMO_RUNBOOK.md` updated in three places where a fact was now wrong (Gemini proof, clearing test data, shared limits) plus the 25-second timeout note. `docs/PHONE_TEST.md` untouched.
 - The checklist mentions `docs/MIRAS_Content_Intake_Sheet.*` only "if it exists"; no such file exists in this branch.
 
+### Demo polish: done (commit 72f55e8)
+- One "Demo data" pill at the top of every screen, a quiet dot with hidden text "Sample content" on place, story, maker and workshop list cards, and the full badge kept on detail pages and on the story section of a place page. Details in `BUILD_LOG.md`.
+- **Finding:** `.miras-body > .demo-notice { display:none }` in the committed design CSS hid the demo strip everywhere. Changed so the strip shows (only the pill is visible; the old sentence stays for screen readers). The CSS also hid the whole footer on Home; now only the sample-data note stays there.
+- **Conflict, not changed:** Home has a fixed footnote "Sample content · Illustrative imagery supplied for MIRAS" that also shows with demo mode off (`components/HomeShell.tsx`). It describes the imagery, so it was left alone; decide whether it should hide in live mode.
+- No existing test asserted a per-card list badge, so no test was changed.
+- 11 new browser tests, including a second server on port 3101 with demo mode off (no pill, no sample entries).
+
+### S8 Final verification: done
+Clean build (`rm -rf .next` first) on `overnight-finish`:
+
+| Check | S0 baseline (`known-good-1`) | Final |
+|---|---|---|
+| typecheck | pass | pass |
+| lint | pass | pass |
+| unit tests | 140 pass | 208 pass |
+| `content:check` | 0 errors, 50 sample/unverified | 0 errors, 50 sample/unverified |
+| build | pass | pass |
+| browser tests | 74 pass, 0 fail | 88 pass, 0 fail |
+| demo path spec, 3 runs | not run at baseline | 3 of 3 pass |
+
+Also checked on a real production server: the rate-limit cookie is set, a forged `x-forwarded-for` does not get around the limit (the 21st request is 429), the four security headers are on real responses, `/api/health` answers, and an unusable data folder gives one plain log line and a 503 health answer without details.
+
+The "save for offline" failure mentioned in the brief did not appear in any run of this branch.
+
+## Decisions made without asking, and why
+1. **Cookie ids for the rate limiter, with one shared bucket for visitors without a cookie.** Route handlers cannot see the socket address, so "socket address if available" was not possible. Forged cookie values get their own bucket, but the all-visitor ceilings cap the total.
+2. **Uploads rejected when the bytes do not match.** A HEIC photo sent straight to the camera route is now refused (415); the browser normally converts it to JPEG and the app re-encodes frames, but this is not verified on a real iPhone.
+3. **One existing test's fixture bytes changed** (`tests/unit/memories.test.ts`: 10 zero bytes became a JPEG header). Its assertions are the same.
+4. **Preflight exit code** is non-zero only for an unwritable data folder or a missing build, as the brief says. A failed Gemini check or a busy port is a FAIL line but exits 0.
+5. **"Verified by a second person"** is measured as "named verifier plus date", because stories have no writer field.
+6. **Pill placement.** It is in the layout's demo strip (every screen), not in `TopBar`, because `TopBar` is deliberately hidden on Home and Camera.
+7. **The admin "Run the check" button** needs the moderator sign-in. The `/admin` status page itself was already open to anyone and still is.
+8. **A second Playwright web server** (port 3101, demo mode off) was added to `playwright.config.ts` to test live mode.
+
+## Not verified
+- Real phones (Android Chrome, iPhone Safari), including camera, microphone, install, offline, narration and Hindi voices.
+- Real Gemini: no `.env` existed, so `ai:check` ran only with a fake key and model (it reached Google and printed `ApiError (HTTP 400)`). Whether the real key and model name work is unknown.
+- The admin "Run the check" button was tested in unit tests only, not clicked in a browser.
+- A real tunnel (cloudflared or ngrok), a real VM, real network speed.
+- Fonts: the build succeeded (Next fetches Google Fonts at build time), but the fonts were not checked on a phone.
+- Hindi text, image rights, history sources and artisan consent.
+- The merge into `MIRAS` (see conflicts below).
+
+## What only humans can do
+- Write and verify content: real places (coordinates, summaries), stories with sources and a second checker, artisans with signed consent and confirmed listings. `npm run preflight` shows 0 of 3, 0 of 3 and 0 of 2 today.
+- Native-speaker review of the Hindi text.
+- Hi-res, rights-cleared images: all 14 files in `public/media/pichhola/` are 358 px wide or smaller (12 are 358 wide, one is 260, one is 160), and they will look soft on a phone.
+- The real-phone test (`docs/PHONE_TEST.md`) and the real Gemini key.
+- Decide what to do with the failing `tests/e2e/mobile-reference.spec.ts` in the shared folder. It is not in this branch, so it did not run here. Earlier, in the shared folder, it failed ("installation is delayed and dismissed without interrupting first use").
+- Decide whether Home's "Sample content" footnote should hide in live mode.
+
+## Other things worth knowing
+- **Stale CSS:** Turbopack's incremental build kept old CSS after a CSS-only change. Use a clean build (`rm -rf .next`) for any final check.
+- **`lib/config.ts` build warnings** ("Dynamic filesystem access causes tracing of the whole project") exist at baseline and are unchanged.
+- **Merge conflicts to expect** in the shared folder (other people have uncommitted edits there): `next.config.ts`, `components/CameraMode.tsx`, `components/domain.tsx`, `components/ui.tsx`, `app/layout.tsx`, `app/globals.css`, and the untracked `tests/e2e/phone-fallbacks.spec.ts` (move it away before merging). Keep both sides' changes. Their CSS may re-hide the demo strip: check `.miras-body > .demo-notice` after merging.
+- Test runs regenerate `CONTENT_TODO.md` and `docs/ui/*.png` in the worktree; those were never staged, so the branch does not contain them. `git status` in the worktree shows them as modified.
+
+## Merge and discard
+Merge (after saving everyone's unfinished work in `~/Desktop/MIRAS`):
+```
+cd ~/Desktop/MIRAS
+git fetch origin
+mv tests/e2e/phone-fallbacks.spec.ts ~/Desktop/phone-fallbacks.old.spec.ts   # only if it exists
+git checkout MIRAS
+git merge --no-ff origin/overnight-finish
+```
+Discard:
+```
+git push origin --delete overnight-finish
+git push origin --delete overnight-done
+git worktree remove ../miras-finish --force
+git branch -D overnight-finish
+git tag -d overnight-done
+```

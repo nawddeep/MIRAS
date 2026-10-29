@@ -251,14 +251,14 @@ Times are IST.
 - Runs: before my changes, typecheck, lint, 132 unit tests, content:check, build and the demo path (3 of 3) passed, and e2e had 83 passed and 1 failed. After: 140 unit tests, e2e 86 passed and the same 1 failed, demo path 3 of 3. The failing test is `tests/e2e/mobile-reference.spec.ts` ("installation is delayed and dismissed without interrupting first use"), in an untracked file from someone else's in-progress work; it is unrelated to these changes.
 - Not verified: everything that needs a real phone, the real Gemini key, real network conditions, or the tunnel.
 
-## Overnight S1: rate limiter that survives a tunnel and a LAN: 2026-10-29 22:20
+## Overnight S1: rate limiter that survives a tunnel and a LAN: 2026-10-29 22:18
 
 - `clientKey` no longer trusts the first `x-forwarded-for` value (any client can forge it). With `TRUST_PROXY=false` (default) it ignores forwarded headers and keys on an anonymous `httpOnly` cookie `miras_cid`; a request without a valid cookie shares one "anon" bucket and is given a cookie. With `TRUST_PROXY=true` it uses `cf-connecting-ip`, else the last `x-forwarded-for` hop.
 - Added all-clients ceilings: camera 120 per minute, onboarding drafts 60 and memories 60 per 10 minutes (env: `RATE_GLOBAL_CAMERA`, `RATE_GLOBAL_ONBOARD_DRAFT`, `RATE_GLOBAL_MEMORIES`).
 - Known limit, by design: the socket address is not available to route handlers, so without a proxy all cookieless callers share one bucket, and a client that forges random cookie values gets its own bucket each time. The ceiling bounds the total.
 - 7 new unit tests (147 pass). The cookie being set on a real response is checked in S8, not here.
 
-## Overnight S2: "Gemini configured" now has a real check, and Gemini calls are robust: 2026-10-29 22:31
+## Overnight S2: "Gemini configured" now has a real check, and Gemini calls are robust: 2026-10-29 22:22
 
 - `npm run ai:check` (`scripts/ai-check.ts`, `lib/ai/check.ts`): loads `.env`, makes one tiny real call (a 1x1 PNG) and prints `ok`, `not configured`, or only the failure kind plus a hint (for example `ApiError (HTTP 404): check GEMINI_MODEL`). Exit 1 only on failure. Never prints the key, a response body or a full message. Not run by `npm test`.
 - `/admin` has a "Run the check" button (`components/AiCheckButton.tsx`, `lib/actions/ai-check.ts`). It needs the moderator sign-in (same passcode as `/admin/moderation`) and has a 5-second cooldown. The `/admin` page itself was already open and still is; only the button is gated.
@@ -266,7 +266,7 @@ Times are IST.
 - 20 new unit tests (167 pass). Verified: with no env it prints "not configured"; with a fake key and model it reached Google and printed `ApiError (HTTP 400)` with no key text in the output.
 - Not verified: a real key and real model name (none available), and the admin button in a browser (checked in S8).
 
-## Overnight S3: upload type checks from the first bytes: 2026-10-29 22:41
+## Overnight S3: upload type checks from the first bytes: 2026-10-29 22:25
 
 - New `lib/sniff.ts` reads the real type from the first bytes: JPEG, PNG, WebP for images; webm, ogg, m4a, wav, flac, aiff, mp3/mpeg, aac for audio. `camera/match`, `onboard/draft`, `onboard/submit` and `memories/moments` no longer trust `file.type`: a file that is not a real JPEG/PNG/WebP gets 415 with a plain message, and a recording whose real format does not match its declared type (for example Ogg labelled webm) gets 415. The stored extension and the type sent to Gemini now come from the bytes.
 - `/api/media/[name]` was already safe (`UPLOAD_NAME` regex before any file access). Added tests for `../`, `..%2f`, double-encoded, absolute, backslash, nested, traversal tail, empty and wrong-extension names: all 404.
@@ -275,21 +275,21 @@ Times are IST.
 - Behaviour change to know about: a HEIC/HEIF photo sent straight to the camera route is now rejected (415) instead of being passed to Gemini. The browser normally converts HEIC to JPEG for `<input type=file accept=image/*>`, and the app re-encodes frames in the page, but this is not verified on a real iPhone.
 - 22 new unit tests (189 pass).
 
-## Overnight S4: token comparison, security headers, owner enquiries: 2026-10-29 22:50
+## Overnight S4: token comparison, security headers, owner enquiries: 2026-10-29 22:27
 
 - Edit-token comparison now uses `crypto.timingSafeEqual` on SHA-256 digests (`lib/repos/index.ts`). Existing tokens, including the shorter ones in content files, still work. New tokens were already `crypto.randomBytes(24)` base64url (192 bits), so that part needed no change; a test now pins it.
 - `next.config.ts` sends `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` and `Permissions-Policy: camera=(self), microphone=(self), geolocation=(self)` on every path. No Content-Security-Policy, as instructed.
 - Owner enquiries: no change needed. The owner page already lists that artisan's enquiries (message, reply-to contact, time, kind), newest first, only for a valid token, and `/admin` already shows enquiry counts per artisan. Tests now cover a valid token (own enquiries only, newest first) and a wrong token (404).
 - 5 new tests. The headers on a real running server are checked in S8, not here.
 
-## Overnight S5: camera fallback when the camera cannot start: 2026-10-29 22:58
+## Overnight S5: camera fallback when the camera cannot start: 2026-10-29 22:28
 
 - Re-implemented from `known-good-1` (the earlier edit in the shared folder was not copied, because it sits inside someone else's uncommitted `CameraMode.tsx`). When `navigator.mediaDevices` is missing, `startCamera` now sets the message and also shows the existing `PermissionDenied` state with the manual place list, the same as a denied permission. On a page that is not a secure context the message says "The camera needs a secure (https) connection. Choose a photo instead."
 - Photo and Upload stay available in both cases.
 - 3 new browser tests in `tests/e2e/phone-fallbacks.spec.ts` (missing `mediaDevices`, not https, permission denied): pass.
 - Not verified: a real phone over plain http, and a real "Don't allow" tap on iPhone or Android.
 
-## Overnight S6: backup, reset, health, preflight: 2026-10-29 23:10
+## Overnight S6: backup, reset, health, preflight: 2026-10-29 22:35
 
 - `npm run data:backup` (`lib/data-tools.ts`): copies the database with `VACUUM INTO` (a consistent copy even while the server runs, never a raw copy of a WAL file) and the uploads folder into `backups/<timestamp>/`. `backups/` is in `.gitignore`.
 - `npm run data:reset -- --yes`: takes a backup first, then removes test data only: all enquiries and picks, draft artisan listings and draft workshops, upload records and the uploaded files. Without `--yes` it prints the counts and deletes nothing. Published listings and everything under `/content` are never touched. Stop the server before running it.
@@ -300,7 +300,7 @@ Times are IST.
 - Limit: the content schema has no writer field for stories, so "verified by a second person" is checked as "has a named verifier and a date", not "differs from the writer".
 - 14 new unit tests (208 pass). Verified on a real production server started with `MIRAS_DATA_DIR=/dev/null/nope`: one `[miras]` line naming the folder, `/api/health` gives 503 `{"ok":false,"db":"error",...}` with no error detail, and the four security headers from S4 are on the real response.
 
-## Overnight S7: hosting and morning documents: 2026-10-29 23:25
+## Overnight S7: hosting and morning documents: 2026-10-29 22:37
 
 - New `docs/HOSTING.md`: the laptop plus an HTTPS tunnel with `TRUST_PROXY=true` is the demo default; a public link needs one VM or container with a persistent disk at `MIRAS_DATA_DIR`; serverless hosts (including Vercel) lose SQLite and uploads, so MIRAS must not be deployed there. Notes that two phones on one Wi-Fi share a rate limit behind a tunnel.
 - New `docs/MORNING_CHECKLIST.md`: nine numbered steps with the exact commands and what a good result looks like, including the merge and discard commands for `overnight-finish`.
@@ -317,3 +317,5 @@ Times are IST.
 - 11 new browser tests in `tests/e2e/demo-polish.spec.ts` (pill and footer note on 7 screens, 32 px height, no sideways scroll at 360 px; quiet markers on lists; full badge on details; no consent or verification claims on sample entries; demo mode off shows no pill and no sample entries, using a second server on port 3101 added to `playwright.config.ts`).
 - Lesson: a Turbopack incremental build kept stale CSS after the CSS edit. A clean build (`rm -rf .next`) fixed it. Use a clean build for final checks.
 - Runs on a clean build: typecheck, lint, 208 unit tests, content:check (0 errors), 88 browser tests, demo path 3 of 3: all passed.
+
+- Note: the times in the S1 to S7 headings above were first written from estimates and are corrected to the real commit times (22:18 to 22:37).
