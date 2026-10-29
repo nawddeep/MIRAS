@@ -13,34 +13,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400&family=Mukta:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/hero/original@2k.webp">
 </head>
 <body>
   <a class="skip" href="#about">Skip to content</a>
 
-  <!-- sticky header: appears after the hero -->
-  <header class="site-header" id="header">
-    <div class="header-inner">
-      <a class="brand" href="#top" aria-label="MIRAS, back to top">MIRAS</a>
-      <nav class="nav" aria-label="Main">
-        <a href="#about">About</a>
-        <a href="#places">Places</a>
-        <a href="#experiences">Experiences</a>
-        <a href="#itineraries">Itineraries</a>
-        <a class="btn btn-sm" href="#plan">Plan your trip</a>
-      </nav>
-      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">
-        <span></span><span></span><span class="sr">Menu</span>
-      </button>
-    </div>
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
-      <a href="#about">About</a>
-      <a href="#places">Places</a>
-      <a href="#experiences">Experiences</a>
-      <a href="#itineraries">Itineraries</a>
-      <a href="#plan">Plan your trip</a>
-    </nav>
-  </header>
+  <!-- sticky header: appears after the hero (rendered by src/ui/shell.js) -->
+  <header id="header"></header>
 
   <main>
     <!-- ============ HERO ============ -->
@@ -59,7 +39,7 @@
             <span class="sub"><span class="hi" lang="hi">उदयपुर</span><span class="country">INDIA</span></span>
           </h1>
           <div class="divider" aria-hidden="true"><span class="ln l"></span><i class="star"></i><span class="ln r"></span></div>
-          <a class="btn" href="#plan">Plan your journey</a>
+          <a class="btn" href="/plan/">Plan your journey</a>
         </div>
 
         <a class="scroll-cue" href="#about" aria-label="Scroll to content">
@@ -69,311 +49,172 @@
       </div>
     </section>
 
-    <!-- ============ ABOUT ============ -->
-    <section class="section about" id="about">
-      <div class="wrap">
-        <header class="sec-head" data-reveal>
-          <p class="eyebrow">01 · About Udaipur</p>
-          <h2>The city of lakes</h2>
-          <div class="rule"><span></span><i class="star"></i><span></span></div>
-        </header>
+    <div class="m-scope m-home" id="home">
 
-        <div class="about-grid">
-          <div class="about-copy">
-            <p class="lead" data-reveal>Founded in 1559 by Maharana Udai Singh II, Udaipur grew up around its lakes. Palaces sit on the water, and white havelis climb the hills behind the ghats.</p>
-            <p data-reveal>The old city is best explored on foot: temple bells at Jagdish Chowk, shops selling miniature paintings, chai on a rooftop above Lake Pichola. Mornings are for the lanes and the ghats; evenings for the water, when the light turns the palace gold.</p>
+      <!-- ============ 01 · INTRO ============ -->
+      <section class="h-intro" id="about" aria-labelledby="intro-title">
+        <div class="m-wrap h-intro-grid">
+          <div class="h-intro-text">
+            <p class="m-label" data-reveal><span class="m-num">No. 01</span> Udaipur, handed down</p>
+            <h2 class="m-display" id="intro-title" data-reveal>A city that is still being lived in.</h2>
+            <p class="m-lead h-dropcap" data-reveal>Udaipur grew up around its lakes. Palaces sit on the water and white havelis climb the hills behind the ghats, but the city is not a museum. Washing dries on the ghat steps, a painter outlines an elephant with a single hair, and the chai is poured into clay cups.</p>
+            <p data-reveal>MIRAS is a guide to that city. Find a place, read the story behind it with its source shown plainly, then meet the person down the lane who still makes things by hand. Where we are not sure, we say so.</p>
           </div>
-          <figure class="about-art ink-reveal">
-            <img src="/img/palace.webp" alt="Ink drawing of the City Palace rising above the old city" width="1200" height="740" loading="lazy">
+          <figure class="h-intro-art" data-reveal>
+            <div class="m-arch h-arch">
+              <img src="/img/palace.webp" alt="Ink drawing of the City Palace rising above old-city rooftops" width="1200" height="740" loading="lazy" decoding="async">
+            </div>
+            <figcaption class="m-hand">the palace, seen from the lanes below</figcaption>
           </figure>
         </div>
-
-        <dl class="facts">
-          <div class="fact" data-reveal>
-            <dt>Best time to visit</dt>
-            <dd><strong>October to March</strong>Clear days and cool evenings. The monsoon (July to September) fills the lakes and turns the hills green.</dd>
-          </div>
-          <div class="fact" data-reveal>
-            <dt>How to reach</dt>
-            <dd><strong>Fly, rail or road</strong>Maharana Pratap Airport (UDR) is about 22&nbsp;km from the old city. Trains run to Udaipur City station, and Jaipur is about 6–7 hours by road.</dd>
-          </div>
-          <div class="fact" data-reveal>
-            <dt>Trip length</dt>
-            <dd><strong>3 to 4 days</strong>Enough for the palaces, the lakes and a slow evening or two. Add a day for Kumbhalgarh and Ranakpur.</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-    <!-- ============ PLACES ============ -->
-    <section class="section places" id="places">
-      <div class="wrap">
-        <header class="sec-head" data-reveal>
-          <p class="eyebrow">02 · Places to explore</p>
-          <h2>Six places, one old city</h2>
-          <div class="rule"><span></span><i class="star"></i><span></span></div>
-        </header>
-
-        <div class="cards">
-          <article class="card">
-            <div class="card-art"><img src="/img/places/city-palace.png" alt="City Palace on the shores of Lake Pichola"></div>
-            <div class="card-body">
-              <p class="card-tag">Palace · Old City</p>
-              <h3>City Palace <span lang="hi">सिटी पैलेस</span></h3>
-              <p>Begun in 1559 and added to by later Maharanas for centuries: courtyards, mirror-work rooms and balconies over Lake Pichola.</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-art"><img src="/img/places/lake-pichola.png" alt="Boat on Lake Pichola at sunset"></div>
-            <div class="card-body">
-              <p class="card-tag">Lake · Sunset</p>
-              <h3>Lake Pichola <span lang="hi">पिछोला झील</span></h3>
-              <p>The city's oldest lake, with island palaces on its water. Best seen from a boat as the sun goes down behind the hills.</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-art"><img src="/img/places/jagdish-temple.png" alt="Jagdish Temple and its carved stone entrance"></div>
-            <div class="card-body">
-              <p class="card-tag">Temple · 1651</p>
-              <h3>Jagdish Temple <span lang="hi">जगदीश मंदिर</span></h3>
-              <p>A carved temple to Vishnu at the top of a steep flight of steps, right in the middle of the busy old-city chowk.</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-art"><img src="/img/places/bagore-ki-haveli.png" alt="Historic facade of Bagore Ki Haveli"></div>
-            <div class="card-body">
-              <p class="card-tag">Haveli · Gangaur Ghat</p>
-              <h3>Bagore Ki Haveli <span lang="hi">बागोर की हवेली</span></h3>
-              <p>An 18th-century mansion on the ghats, now a museum. The Dharohar folk dance show is held in its courtyard each evening.</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-art"><img src="/img/places/fateh-sagar.png" alt="Fateh Sagar Lake with hills in the distance"></div>
-            <div class="card-body">
-              <p class="card-tag">Lake · Promenade</p>
-              <h3>Fateh Sagar <span lang="hi">फतेह सागर</span></h3>
-              <p>A wide lake north of the old city with an island garden. Locals walk its embankment in the evening for snacks and the breeze.</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-art"><img src="/img/places/sajjangarh.png" alt="Sajjangarh Monsoon Palace on its hilltop"></div>
-            <div class="card-body">
-              <p class="card-tag">Hilltop · 1884</p>
-              <h3>Sajjangarh <span lang="hi">सज्जनगढ़</span></h3>
-              <p>The Monsoon Palace, high on a hill west of the city. Go for sunset: the lakes and the old city spread out below.</p>
-            </div>
-          </article>
+        <div class="m-wrap">
+          <ol class="h-journey" aria-label="How MIRAS works">
+            <li data-reveal><span class="h-journey-n">i.</span><h3>Find a place</h3><p>Browse by what you love, or search. Every profile shows when it was last updated.</p><a class="m-link" href="/explore/">Explore <span class="m-arrow" aria-hidden="true">→</span></a></li>
+            <li data-reveal><span class="h-journey-n">ii.</span><h3>Hear its story</h3><p>Each story says whether it is History, Oral tradition or Legend, and where it comes from.</p><a class="m-link" href="/stories/">Read stories <span class="m-arrow" aria-hidden="true">→</span></a></li>
+            <li data-reveal><span class="h-journey-n">iii.</span><h3>Meet the maker nearby</h3><p>Painters, dyers, potters and puppet-makers, with what they sell kept apart from what they offer.</p><a class="m-link" href="/artisans/">Meet makers <span class="m-arrow" aria-hidden="true">→</span></a></li>
+          </ol>
+          <dl class="h-facts" data-reveal>
+            <div><dt>Best time</dt><dd><strong>October to March</strong>Clear days, cool evenings. The monsoon fills the lakes from July.</dd></div>
+            <div><dt>Getting here</dt><dd><strong>Fly, rail or road</strong>Udaipur has an airport and a city railway station.</dd></div>
+            <div><dt>Stay for</dt><dd><strong>Three or four days</strong>Enough for the lakes and a few slow evenings.</dd></div>
+          </dl>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ============ EXPERIENCES ============ -->
-    <section class="section experiences" id="experiences">
-      <div class="wrap">
-        <header class="sec-head" data-reveal>
-          <p class="eyebrow">03 · Experiences</p>
-          <h2>Ways to spend a day</h2>
-          <div class="rule"><span></span><i class="star"></i><span></span></div>
-        </header>
-
-        <ol class="exp-list">
-          <li class="exp" data-reveal>
-            <div class="exp-icon" data-icon="boat"></div>
-            <div class="exp-main"><h3>Boat ride on Pichola</h3><p>Glide past the ghats, the City Palace and the island palaces as the light fades.</p></div>
-            <p class="exp-meta">Sunset<br>1 hour</p>
-          </li>
-          <li class="exp" data-reveal>
-            <div class="exp-icon" data-icon="walk"></div>
-            <div class="exp-main"><h3>Heritage walk</h3><p>Old-city lanes at dawn: carved haveli doorways, neighbourhood temples and the ghats before the crowds.</p></div>
-            <p class="exp-meta">Early morning<br>2–3 hours</p>
-          </li>
-          <li class="exp" data-reveal>
-            <div class="exp-icon" data-icon="food"></div>
-            <div class="exp-main"><h3>Food trail</h3><p>Kachori and mirchi bada from street stalls, dal baati churma, and kulhad chai on a rooftop.</p></div>
-            <p class="exp-meta">Evening<br>3 hours</p>
-          </li>
-          <li class="exp" data-reveal>
-            <div class="exp-icon" data-icon="dance"></div>
-            <div class="exp-main"><h3>Folk dance evening</h3><p>Dharohar at Bagore Ki Haveli: ghoomar, puppetry and the famous pot dance, in a lamplit courtyard.</p></div>
-            <p class="exp-meta">7 pm<br>1 hour</p>
-          </li>
-          <li class="exp" data-reveal>
-            <div class="exp-icon" data-icon="market"></div>
-            <div class="exp-main"><h3>Markets</h3><p>Hathi Pol and Bada Bazaar for miniature paintings, silver, leheriya textiles and lac bangles.</p></div>
-            <p class="exp-meta">Afternoon<br>Any length</p>
-          </li>
-        </ol>
-      </div>
-      <div class="lake-band" aria-hidden="true"></div>
-    </section>
-
-    <!-- ============ ITINERARIES ============ -->
-    <section class="section itineraries" id="itineraries">
-      <div class="wrap">
-        <header class="sec-head" data-reveal>
-          <p class="eyebrow">04 · Suggested itineraries</p>
-          <h2>Pick your pace</h2>
-          <div class="rule"><span></span><i class="star"></i><span></span></div>
-        </header>
-
-        <div class="tabs" role="tablist" aria-label="Trip length" data-reveal>
-          <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="true">2 days</button>
-          <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">3 days</button>
-          <button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">5 days</button>
+      <!-- ============ 02 · EXPLORE ============ -->
+      <section class="m-section h-explore" id="explore" aria-labelledby="explore-title">
+        <div class="m-wrap">
+          <div class="m-sechead">
+            <div>
+              <p class="m-label" data-reveal><span class="m-num">No. 02</span> Explore the city</p>
+              <h2 class="m-h2" id="explore-title" data-reveal>Twelve places, one old city.</h2>
+            </div>
+            <a class="m-link" href="/explore/" data-reveal>All places, search and filters <span class="m-arrow" aria-hidden="true">→</span></a>
+          </div>
+          <div class="h-index" data-slot="place-index"></div>
+          <div class="h-collections" data-slot="collections"></div>
         </div>
+      </section>
 
-        <div class="panels">
-          <div class="panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2">
-            <p class="panel-intro">The essentials: palace, temple, lake and one evening of music.</p>
-            <ol class="days">
-              <li><h3>Day 1 <span>Old City</span></h3><ul>
-                <li><b>Morning</b>City Palace and its museum, before the heat.</li>
-                <li><b>Afternoon</b>Jagdish Temple and the lanes around the chowk.</li>
-                <li><b>Evening</b>Sunset boat on Lake Pichola, then Dharohar at Bagore Ki Haveli.</li>
-              </ul></li>
-              <li><h3>Day 2 <span>Lakes &amp; hills</span></h3><ul>
-                <li><b>Morning</b>Saheliyon Ki Bari gardens and a walk along Fateh Sagar.</li>
-                <li><b>Afternoon</b>Shopping at Hathi Pol and Bada Bazaar.</li>
-                <li><b>Evening</b>Sunset at Sajjangarh, the Monsoon Palace.</li>
-              </ul></li>
-            </ol>
+      <!-- ============ 03 · STORIES ============ -->
+      <section class="m-section m-section--paper h-stories" id="stories" aria-labelledby="stories-title">
+        <div class="m-wrap">
+          <div class="m-sechead">
+            <div>
+              <p class="m-label" data-reveal><span class="m-num">No. 03</span> Stories behind the stones</p>
+              <h2 class="m-h2" id="stories-title" data-reveal>Every story tells you what kind of story it is.</h2>
+              <p data-reveal>History is documented. Oral tradition is passed down locally. Legend is told and retold. The label and the source sit right under the title, never hidden.</p>
+            </div>
+            <a class="m-link" href="/stories/" data-reveal>All stories <span class="m-arrow" aria-hidden="true">→</span></a>
           </div>
-          <div class="panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
-            <p class="panel-intro">The essentials, plus a morning on foot and an evening of food.</p>
-            <ol class="days">
-              <li><h3>Day 1 <span>Old City</span></h3><ul>
-                <li><b>Morning</b>City Palace and its museum.</li>
-                <li><b>Afternoon</b>Jagdish Temple and Bagore Ki Haveli museum.</li>
-                <li><b>Evening</b>Sunset boat on Lake Pichola.</li>
-              </ul></li>
-              <li><h3>Day 2 <span>On foot</span></h3><ul>
-                <li><b>Morning</b>Heritage walk through the old city at dawn.</li>
-                <li><b>Afternoon</b>Rest, or a miniature-painting workshop.</li>
-                <li><b>Evening</b>Food trail, then the Dharohar dance show.</li>
-              </ul></li>
-              <li><h3>Day 3 <span>Lakes &amp; hills</span></h3><ul>
-                <li><b>Morning</b>Fateh Sagar and Saheliyon Ki Bari.</li>
-                <li><b>Afternoon</b>Markets at Hathi Pol and Bada Bazaar.</li>
-                <li><b>Evening</b>Sunset at Sajjangarh.</li>
-              </ul></li>
-            </ol>
+          <div class="h-stories-grid" data-slot="stories"></div>
+        </div>
+      </section>
+
+      <!-- ============ 04 · MAKERS ============ -->
+      <section class="m-section h-makers" id="makers" aria-labelledby="makers-title">
+        <div class="m-wrap h-makers-grid">
+          <div class="h-makers-text">
+            <p class="m-label" data-reveal><span class="m-num">No. 04</span> Meet local makers</p>
+            <h2 class="m-h2" id="makers-title" data-reveal>The people down the lane.</h2>
+            <p data-reveal>Painters working in a single hair, dyers tying cloth for leheriya waves, bangle-makers at a charcoal stove. Each profile keeps what a maker sells apart from what they offer to do for you.</p>
+            <div class="m-note m-note--demo" data-reveal data-slot="makers-note"></div>
+            <div class="m-actions" data-reveal>
+              <a class="m-btn" href="/artisans/">Meet the makers</a>
+              <a class="m-link" href="/artisans/join/">Are you a maker? Join by voice <span class="m-arrow" aria-hidden="true">→</span></a>
+            </div>
           </div>
-          <div class="panel" role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden>
-            <p class="panel-intro">Unhurried, with a day trip into the Aravalli hills.</p>
-            <ol class="days">
-              <li><h3>Day 1 <span>Arrive slowly</span></h3><ul>
-                <li><b>Afternoon</b>Settle in near the ghats; walk to Gangaur Ghat.</li>
-                <li><b>Evening</b>Sunset boat on Lake Pichola.</li>
-              </ul></li>
-              <li><h3>Day 2 <span>Old City</span></h3><ul>
-                <li><b>Morning</b>City Palace and museum.</li>
-                <li><b>Afternoon</b>Jagdish Temple and the chowk.</li>
-                <li><b>Evening</b>Dharohar at Bagore Ki Haveli.</li>
-              </ul></li>
-              <li><h3>Day 3 <span>On foot</span></h3><ul>
-                <li><b>Morning</b>Heritage walk at dawn.</li>
-                <li><b>Afternoon</b>Miniature-painting or block-print workshop.</li>
-                <li><b>Evening</b>Food trail through the old city.</li>
-              </ul></li>
-              <li><h3>Day 4 <span>Day trip</span></h3><ul>
-                <li><b>All day</b>Kumbhalgarh Fort and the Ranakpur Jain temple, about two hours' drive each way.</li>
-              </ul></li>
-              <li><h3>Day 5 <span>Lakes &amp; hills</span></h3><ul>
-                <li><b>Morning</b>Fateh Sagar and Saheliyon Ki Bari.</li>
-                <li><b>Afternoon</b>Markets, last gifts.</li>
-                <li><b>Evening</b>Farewell sunset at Sajjangarh.</li>
-              </ul></li>
-            </ol>
+          <div class="h-postcards" data-slot="makers"></div>
+        </div>
+      </section>
+
+      <!-- ============ 05 · LESS EXPECTED ============ -->
+      <section class="m-section h-unexpected" id="unexpected" aria-labelledby="unexpected-title">
+        <div class="m-wrap">
+          <div class="h-unexpected-head">
+            <p class="m-label" data-reveal><span class="m-num">No. 05</span> Something less expected</p>
+            <h2 class="m-h2" id="unexpected-title" data-reveal>Step-wells, tea stalls and painted doorways.</h2>
+            <p class="m-hand" data-reveal>— picks from people who live here, shared carefully</p>
+          </div>
+          <div class="h-unexpected-grid" data-slot="hidden"></div>
+          <div class="h-camera" data-reveal>
+            <div class="h-camera-art m-doodle" data-slot="camera-art"></div>
+            <div>
+              <p class="m-label m-label--blue">Try the camera story</p>
+              <h3 class="m-h3">Point at a monument, get its story. Or hear "I don't know."</h3>
+              <p>A demonstration of how MIRAS will answer only from checked entries, and say so plainly when it is not sure.</p>
+              <a class="m-link" href="/explore/camera/">Open the camera demo <span class="m-arrow" aria-hidden="true">→</span></a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ============ PLAN ============ -->
-    <section class="section plan" id="plan">
-      <div class="wrap plan-grid">
-        <header class="sec-head" data-reveal>
-          <p class="eyebrow">05 · Plan your trip</p>
-          <h2>Tell us how you'd like to travel</h2>
-          <div class="rule"><span></span><i class="star"></i><span></span></div>
-          <p class="plan-note">Share a few details and we'll write back with a suggested plan, places to stay and the best season for what you want to see.</p>
-        </header>
-
-        <form class="form" id="planForm" novalidate data-reveal>
-          <div class="field">
-            <label for="f-name">Name</label>
-            <input id="f-name" name="name" autocomplete="name" required>
+      <!-- ============ 06 · EXPERIENCES ============ -->
+      <section class="m-section h-experiences" id="experiences" aria-labelledby="exp-title">
+        <div class="m-wrap">
+          <div class="m-sechead">
+            <div>
+              <p class="m-label" data-reveal><span class="m-num">No. 06</span> Experiences and events</p>
+              <h2 class="m-h2" id="exp-title" data-reveal>Spend an afternoon making something.</h2>
+            </div>
+            <div class="m-actions" data-reveal><a class="m-link" href="/workshops/">Workshops <span class="m-arrow" aria-hidden="true">→</span></a><a class="m-link" href="/events/">Events <span class="m-arrow" aria-hidden="true">→</span></a></div>
           </div>
-          <div class="field">
-            <label for="f-email">Email</label>
-            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          <div class="h-exp-grid">
+            <div data-slot="workshops"></div>
+            <div class="h-events"><p class="m-label m-label--muted">Coming up · unconfirmed</p><div class="h-tickets" data-slot="events"></div></div>
           </div>
-          <div class="field">
-            <label for="f-month">When</label>
-            <select id="f-month" name="month">
-              <option value="">Not sure yet</option>
-              <option>October</option><option>November</option><option>December</option>
-              <option>January</option><option>February</option><option>March</option>
-              <option>April – June</option><option>July – September (monsoon)</option>
-            </select>
-          </div>
-          <div class="field half">
-            <label for="f-days">Days</label>
-            <select id="f-days" name="days"><option>2</option><option selected>3</option><option>5</option><option>More than 5</option></select>
-          </div>
-          <div class="field half">
-            <label for="f-people">Travellers</label>
-            <input id="f-people" name="people" type="number" min="1" max="30" value="2" inputmode="numeric">
-          </div>
-          <fieldset class="field chips">
-            <legend>Interested in</legend>
-            <label><input type="checkbox" name="interest" value="Palaces"><span>Palaces</span></label>
-            <label><input type="checkbox" name="interest" value="Lakes"><span>Lakes</span></label>
-            <label><input type="checkbox" name="interest" value="Food"><span>Food</span></label>
-            <label><input type="checkbox" name="interest" value="Crafts"><span>Crafts</span></label>
-            <label><input type="checkbox" name="interest" value="Day trips"><span>Day trips</span></label>
-          </fieldset>
-          <div class="field">
-            <label for="f-msg">Anything else?</label>
-            <textarea id="f-msg" name="message" rows="4" placeholder="Celebrations, pace, places you've always wanted to see…"></textarea>
-          </div>
-          <div class="form-foot">
-            <button class="btn" type="submit">Send enquiry</button>
-            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <section class="section journal" id="journal">
-      <div class="wrap">
-        <header class="sec-head"><p class="eyebrow">MIRAS field guide</p><h2>Discover, keep, return</h2><p class="journal-intro">A frontend demonstration of the wider MIRAS platform. Listings, stories and availability below are clearly marked as sample or illustrative.</p></header>
-        <div class="guide-nav" role="tablist" aria-label="MIRAS guide areas">
-          <button class="guide-tab" role="tab" aria-selected="true" data-guide="discover">Explore</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="stories">Stories</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="makers">Makers</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="plan">Plan</button><button class="guide-tab" role="tab" aria-selected="false" data-guide="memories">Memories</button>
         </div>
-        <div class="guide-panel" id="discover-panel"><div class="finder"><label class="sr" for="placeSearch">Search places</label><input id="placeSearch" type="search" placeholder="Search places, lakes, art or architecture"><div class="filter-row" id="placeFilters"><button data-filter="All" class="active">All</button><button data-filter="Architecture">Architecture</button><button data-filter="Lakes">Lakes</button><button data-filter="Art">Art</button><button data-filter="Photography">Photography</button></div></div><div class="guide-grid" id="placeResults"></div><p class="demo-note">Map, directions, camera-story and 360 views are local demonstrations. No location or camera media is stored.</p></div>
-        <div class="guide-panel" id="stories-panel" hidden><div class="story-layout" id="storyResults"></div><aside class="demo-note"><strong>Audio narration</strong><br>Demonstration only. Narration is unavailable until a rights-cleared audio source is supplied. A text alternative is shown on every story.</aside></div>
-        <div class="guide-panel" id="makers-panel" hidden><div class="maker-tools"><input id="makerSearch" type="search" placeholder="Search a craft or studio"><button class="btn btn-sm" id="voiceDemo">Try voice-first listing</button></div><div class="guide-grid" id="makerResults"></div><form class="voice-draft" id="voiceDraft" hidden><p class="card-tag">Demo workflow · nothing is recorded or published</p><h3>Draft a craft listing</h3><label>Craft description in Hindi or English<textarea placeholder="Type instead of recording…"></textarea></label><label>Photograph<input type="file" accept="image/*"></label><div><button class="btn btn-sm" type="button" id="showDraft">Preview draft</button><button class="btn btn-sm secondary" type="button" id="closeDraft">Cancel</button></div><p class="form-status" id="draftStatus" aria-live="polite"></p></form></div>
-        <div class="guide-panel" id="plan-panel" hidden><div class="planner"><div><p class="card-tag">Deterministic sample planner</p><h3>Build a day with the places you save</h3><label>Available time<select id="plannerTime"><option value="short">2–3 hours</option><option value="day" selected>One day</option></select></label><label>Focus<select id="plannerFocus"><option>Architecture</option><option>Lakes</option><option>Art</option></select></label><button class="btn btn-sm" id="makePlan">Create sample route</button></div><div id="plannerOutput" class="itinerary-output" aria-live="polite">Choose a focus to see an illustrative, data-led route.</div></div><div class="concept-grid"><div><b>Offline pack</b><p>Simulated download only; no offline files are stored.</p><button class="btn btn-sm download-demo">Download demo</button></div><div><b>Audio walk</b><p>Opt-in location triggers are a concept; use the numbered stops instead.</p><button class="btn btn-sm secondary">View stops</button></div><div><b>Responsible visits</b><p>Ask before photographing people, respect worship, and check site guidance.</p></div></div></div>
-        <div class="guide-panel" id="memories-panel" hidden><div class="memory-board"><div class="memory-card"><span>01</span><h3>Save a moment</h3><p>Keep places and stories in a local, illustrative collection.</p></div><div class="memory-card"><span>02</span><h3>Review privacy</h3><p>Face flags are not detected here; this is a manual demonstration state.</p></div><div class="memory-card"><span>03</span><h3>Make a reel</h3><p>Choose up to five sample moments. Sharing remains local and simulated.</p></div></div><div class="passport"><p class="card-tag">Digital heritage passport · demonstration</p><h3>Your first stamp is waiting</h3><p>Collecting is never location-verified. Badges are local UI states, not proof of a visit.</p><button class="btn btn-sm" id="stampPassport">Add a sample stamp</button><p id="passportStatus" aria-live="polite"></p></div></div>
-      </div>
-    </section>
+      </section>
+
+      <!-- ============ 07 · PLAN ============ -->
+      <section class="m-section m-section--paper h-plan" id="plan" aria-labelledby="plan-title">
+        <div class="m-wrap h-plan-grid">
+          <div>
+            <p class="m-label" data-reveal><span class="m-num">No. 07</span> Plan your journey</p>
+            <h2 class="m-h2" id="plan-title" data-reveal>Unhurried days that respect opening hours.</h2>
+            <p data-reveal>Tell the planner how long you have and what you like. It never sends you to a place it believes is closed, keeps each day to a few stops, and tells you when it is missing the information to be sure.</p>
+            <ul class="h-trails" data-slot="trails" data-reveal></ul>
+          </div>
+          <form class="h-planform" action="/plan/" method="get" data-reveal aria-label="Start a plan">
+            <div class="m-postcard">
+              <p class="m-label">Start a plan</p>
+              <div class="m-form">
+                <div class="m-field"><label for="hp-days">How many days?</label>
+                  <select id="hp-days" name="days"><option value="1">One day</option><option value="2" selected>Two days</option><option value="3">Three days</option></select></div>
+                <fieldset class="m-field"><legend>What do you enjoy?</legend>
+                  <div class="m-checks">
+                    <label class="m-check"><input type="checkbox" name="i" value="architecture" checked> Architecture</label>
+                    <label class="m-check"><input type="checkbox" name="i" value="lakes" checked> Lakes</label>
+                    <label class="m-check"><input type="checkbox" name="i" value="crafts"> Crafts</label>
+                    <label class="m-check"><input type="checkbox" name="i" value="food"> Food</label>
+                    <label class="m-check"><input type="checkbox" name="i" value="photography"> Photography</label>
+                    <label class="m-check"><input type="checkbox" name="i" value="family"> With children</label>
+                  </div>
+                </fieldset>
+                <button class="m-btn" type="submit">Build my plan</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ 08 · MEMORIES & PASSPORT ============ -->
+      <section class="m-section h-keep" id="keep" aria-labelledby="keep-title">
+        <div class="m-wrap h-keep-grid">
+          <div class="h-polaroids" data-slot="polaroids"></div>
+          <div class="h-keep-text">
+            <p class="m-label" data-reveal><span class="m-num">No. 08</span> Memories and passport</p>
+            <h2 class="m-h2" id="keep-title" data-reveal>Keep the trip, not just the photos.</h2>
+            <p data-reveal>Pick up to five moments and MIRAS pairs each with its story, but only when a checked story actually matches. Strangers' faces are flagged before anything can be shared, and nothing leaves your device in this demonstration.</p>
+            <div class="h-stamps" data-slot="stamps" data-reveal></div>
+            <div class="m-actions" data-reveal><a class="m-btn" href="/memories/">Open memories</a><a class="m-link" href="/passport/">Your heritage passport <span class="m-arrow" aria-hidden="true">→</span></a></div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <!-- ============ FOOTER ============ -->
-  <footer class="footer">
-    <div class="wrap">
-      <div class="foot-lockup">
-        <p class="foot-miras">MIRAS</p>
-        <p class="foot-sub"><span lang="hi">उदयपुर</span> · UDAIPUR · INDIA</p>
-        <div class="rule"><span></span><i class="star"></i><span></span></div>
-      </div>
-      <nav class="foot-nav" aria-label="Footer">
-        <a href="#about">About</a><a href="#places">Places</a><a href="#experiences">Experiences</a><a href="#itineraries">Itineraries</a><a href="#plan">Plan your trip</a>
-      </nav>
-      <p class="foot-small">© 2026 MIRAS. A slow-travel guide to Udaipur.</p>
-    </div>
-  </footer>
+  <footer id="footer"></footer>
 
   <script type="module" src="/src/main.js"></script>
 </body>
