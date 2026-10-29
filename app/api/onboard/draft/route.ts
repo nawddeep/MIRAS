@@ -7,7 +7,7 @@ const fail = (status: number, error: string) => Response.json({ ok: false, reaso
 
 /** Audio + optional photo in, validated draft out. Nothing is stored here: the photo is only shown to the model. */
 export async function POST(req: Request) {
-  if (!limits.onboardDraft.allow(clientKey(req))) return tooMany();
+  if (!limits.onboardDraft.allow(await clientKey(req))) return tooMany();
   let form: FormData;
   try {
     form = await req.formData();

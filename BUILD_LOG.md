@@ -250,3 +250,10 @@ Times are IST.
 - Images: all 14 files in `public/media/pichhola/` are 358 px wide or smaller (12 are 358x358, one is 260x165, one is 160x100). They will look soft on a phone. Not replaced, as instructed.
 - Runs: before my changes, typecheck, lint, 132 unit tests, content:check, build and the demo path (3 of 3) passed, and e2e had 83 passed and 1 failed. After: 140 unit tests, e2e 86 passed and the same 1 failed, demo path 3 of 3. The failing test is `tests/e2e/mobile-reference.spec.ts` ("installation is delayed and dismissed without interrupting first use"), in an untracked file from someone else's in-progress work; it is unrelated to these changes.
 - Not verified: everything that needs a real phone, the real Gemini key, real network conditions, or the tunnel.
+
+## Overnight S1: rate limiter that survives a tunnel and a LAN: 2026-10-29 22:20
+
+- `clientKey` no longer trusts the first `x-forwarded-for` value (any client can forge it). With `TRUST_PROXY=false` (default) it ignores forwarded headers and keys on an anonymous `httpOnly` cookie `miras_cid`; a request without a valid cookie shares one "anon" bucket and is given a cookie. With `TRUST_PROXY=true` it uses `cf-connecting-ip`, else the last `x-forwarded-for` hop.
+- Added all-clients ceilings: camera 120 per minute, onboarding drafts 60 and memories 60 per 10 minutes (env: `RATE_GLOBAL_CAMERA`, `RATE_GLOBAL_ONBOARD_DRAFT`, `RATE_GLOBAL_MEMORIES`).
+- Known limit, by design: the socket address is not available to route handlers, so without a proxy all cookieless callers share one bucket, and a client that forges random cookie values gets its own bucket each time. The ceiling bounds the total.
+- 7 new unit tests (147 pass). The cookie being set on a real response is checked in S8, not here.

@@ -7,7 +7,7 @@ const MAX_FRAME_BYTES = 1.5 * 1024 * 1024;
 
 /** Still frames in (one request), captions and verified stories out. Nothing is stored. */
 export async function POST(req: Request) {
-  if (!limits.memories.allow(clientKey(req))) return tooMany();
+  if (!limits.memories.allow(await clientKey(req))) return tooMany();
   let form: FormData;
   try {
     form = await req.formData();
