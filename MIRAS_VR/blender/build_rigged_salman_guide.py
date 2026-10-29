@@ -159,8 +159,8 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         if not px_data:
             return PALETTE["skin"]
         # Aligned anatomical projection from 3D head to 512x512 portrait
-        u = 250.88 + x * 1649.15
-        v_top = 238.08 - (z - 1.7327) * 1463.81
+        u = 256.0 + x * 1800.0
+        v_top = 210.0 - (z - 1.7327) * 1500.0
         v_blender = (ph - 1) - v_top
 
         u = clamp(u, 1.0, float(pw - 2))
@@ -227,43 +227,50 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
             # Hand, Palm, Thumb & All 10 Fingers: 100% Clean Skin
             return PALETTE["skin"]
 
-        # 4. Torso: Black Pathani Kurta with buttons
-        if z < 1.535:
+        # 4. Torso: Black Pathani Kurta with buttons (Z < 1.565)
+        if z < 1.565:
             # Front placket button accents
-            if y < -0.08 and ax < 0.015 and z >= 1.08 and (abs((z - 1.18) % 0.08) < 0.015):
+            if y < -0.08 and ax < 0.015 and 1.08 <= z <= 1.48 and (abs((z - 1.18) % 0.08) < 0.015):
                 return PALETTE["button"]
             return PALETTE["kurta_black"]
 
-        # 5. Neck & Throat (Clean smooth transition without black jagged teeth)
-        if z < 1.58:
-            # Front throat and neck skin
-            if y < 0.035 and ax < 0.065 and z >= 1.535:
-                return PALETTE["skin"]
-            if y < -0.020 and ax < 0.035 and z >= 1.515:
-                return PALETTE["skin"]  # V-opening
-            return PALETTE["kurta_black"]  # Mandarin collar band
+        # 5. Standing Mandarin Collar & Neck Opening (1.565 <= Z < 1.590)
+        if z < 1.590:
+            # Collar band wraps around exterior
+            if y <= -0.035 or ax >= 0.045:
+                return PALETTE["kurta_black"]
+            # Inner throat skin
+            return PALETTE["skin"]
 
-        # 6. Chin, Jawline, Face & Hair (Z >= 1.58)
-        # Check if vertex belongs to facial zone for smooth photographic portrait sampling
-        is_face_zone = (1.57 <= z <= 1.825) and (y < -0.015) and (ax < 0.075)
+        # 6. Head, Face, Ears, and Hair (Z >= 1.590)
+        # Check bilateral protruding ears first
+        if ax > 0.072 and 1.66 <= z <= 1.76 and -0.035 <= y <= 0.050:
+            return PALETTE["skin"]
+
+        # Hair on crown, back, nape, temples, and sideburns
+        if z > 1.785:
+            return PALETTE["hair"]
+        if y > 0.015:
+            return PALETTE["hair"]
+        if z > 1.735 and ax > 0.042:
+            return PALETTE["hair"]
+        if z > 1.670 and ax > 0.052 and y > -0.065:
+            return PALETTE["hair"]
+
+        # Front Facial Oval: Bilinear Photographic Portrait Sampling
+        is_face_zone = (1.58 <= z <= 1.785) and (y < -0.025) and (ax < 0.055)
         if is_face_zone:
-            # Feathering weights for smooth seamless blending
-            wx = clamp((0.062 - ax) / 0.014)
-            wy = clamp((-0.015 - y) / 0.025)
-            wz_top = clamp((1.815 - z) / 0.025)
-            wz_bot = clamp((z - 1.570) / 0.020)
+            wx = clamp((0.052 - ax) / 0.012)
+            wy = clamp((-0.025 - y) / 0.020)
+            wz_top = clamp((1.785 - z) / 0.015)
+            wz_bot = clamp((z - 1.580) / 0.015)
             w = wx * wy * wz_top * wz_bot
 
             if w > 0.0:
                 tex_col = sample_portrait(x, y, z)
-                base_col = PALETTE["hair"] if z > 1.80 else PALETTE["skin"]
-                return lerp_color(base_col, tex_col, w)
+                return lerp_color(PALETTE["skin"], tex_col, w)
 
-        # Hair, temples, and crown
-        if z > 1.81:
-            return PALETTE["hair"]
-        if y >= -0.015:
-            return PALETTE["hair"]
+        # Remaining throat and chin skin
         return PALETTE["skin"]
 
     # Precompute per-vertex colors for high performance and smooth Gouraud shading

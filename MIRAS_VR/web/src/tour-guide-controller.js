@@ -1063,35 +1063,33 @@ function applySalmanAttireColors(geometry) {
       }
     }
     // Torso: Black Pathani Kurta with buttons
-    else if (y < 1.535) {
-      if (z > 0.08 && ax < 0.015 && y >= 1.08 && Math.abs((y - 1.18) % 0.08) < 0.015) {
+    else if (y < 1.565) {
+      if (z > 0.08 && ax < 0.015 && y >= 1.08 && y <= 1.48 && Math.abs((y - 1.18) % 0.08) < 0.015) {
         c.copy(cButton);
       } else {
         c.copy(cBlack);
       }
     }
-    // Neck & Throat (Clean smooth transition without jagged teeth)
-    else if (y < 1.58) {
-      if (z > -0.035 && ax < 0.065 && y >= 1.535) {
-        c.copy(cSkin);
-      } else if (z > 0.020 && ax < 0.035 && y >= 1.515) {
-        c.copy(cSkin);
-      } else {
+    // Standing Mandarin Collar Band & Throat Opening
+    else if (y < 1.590) {
+      if (z < 0.035 || ax >= 0.045) {
         c.copy(cBlack);
+      } else {
+        c.copy(cSkin);
       }
     }
-    // Chin & Jawline
-    else if (y < 1.66) {
-      if (z > -0.01 && ax < 0.08) {
+    // Head, Ears, Hair, and Facial Features (y >= 1.590)
+    else {
+      // 1. Protruding bilateral ears
+      if (ax > 0.072 && y >= 1.66 && y <= 1.76 && z >= -0.050 && z <= 0.035) {
         c.copy(cSkin);
-      } else {
+      }
+      // 2. Hair: Crown, nape, temples, and sideburns
+      else if (y > 1.785 || z < -0.015 || (y > 1.735 && ax > 0.042) || (y > 1.670 && ax > 0.052 && z < 0.065)) {
         c.copy(cHair);
       }
-    }
-    // Detailed Facial Features & Expressive Eyes
-    else if (y < 1.82) {
-      const isFaceFront = z > 0.035 && ax < 0.085;
-      if (isFaceFront) {
+      // 3. Front Facial Features (Eyes, Eyebrows, Lips, Contours)
+      else if (y <= 1.785 && z > 0.025 && ax < 0.055) {
         const dEyeL = Math.hypot(x - eyeL.x, y - eyeL.y, z - eyeL.z);
         const dEyeR = Math.hypot(x - eyeR.x, y - eyeR.y, z - eyeR.z);
         const dEye = Math.min(dEyeL, dEyeR);
@@ -1129,15 +1127,7 @@ function applySalmanAttireColors(geometry) {
           c.copy(cSkin);
         }
       } else {
-        c.copy(cHair);
-      }
-    }
-    // Forehead Hairline & Slicked Dark Hair
-    else {
-      if (y < 1.835 && z > 0.095 && ax < 0.045) {
         c.copy(cSkin);
-      } else {
-        c.copy(cHair);
       }
     }
 
