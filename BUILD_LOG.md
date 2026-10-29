@@ -226,3 +226,11 @@ Times are IST.
 - `tests/e2e/design.spec.ts` (15): no horizontal scroll at 360 px on home, explore, place, stories, story, artisan, camera and onboard; `?hour=7/17/22` give dawn, golden and night; no ₹, star ratings, review counts or "verified artisan" on home, place, story and artisan; a sample story shows "Sample content" and not "Verified source"; a low-confidence camera result shows "I don't know"; the result sheet shows a band and no percentage. It also saves screenshots of 10 screens at 360 and 390 px into `docs/ui/` (9.1 MB).
 - F9 (Map and Itinerary concept screens): skipped. A working trip planner already exists at /plan, and a Map has no data.
 - Full run: typecheck and lint clean, 131 unit tests, 68 of 68 e2e, demo path 3 runs in a row, content:check 0 errors.
+
+## Phone-test prep, fix 1: AI failures are now logged: 2026-10-29 10:57
+
+- Found while checking the AI error paths: every Gemini error, timeout and invalid-JSON case in `draftFromVoice`, `matchFrame` and `pickMoments` was swallowed by a bare `catch {}` and logged nothing. The visitor already got a message and a fallback, but on demo day a wrong model name, a quota error or a timeout would have looked exactly like "I don't know this one yet" with nothing in the server log.
+- `lib/ai-log.ts`: `logAi(route, event)` writes `[ai] <route>: <event>` to the server log, and `describeError` reduces an error to its class plus HTTP status or a short network code (for example `ApiError (HTTP 429)`). It never logs the error message (SDK messages can echo request details), the API key, or anything the visitor sent.
+- The three services now log a failed model call and each invalid-JSON outcome. What they return is unchanged.
+- Tests: `tests/unit/ai-log.test.ts` (7) checks the log text for each route, and that a fake key in the error message and the frame bytes never reach the log. 139 unit tests were passing at this point.
+- Needs a real run: confirm the line appears in the server terminal when the real Gemini key or model name is wrong.

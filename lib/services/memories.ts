@@ -1,4 +1,5 @@
 import type { AiProvider } from "@/lib/ai";
+import { describeError, logAi } from "@/lib/ai-log";
 import { currentMode, type Mode } from "@/lib/config";
 import { MomentPicks, type StoryEntry } from "@/lib/schemas";
 import { getVisiblePlaces, getVisibleStories } from "./content";
@@ -47,13 +48,17 @@ export async function pickMoments(
       let raw: unknown;
       try {
         raw = await ai.pickMoments({ frames, candidates: places.map((p) => ({ id: p.id, name: p.name })) });
-      } catch {
+      } catch (e) {
+        logAi("memories/moments", `model call failed: ${describeError(e)}`);
         return { ok: false, demo, reason: "ai_unavailable" };
       }
       const parsed = MomentPicks.safeParse(parse(raw));
       if (parsed.success) picks = parsed.data;
     }
-    if (!picks) return { ok: false, demo, reason: "invalid_model_output" };
+    if (!picks) {
+      logAi("memories/moments", "model returned invalid JSON twice");
+      return { ok: false, demo, reason: "invalid_model_output" };
+    }
 
     const seen = new Set<number>();
     const moments = picks.moments

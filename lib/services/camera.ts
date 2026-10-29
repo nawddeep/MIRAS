@@ -1,4 +1,5 @@
 import type { AiProvider } from "@/lib/ai";
+import { describeError, logAi } from "@/lib/ai-log";
 import { currentMode, getConfig, type Mode } from "@/lib/config";
 import { PlaceMatch, type StoryEntry } from "@/lib/schemas";
 import { getVisiblePlaces, getVisibleStories } from "./content";
@@ -31,11 +32,15 @@ export async function matchFrame(
       let raw: unknown;
       try {
         raw = await ai.matchPlace({ image: frame, imageMime: mime, candidates: places.map((p) => ({ id: p.id, name: p.name })) });
-      } catch {
+      } catch (e) {
+        logAi("camera/match", `model call failed: ${describeError(e)}`);
         return { known: false, demo, reason: "unsure" };
       }
       const parsed = PlaceMatch.safeParse(typeof raw === "string" ? safeJson(raw) : raw);
-      if (!parsed.success) return { known: false, demo, reason: "unsure" };
+      if (!parsed.success) {
+        logAi("camera/match", "model returned invalid JSON");
+        return { known: false, demo, reason: "unsure" };
+      }
       match = parsed.data;
     }
     if (match.personIsMainSubject) return { known: false, demo, reason: "person" };

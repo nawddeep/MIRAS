@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { z } from "zod";
 import type { AiProvider } from "@/lib/ai";
+import { describeError, logAi } from "@/lib/ai-log";
 import type { DraftInput } from "@/lib/ai/types";
 import { ListingDraft, type Artisan } from "@/lib/schemas";
 import type { StorageProvider } from "@/lib/storage";
@@ -56,12 +57,14 @@ export async function draftFromVoice(ai: AiProvider, input: DraftInput): Promise
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       last = parse(await ai.draftListing(input));
-    } catch {
+    } catch (e) {
+      logAi("onboard/draft", `model call failed: ${describeError(e)}`);
       return { ok: false, reason: "ai_unavailable", partial: partialFrom(last), demo, attempts: attempt };
     }
     const valid = ListingDraft.safeParse(last);
     if (valid.success) return { ok: true, draft: valid.data, demo, attempts: attempt };
   }
+  logAi("onboard/draft", "model returned invalid JSON twice");
   return { ok: false, reason: "invalid_model_output", partial: partialFrom(last), demo, attempts: 2 };
 }
 
