@@ -239,3 +239,14 @@ Times are IST.
 
 - Checking the audio path: `geminiAudioMime` is used on the real request path (`app/api/onboard/draft/route.ts`) and its unit tests covered Safari's `audio/mp4` and Chrome's `audio/webm;codecs=opus`, but not `audio/ogg` (what Firefox records). Added `audio/ogg` and `audio/ogg;codecs=opus` to `tests/unit/gate.test.ts`. No code change: the type was already accepted. 140 unit tests pass.
 - Not verified: that real Gemini accepts the `audio/m4a` label for a recording from an iPhone. That needs the phone test.
+
+## Phone-test prep, Part A: checklist and runbook: 2026-10-29 11:04
+
+- Wrote `docs/PHONE_TEST.md` (setup on the laptop, 15 tests to run on a real Android Chrome and a real iPhone Safari, and the fixed format to paste results back) and `docs/DEMO_RUNBOOK.md` (ten pre-flight checks, the 60-second path, what to do if Gemini or the network fails, and what is real and what is not).
+- Checked the code against the eight Part A items. Two code fixes were committed separately (AI failure logging, `audio/ogg` test). A third, the camera place picker when `navigator.mediaDevices` is missing, is in the working tree but **not committed**, because `components/CameraMode.tsx` also holds someone else's uncommitted edits; its tests are in the untracked `tests/e2e/phone-fallbacks.spec.ts`. Commit the two together when that file is committed.
+- Production start verified: `npm run build && npm run start` binds 0.0.0.0 on port 3000 by default. It answered on localhost, on the LAN address and with a tunnel-style Host header, and served the manifest, service worker and offline page. `next dev` was not used.
+- Conflict with the brief, reported: a Gemini failure does not fall back to "Demo response". The mock is used only when the server starts without a key or model. A failure gives "I don't know this one yet" (camera), "The assistant is not reachable right now" (voice) or "try again later" (memories). The runbook describes this and a ten-second switch (`GEMINI_MODEL= npm run start`).
+- "Gemini configured" on `/admin` only means the key and model are set. A fake key and model still show it.
+- Images: all 14 files in `public/media/pichhola/` are 358 px wide or smaller (12 are 358x358, one is 260x165, one is 160x100). They will look soft on a phone. Not replaced, as instructed.
+- Runs: before my changes, typecheck, lint, 132 unit tests, content:check, build and the demo path (3 of 3) passed, and e2e had 83 passed and 1 failed. After: 140 unit tests, e2e 86 passed and the same 1 failed, demo path 3 of 3. The failing test is `tests/e2e/mobile-reference.spec.ts` ("installation is delayed and dismissed without interrupting first use"), in an untracked file from someone else's in-progress work; it is unrelated to these changes.
+- Not verified: everything that needs a real phone, the real Gemini key, real network conditions, or the tunnel.
