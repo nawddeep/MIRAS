@@ -192,8 +192,9 @@ html.past-hero body::after { opacity: 0; transition: opacity .6s ease; }
 .p-hero-media .m-frame-img { border: 1px solid var(--line); }
 @media (max-width: 860px) { .p-hero-grid { grid-template-columns: 1fr; } }
 .p-hours { width: 100%; border-collapse: collapse; font-size: 15px; }
-.p-hours th, .p-hours td { text-align: left; padding: 7px 0; border-bottom: 1px solid var(--line); font-weight: 400; }
-.p-hours th { color: var(--muted); width: 45%; }
+.p-hours th, .p-hours td { text-align: left; padding: 7px 0; border-bottom: 1px solid var(--line); font-weight: 400; vertical-align: top; }
+.p-hours th { color: var(--muted); padding-right: 12px; }
+.p-hours td { text-align: right; font-size: 14px; font-variant-numeric: tabular-nums; }
 .p-hours tr.is-today th, .p-hours tr.is-today td { font-weight: 600; color: var(--charcoal); }
 .p-quieter { border: 1px dashed var(--inkblue); padding: 18px 20px; display: grid; gap: 10px; background: var(--white); }
 .p-quieter h3 { font: 600 20px/1.2 var(--font-serif); }

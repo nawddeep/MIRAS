@@ -3,9 +3,8 @@
 
 import { esc, fmtDuration } from '../lib/dom.js';
 import { places, collections, stories, artisans, workshops, events, hiddenPlaces, trails, memories, badges, getPlace, getStory } from '../data/index.js';
-import { places as art } from '../art.js';
 import { doodle, icon } from '../ui/icons.js';
-import { sourceBadge, statusBadge, makerCard, workshopRow, eventTicket, tag, sourceBox } from '../ui/components.js';
+import { drawingFor, sourceBadge, statusBadge, makerCard, workshopRow, eventTicket, tag, sourceBox } from '../ui/components.js';
 
 /** @param {HTMLElement | null} root */
 export function renderHome(root) {
@@ -13,7 +12,7 @@ export function renderHome(root) {
   /** @param {string} name @param {string} html */
   const fill = (name, html) => { const el = root.querySelector(`[data-slot="${name}"]`); if (el) el.innerHTML = html; };
   /** @param {string} key */
-  const drawing = (key) => art[/** @type {keyof typeof art} */ (key)] ?? '';
+  const drawing = (key) => drawingFor(key);
 
   // 02 · place index with a drawing that follows hover and focus
   const first = places[0];

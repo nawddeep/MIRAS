@@ -4,7 +4,7 @@
 const PROJECT = 'MIRAS project artwork (creator to be confirmed by the MIRAS team)';
 const PROJECT_LICENCE = 'Not recorded in the repository';
 const GENERATED_NOTE =
-  'Found in public/img/places with no creator, source or licence on record. It looks computer-generated, so it is shown only as an illustration, never as a photograph of the place.';
+  'Found in public/img/places with no creator, source or licence on record. It looks computer-generated, so it is shown only as a labelled illustration in the VR gallery, never as a photograph, and never as the image of a specific place (at least one file name does not match what it shows).';
 
 /** @type {Record<string, import('./types.js').MediaItem>} */
 export const media = {
@@ -40,37 +40,37 @@ export const media = {
   },
   'gen-city-palace': {
     id: 'gen-city-palace', src: '/img/places/city-palace.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a white palace on a lake at golden hour with a small boat',
+    alt: 'Illustrative image: a long white palace along a lake at golden hour, with a small boat',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-lake-pichola': {
     id: 'gen-lake-pichola', src: '/img/places/lake-pichola.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a boat on a lake at sunset',
+    alt: 'Illustrative image: a lake at sunset with a white island palace and a covered boat',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-jagdish-temple': {
     id: 'gen-jagdish-temple', src: '/img/places/jagdish-temple.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a carved stone temple entrance at the top of steps',
+    alt: 'Illustrative image: a lake at sunset with an island palace and a covered boat (the file is named after Jagdish Temple but does not show it)',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-bagore-ki-haveli': {
     id: 'gen-bagore-ki-haveli', src: '/img/places/bagore-ki-haveli.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a historic haveli facade beside the water',
+    alt: 'Illustrative image: a lamp-lit palace courtyard at dusk',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-fateh-sagar': {
     id: 'gen-fateh-sagar', src: '/img/places/fateh-sagar.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a wide lake with hills in the distance',
+    alt: 'Illustrative image: a lake with a palm-covered island and hills behind',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
   'gen-sajjangarh': {
     id: 'gen-sajjangarh', src: '/img/places/sajjangarh.png', width: 1586, height: 992,
-    alt: 'Illustrative image of a hilltop palace',
+    alt: 'Illustrative image: a palace on a forested hilltop above lakes at sunset',
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },

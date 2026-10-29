@@ -67,11 +67,14 @@ export function distanceKm(a, b) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-/** @param {import('./types.js').Place} place @param {number} [n] */
-export const nearbyPlaces = (place, n = 3) =>
-  places.filter((p) => p.id !== place.id)
-    .map((p) => ({ place: p, km: distanceKm(place.coords, p.coords) }))
+/** Places nearest to a point. @param {{lat:number,lng:number}} coords @param {number} [n] @param {string} [excludeId] */
+export const placesNear = (coords, n = 3, excludeId = '') =>
+  places.filter((p) => p.id !== excludeId)
+    .map((p) => ({ place: p, km: distanceKm(coords, p.coords) }))
     .sort((a, b) => a.km - b.km).slice(0, n);
+
+/** @param {import('./types.js').Place} place @param {number} [n] */
+export const nearbyPlaces = (place, n = 3) => placesNear(place.coords, n, place.id);
 
 /** @param {{lat:number,lng:number}} coords @param {number} [n] */
 export const nearbyArtisans = (coords, n = 3) =>

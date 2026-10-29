@@ -33,7 +33,7 @@ export const places = [
     accessibility: null,
     storyIds: ['s-palace-founding'], popular: true,
     quieter: { placeId: 'bagore-ki-haveli', time: 'Early morning, soon after opening', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'palace', imageId: 'gen-city-palace', sceneId: 'scene-palace-hill',
+    artKey: 'palace', imageId: null, sceneId: 'scene-palace-hill',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
   },
   {
@@ -53,7 +53,7 @@ export const places = [
     accessibility: null,
     storyIds: ['s-pichola-name', 's-ghat-morning'], popular: true,
     quieter: { placeId: 'ambrai-ghat', time: 'Early morning on the ghats', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'pichola', imageId: 'gen-lake-pichola', sceneId: 'scene-pichola',
+    artKey: 'pichola', imageId: null, sceneId: 'scene-pichola',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light', 'first-day'],
   },
   {
@@ -73,7 +73,7 @@ export const places = [
     accessibility: { status: 'Unverified', items: ['The entrance is up a long flight of steps. No step-free route is recorded.'] },
     storyIds: ['s-jagdish-steps', 's-jagdish-bell'], popular: true,
     quieter: { time: 'Mid-morning, between the busier prayer times', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'jagdish', imageId: 'gen-jagdish-temple', sceneId: 'scene-old-city',
+    artKey: 'jagdish', imageId: null, sceneId: 'scene-old-city',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
   },
   {
@@ -90,7 +90,7 @@ export const places = [
     visitTips: ['Pair with a walk along Gangaur Ghat.', 'Performance times change; confirm on the day.'],
     etiquette: null, accessibility: null,
     storyIds: ['s-bagore-minister'], popular: false, quieter: null,
-    artKey: 'bagore', imageId: 'gen-bagore-ki-haveli', sceneId: 'scene-courtyard',
+    artKey: 'bagore', imageId: null, sceneId: 'scene-courtyard',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['where-makers-work', 'carved-in-stone'],
   },
   {
@@ -105,7 +105,7 @@ export const places = [
     etiquette: { status: 'Unverified', items: ['People bathe and pray here. Keep your distance and ask before taking photos of anyone.'] },
     accessibility: null,
     storyIds: ['s-gangaur'], popular: false, quieter: null,
-    artKey: 'pichola', imageId: null, sceneId: null,
+    artKey: 'lamp', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light'],
   },
   {
@@ -120,7 +120,7 @@ export const places = [
     etiquette: { status: 'Unverified', items: ['A working ghat. Do not photograph people bathing.'] },
     accessibility: null,
     storyIds: [], popular: false, quieter: null,
-    artKey: 'pichola', imageId: null, sceneId: null,
+    artKey: 'boat', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light'],
   },
   {
@@ -138,7 +138,7 @@ export const places = [
     etiquette: null, accessibility: null,
     storyIds: ['s-fateh'], popular: true,
     quieter: { time: 'Weekday mornings', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'fateh', imageId: 'gen-fateh-sagar', sceneId: 'scene-fateh',
+    artKey: 'fateh', imageId: null, sceneId: 'scene-fateh',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light'],
   },
   {
@@ -152,7 +152,7 @@ export const places = [
     visitTips: ['Fountains may not always run; ask at the gate.'],
     etiquette: null, accessibility: null,
     storyIds: ['s-saheliyon'], popular: false, quieter: null,
-    artKey: 'fateh', imageId: null, sceneId: null,
+    artKey: 'palm', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['first-day'],
   },
   {
@@ -168,7 +168,7 @@ export const places = [
     accessibility: { status: 'Unverified', items: ['Steep hill road and uneven ground at the top. No step-free route is recorded.'] },
     storyIds: ['s-sajjangarh'], popular: true,
     quieter: { time: 'Late morning rather than sunset', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'sajjangarh', imageId: 'gen-sajjangarh', sceneId: null,
+    artKey: 'sajjangarh', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['evening-light'],
   },
   {
@@ -182,7 +182,7 @@ export const places = [
     visitTips: ['Combine with Fateh Sagar on the same afternoon.'],
     etiquette: null, accessibility: null,
     storyIds: [], popular: false, quieter: null,
-    artKey: 'bagore', imageId: null, sceneId: null,
+    artKey: 'pot', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['where-makers-work'],
   },
   {
@@ -196,7 +196,7 @@ export const places = [
     visitTips: ['Shop hours vary by shop. Many open late morning.'],
     etiquette: null, accessibility: null,
     storyIds: ['s-hathi-pol'], popular: false, quieter: null,
-    artKey: 'bagore', imageId: null, sceneId: null,
+    artKey: 'arch', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['where-makers-work'],
   },
   {
@@ -210,7 +210,7 @@ export const places = [
     visitTips: ['Go in the late afternoon when it is busy but not crushed.'],
     etiquette: null, accessibility: null,
     storyIds: ['s-lac'], popular: false, quieter: null,
-    artKey: 'bagore', imageId: null, sceneId: null,
+    artKey: 'bangles', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['where-makers-work'],
   },
 ];

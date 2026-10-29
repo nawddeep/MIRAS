@@ -44,14 +44,19 @@ export const sourceBox = (s) => `
     <dt>Status</dt><dd>${statusBadge(s.verification)} <span class="m-muted m-body-sm">Last updated ${fmtDate(s.lastUpdated)}</span></dd>
   </dl>`;
 
+/** Line drawing for a key: a place drawing from art.js, else a doodle. @param {string | undefined} key */
+export const drawingFor = (key) =>
+  (key && (art[/** @type {keyof typeof art} */ (key)] || doodle[/** @type {keyof typeof doodle} */ (key)])) || doodle.postcard;
+
 /**
  * An image with reserved dimensions and an ink-drawing fallback if it is missing or fails.
  * @param {{mediaId?: string | null, artKey?: string, alt?: string, ratio?: string, eager?: boolean, cls?: string, showLabel?: boolean}} o
  */
 export function frameImage({ mediaId, artKey, alt = '', ratio = '4 / 3', eager = false, cls = '', showLabel = true }) {
   const m = getMedia(mediaId);
-  const drawing = artKey && art[/** @type {keyof typeof art} */ (artKey)] ? art[/** @type {keyof typeof art} */ (artKey)] : doodle.postcard;
-  const fallback = `<div class="m-art" ${m ? 'hidden' : ''}>${drawing}</div>`;
+  const drawing = drawingFor(artKey);
+  const isDoodle = !(artKey && art[/** @type {keyof typeof art} */ (artKey)]);
+  const fallback = `<div class="m-art${isDoodle ? ' m-art--doodle' : ''}" ${m ? 'hidden' : ''}>${drawing}</div>`;
   if (!m) {
     return `<div class="m-frame-img ${cls}" style="aspect-ratio:${ratio}" role="img" aria-label="${esc(alt || 'Line drawing')} (line drawing)">${fallback}${showLabel ? '<span class="m-img-label">Drawing</span>' : ''}</div>`;
   }
@@ -99,7 +104,7 @@ export const saveButton = (id, saved) =>
 export function storyRow(s) {
   const p = getPlace(s.placeId);
   return `<article class="m-row" data-reveal>
-    <div class="m-row-art">${p ? art[/** @type {keyof typeof art} */ (p.artKey)] ?? '' : ''}</div>
+    <div class="m-row-art">${p ? drawingFor(p.artKey) : ''}</div>
     <div>
       <div class="m-badges" style="margin-bottom:10px">${sourceBadge(s.sourceType)}${statusBadge(s.verification)}</div>
       <h3><a href="/story/?id=${s.id}">${esc(s.title)}</a></h3>
