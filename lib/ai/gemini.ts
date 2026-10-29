@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { ListingDraft, MomentPicks, PlaceMatch } from "@/lib/schemas";
+import { geminiTimeoutMs, robustCall } from "./robust";
 import type { AiProvider, DraftInput, MatchInput, MomentsInput } from "./types";
 
 // Gemini's schema field does not accept the "$schema" meta key that Zod adds.
@@ -50,13 +51,20 @@ export class GeminiAiProvider implements AiProvider {
     this.client = new GoogleGenAI({ apiKey, httpOptions: { timeout: timeoutMs } });
   }
 
+  /** Every call: aborted after GEMINI_TIMEOUT_MS, one retry on 429/5xx only, at most 4 at once. */
+  private generate(params: Parameters<GoogleGenAI["models"]["generateContent"]>[0]) {
+    return robustCall((abortSignal) => this.client.models.generateContent({ ...params, config: { ...params.config, abortSignal } }), {
+      timeoutMs: geminiTimeoutMs(),
+    });
+  }
+
   async draftListing(input: DraftInput) {
     const parts = [
       { inlineData: { mimeType: input.audioMime, data: input.audio.toString("base64") } },
       ...(input.image && input.imageMime ? [{ inlineData: { mimeType: input.imageMime, data: input.image.toString("base64") } }] : []),
       { text: DRAFT_PROMPT },
     ];
-    const res = await this.client.models.generateContent({
+    const res = await this.generate({
       model: this.model,
       contents: [{ role: "user", parts }],
       config: { responseMimeType: "application/json", responseJsonSchema: jsonSchema(ListingDraft), temperature: 0.2 },
@@ -66,7 +74,7 @@ export class GeminiAiProvider implements AiProvider {
 
   async pickMoments(input: MomentsInput) {
     const names = input.candidates.map((c) => `${c.id}: ${c.name}`).join("; ");
-    const res = await this.client.models.generateContent({
+    const res = await this.generate({
       model: this.model,
       contents: [
         {
@@ -84,7 +92,7 @@ export class GeminiAiProvider implements AiProvider {
 
   async matchPlace(input: MatchInput) {
     const names = input.candidates.map((c) => `${c.id}: ${c.name}`).join("; ");
-    const res = await this.client.models.generateContent({
+    const res = await this.generate({
       model: this.model,
       contents: [
         {

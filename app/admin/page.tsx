@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { Metadata } from "next";
+import { AiCheckButton } from "@/components/AiCheckButton";
 import { Card, Label } from "@/components/ui";
 import { aiStatus } from "@/lib/ai";
 import { getConfig } from "@/lib/config";
@@ -34,6 +35,10 @@ export default function AdminPage() {
             {!ai.hasKey && ai.model && " GEMINI_MODEL is set but the key is empty."}
           </p>
         )}
+        <p className="mt-2 text-sm text-ink-soft">
+          &ldquo;Configured&rdquo; only means the values are set. The check makes one tiny real call (sign in at /admin/moderation first).
+        </p>
+        <AiCheckButton />
       </Card>
 
       <Card>

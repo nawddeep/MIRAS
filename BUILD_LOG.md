@@ -257,3 +257,11 @@ Times are IST.
 - Added all-clients ceilings: camera 120 per minute, onboarding drafts 60 and memories 60 per 10 minutes (env: `RATE_GLOBAL_CAMERA`, `RATE_GLOBAL_ONBOARD_DRAFT`, `RATE_GLOBAL_MEMORIES`).
 - Known limit, by design: the socket address is not available to route handlers, so without a proxy all cookieless callers share one bucket, and a client that forges random cookie values gets its own bucket each time. The ceiling bounds the total.
 - 7 new unit tests (147 pass). The cookie being set on a real response is checked in S8, not here.
+
+## Overnight S2: "Gemini configured" now has a real check, and Gemini calls are robust: 2026-10-29 22:31
+
+- `npm run ai:check` (`scripts/ai-check.ts`, `lib/ai/check.ts`): loads `.env`, makes one tiny real call (a 1x1 PNG) and prints `ok`, `not configured`, or only the failure kind plus a hint (for example `ApiError (HTTP 404): check GEMINI_MODEL`). Exit 1 only on failure. Never prints the key, a response body or a full message. Not run by `npm test`.
+- `/admin` has a "Run the check" button (`components/AiCheckButton.tsx`, `lib/actions/ai-check.ts`). It needs the moderator sign-in (same passcode as `/admin/moderation`) and has a 5-second cooldown. The `/admin` page itself was already open and still is; only the button is gated.
+- `lib/ai/gemini.ts`: every call goes through `lib/ai/robust.ts`: an `AbortController` timeout (`GEMINI_TIMEOUT_MS`, default 25000), one retry with jitter on 429 and 5xx only (never 400, 401, 403, 404, and not on timeout), and at most 4 calls at once. Visitor messages, fallbacks and `logAi` lines are unchanged.
+- 20 new unit tests (167 pass). Verified: with no env it prints "not configured"; with a fake key and model it reached Google and printed `ApiError (HTTP 400)` with no key text in the output.
+- Not verified: a real key and real model name (none available), and the admin button in a browser (checked in S8).

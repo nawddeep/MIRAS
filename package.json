@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "content:check": "tsx scripts/content-check.ts"
+    "content:check": "tsx scripts/content-check.ts",
+    "ai:check": "tsx scripts/ai-check.ts"
   },
   "dependencies": {
     "@google/genai": "2.31.0",
