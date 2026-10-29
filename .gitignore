@@ -11,3 +11,5 @@ tools/layers/layers/
 tools/layers/plate.png
 tools/layers/plate_final.png
 tools/layers/motion_map.png
+*.blend1
+*.blend@
