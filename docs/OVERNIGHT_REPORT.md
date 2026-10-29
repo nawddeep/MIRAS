@@ -55,3 +55,18 @@ Two of these were mine from earlier (`components/CameraMode.tsx` camera-picker e
 
 ## Stages
 
+### S1 Rate limiter: done (commit 979342b)
+- `TRUST_PROXY` (default false). Off: forwarded headers ignored; anonymous httpOnly cookie id, cookieless callers share one bucket. On: `cf-connecting-ip`, else the last `x-forwarded-for` hop.
+- Global ceilings: camera 120/min, onboarding drafts 60/10 min, memories 60/10 min (env-configurable).
+- Tests: 7 new, pass. Confirmed facts: `clientKey` used the first `x-forwarded-for` value; limits were as the brief said; enquiries have their own limit (3 per 10 minutes) keyed by the same `clientKey`.
+- Known limit: route handlers cannot see the socket address, so "socket address if available" is not possible. A client that forges random cookie values gets its own bucket each time; the global ceiling bounds the total. The cookie being set on a real response is checked in S8.
+
+### S2 ai:check and robust Gemini calls: done (commit 0be84ef)
+- `npm run ai:check` verified for: no config ("not configured", exit 0), fake key and model (reached Google, `ApiError (HTTP 400): check GEMINI_MODEL and GEMINI_API_KEY`, exit 1, no key text in output). **Not verified with a real key** (none available).
+- `/admin` has a "Run the check" button gated by the moderator sign-in, 5 s cooldown. Note: the `/admin` status page itself was already open to anyone; only the button needs the passcode.
+- `lib/ai/robust.ts`: timeout (`GEMINI_TIMEOUT_MS`, 25 s), one retry on 429/5xx only, concurrency cap 4. 20 new tests.
+
+### S3 Upload hardening: done
+- First-byte type checks on all four upload routes; media route traversal tests. 22 new tests; 189 unit tests pass.
+- Conflict reported: one existing test's fixture bytes (not assertions) changed (see BUILD_LOG). HEIC sent directly to the camera route is now rejected; not verified on a real iPhone.
+

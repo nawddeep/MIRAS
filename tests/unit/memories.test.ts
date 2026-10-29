@@ -85,7 +85,7 @@ describe("memories", () => {
     withFixture({ places, stories });
     const req = (n: number) => {
       const form = new FormData();
-      for (let i = 0; i < n; i++) form.append("frames", new File([new Uint8Array(10)], `${i}.jpg`, { type: "image/jpeg" }));
+      for (let i = 0; i < n; i++) form.append("frames", new File([new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0])], `${i}.jpg`, { type: "image/jpeg" }));
       return new Request("http://t/api/memories/moments", { method: "POST", body: form, headers: { "x-forwarded-for": "192.0.2.4" } });
     };
     expect((await POST(req(6))).status).toBe(400);

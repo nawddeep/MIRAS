@@ -1,6 +1,7 @@
 import { clientKey } from "@/lib/http";
 import { limits, tooMany } from "@/lib/rate-limit";
 import { createListing, ListingSubmission, MAX_IMAGE_BYTES } from "@/lib/services/onboarding";
+import { sniffImage } from "@/lib/sniff";
 import { getStorage } from "@/lib/storage";
 
 export async function POST(req: Request) {
@@ -27,12 +28,17 @@ export async function POST(req: Request) {
   const photo = form.get("photo");
   if (photo instanceof File && photo.size > MAX_IMAGE_BYTES) return Response.json({ ok: false, error: "Photo is too large." }, { status: 413 });
 
+  // The stored type and file extension come from the first bytes, never from the label the browser sent.
+  let photoToStore: { data: Buffer; mime: string } | undefined;
+  if (photo instanceof File && photo.size > 0) {
+    const data = Buffer.from(await photo.arrayBuffer());
+    const mime = sniffImage(data);
+    if (!mime) return Response.json({ ok: false, error: "That file is not a JPEG, PNG or WebP photo." }, { status: 415 });
+    photoToStore = { data, mime };
+  }
+
   try {
-    const { artisan, publishBlockers } = createListing(
-      sub.data,
-      photo instanceof File && photo.size > 0 ? { data: Buffer.from(await photo.arrayBuffer()), mime: photo.type } : undefined,
-      getStorage(),
-    );
+    const { artisan, publishBlockers } = createListing(sub.data, photoToStore, getStorage());
     return Response.json({ ok: true, id: artisan.id, status: artisan.status, editUrl: `/owner/${artisan.editToken}`, publishBlockers });
   } catch (e) {
     return Response.json({ ok: false, error: (e as Error).message }, { status: 400 });

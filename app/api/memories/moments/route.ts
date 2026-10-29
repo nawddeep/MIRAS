@@ -2,6 +2,7 @@ import { getAiProvider } from "@/lib/ai";
 import { clientKey } from "@/lib/http";
 import { limits, tooMany } from "@/lib/rate-limit";
 import { MAX_FRAMES, pickMoments } from "@/lib/services/memories";
+import { sniffImage } from "@/lib/sniff";
 
 const MAX_FRAME_BYTES = 1.5 * 1024 * 1024;
 
@@ -27,7 +28,11 @@ export async function POST(req: Request) {
     // No place choices: the model's suggestions (if any) are used.
   }
 
-  const frames = await Promise.all(files.map(async (f) => ({ data: Buffer.from(await f.arrayBuffer()), mime: f.type || "image/jpeg" })));
+  // The real type comes from the first bytes, never from the label the browser sent.
+  const buffers = await Promise.all(files.map(async (f) => Buffer.from(await f.arrayBuffer())));
+  const mimes = buffers.map(sniffImage);
+  if (mimes.some((m) => !m)) return Response.json({ ok: false, error: "A file is not a JPEG, PNG or WebP photo." }, { status: 415 });
+  const frames = buffers.map((data, i) => ({ data, mime: mimes[i] as string }));
   const result = await pickMoments(getAiProvider(), frames, chosen);
   return Response.json(result, { headers: { "cache-control": "no-store" } });
 }

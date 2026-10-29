@@ -265,3 +265,12 @@ Times are IST.
 - `lib/ai/gemini.ts`: every call goes through `lib/ai/robust.ts`: an `AbortController` timeout (`GEMINI_TIMEOUT_MS`, default 25000), one retry with jitter on 429 and 5xx only (never 400, 401, 403, 404, and not on timeout), and at most 4 calls at once. Visitor messages, fallbacks and `logAi` lines are unchanged.
 - 20 new unit tests (167 pass). Verified: with no env it prints "not configured"; with a fake key and model it reached Google and printed `ApiError (HTTP 400)` with no key text in the output.
 - Not verified: a real key and real model name (none available), and the admin button in a browser (checked in S8).
+
+## Overnight S3: upload type checks from the first bytes: 2026-10-29 22:41
+
+- New `lib/sniff.ts` reads the real type from the first bytes: JPEG, PNG, WebP for images; webm, ogg, m4a, wav, flac, aiff, mp3/mpeg, aac for audio. `camera/match`, `onboard/draft`, `onboard/submit` and `memories/moments` no longer trust `file.type`: a file that is not a real JPEG/PNG/WebP gets 415 with a plain message, and a recording whose real format does not match its declared type (for example Ogg labelled webm) gets 415. The stored extension and the type sent to Gemini now come from the bytes.
+- `/api/media/[name]` was already safe (`UPLOAD_NAME` regex before any file access). Added tests for `../`, `..%2f`, double-encoded, absolute, backslash, nested, traversal tail, empty and wrong-extension names: all 404.
+- Camera frames are still never written to disk (existing behaviour and test untouched).
+- One existing test needed a fixture change, not an assertion change: `tests/unit/memories.test.ts` "API rejects more than 5 frames and rate-limits" uploaded 10 zero bytes labelled `image/jpeg`; the bytes now start with a JPEG header. Its assertions are the same.
+- Behaviour change to know about: a HEIC/HEIF photo sent straight to the camera route is now rejected (415) instead of being passed to Gemini. The browser normally converts HEIC to JPEG for `<input type=file accept=image/*>`, and the app re-encodes frames in the page, but this is not verified on a real iPhone.
+- 22 new unit tests (189 pass).
