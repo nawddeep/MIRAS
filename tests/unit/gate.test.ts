@@ -17,6 +17,11 @@ describe("audio types sent to Gemini", () => {
     expect(geminiAudioMime("audio/webm;codecs=opus")).toBe("audio/webm");
   });
 
+  it("keeps Firefox's audio/ogg and drops codec parameters", () => {
+    expect(geminiAudioMime("audio/ogg")).toBe("audio/ogg");
+    expect(geminiAudioMime("audio/ogg;codecs=opus")).toBe("audio/ogg");
+  });
+
   it("rejects a type Gemini does not list", () => {
     expect(geminiAudioMime("audio/x-unknown")).toBeNull();
     expect(geminiAudioMime("video/mp4")).toBeNull();

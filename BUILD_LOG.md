@@ -234,3 +234,8 @@ Times are IST.
 - The three services now log a failed model call and each invalid-JSON outcome. What they return is unchanged.
 - Tests: `tests/unit/ai-log.test.ts` (7) checks the log text for each route, and that a fake key in the error message and the frame bytes never reach the log. 139 unit tests were passing at this point.
 - Needs a real run: confirm the line appears in the server terminal when the real Gemini key or model name is wrong.
+
+## Phone-test prep, fix 2: audio/ogg test: 2026-10-29 10:57
+
+- Checking the audio path: `geminiAudioMime` is used on the real request path (`app/api/onboard/draft/route.ts`) and its unit tests covered Safari's `audio/mp4` and Chrome's `audio/webm;codecs=opus`, but not `audio/ogg` (what Firefox records). Added `audio/ogg` and `audio/ogg;codecs=opus` to `tests/unit/gate.test.ts`. No code change: the type was already accepted. 140 unit tests pass.
+- Not verified: that real Gemini accepts the `audio/m4a` label for a recording from an iPhone. That needs the phone test.
