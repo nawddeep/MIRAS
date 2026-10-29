@@ -1050,33 +1050,31 @@ function applySalmanAttireColors(geometry) {
         c.copy(cBlack);
       } else if (t < 0.27) {
         c.copy(cCharcoal);
-      } else if (t < 0.48) {
+      } else if (t < 0.38) {
         c.copy(cSkin);
-      } else if (t <= 0.56) {
-        if (sideIsRight) {
-          if (z < 0.005) {
-            c.copy(cTurquoise);
-          } else {
-            c.copy(cSilver);
-          }
+      } else if (sideIsRight && t >= 0.38 && t <= 0.44 && y >= 1.06 && y <= 1.10) {
+        if (z > -0.005 && x < -0.42) {
+          c.copy(cTurquoise);
         } else {
-          c.copy(cSkin);
+          c.copy(cSilver);
         }
       } else {
         c.copy(cSkin);
       }
     }
     // Torso: Black Pathani Kurta with buttons
-    else if (y < 1.52) {
+    else if (y < 1.535) {
       if (z > 0.08 && ax < 0.015 && y >= 1.08 && Math.abs((y - 1.18) % 0.08) < 0.015) {
         c.copy(cButton);
       } else {
         c.copy(cBlack);
       }
     }
-    // Neck & Throat
+    // Neck & Throat (Clean smooth transition without jagged teeth)
     else if (y < 1.58) {
-      if (z > -0.035 && ax < 0.065) {
+      if (z > -0.035 && ax < 0.065 && y >= 1.535) {
+        c.copy(cSkin);
+      } else if (z > 0.020 && ax < 0.035 && y >= 1.515) {
         c.copy(cSkin);
       } else {
         c.copy(cBlack);

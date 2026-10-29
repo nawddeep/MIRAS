@@ -121,125 +121,157 @@ def build_rigged_character(stl_path, blend_path, glb_path, target_tris=65000):
         vec = hand_pt - elbow_pt
         arm_axes[s_name] = (elbow_pt, vec, vec.length_squared)
 
-    for poly in me.polygons:
-        c = poly.center
-        x, y, z = c.x, c.y, c.z
+    # Load high-resolution photographic portrait of Salman Khan for smooth bilinear facial sampling
+    portrait_candidates = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "models", "salman_face_portrait.png"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "web", "public", "assets", "models", "salman_face_portrait.png"),
+    ]
+    portrait_img = None
+    for pc in portrait_candidates:
+        if os.path.exists(pc):
+            portrait_img = bpy.data.images.load(os.path.abspath(pc))
+            log(f"Loaded face portrait: {pc} ({portrait_img.size[0]}x{portrait_img.size[1]})")
+            break
+
+    px_data = None
+    pw = 512
+    ph = 512
+    if portrait_img:
+        pw, ph = portrait_img.size
+        px_data = list(portrait_img.pixels)
+
+    def srgb_to_lin(c):
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    def clamp(val, low=0.0, high=1.0):
+        return max(low, min(high, val))
+
+    def lerp_color(c1, c2, t):
+        t = clamp(t, 0.0, 1.0)
+        return (
+            c1[0] * (1.0 - t) + c2[0] * t,
+            c1[1] * (1.0 - t) + c2[1] * t,
+            c1[2] * (1.0 - t) + c2[2] * t,
+            1.0,
+        )
+
+    def sample_portrait(x, y, z):
+        if not px_data:
+            return PALETTE["skin"]
+        # Aligned anatomical projection from 3D head to 512x512 portrait
+        u = 250.88 + x * 1649.15
+        v_top = 238.08 - (z - 1.7327) * 1463.81
+        v_blender = (ph - 1) - v_top
+
+        u = clamp(u, 1.0, float(pw - 2))
+        v_blender = clamp(v_blender, 1.0, float(ph - 2))
+
+        u0 = int(u)
+        u1 = u0 + 1
+        fu = u - u0
+
+        v0 = int(v_blender)
+        v1 = v0 + 1
+        fv = v_blender - v0
+
+        idx00 = (v0 * pw + u0) * 4
+        idx10 = (v0 * pw + u1) * 4
+        idx01 = (v1 * pw + u0) * 4
+        idx11 = (v1 * pw + u1) * 4
+
+        r0 = px_data[idx00] * (1.0 - fu) + px_data[idx10] * fu
+        r1 = px_data[idx01] * (1.0 - fu) + px_data[idx11] * fu
+        r = r0 * (1.0 - fv) + r1 * fv
+
+        g0 = px_data[idx00 + 1] * (1.0 - fu) + px_data[idx10 + 1] * fu
+        g1 = px_data[idx01 + 1] * (1.0 - fu) + px_data[idx11 + 1] * fu
+        g = g0 * (1.0 - fv) + g1 * fv
+
+        b0 = px_data[idx00 + 2] * (1.0 - fu) + px_data[idx10 + 2] * fu
+        b1 = px_data[idx01 + 2] * (1.0 - fu) + px_data[idx11 + 2] * fu
+        b = b0 * (1.0 - fv) + b1 * fv
+
+        return (srgb_to_lin(r), srgb_to_lin(g), srgb_to_lin(b), 1.0)
+
+    def compute_vertex_color(x, y, z):
         ax = abs(x)
 
         # 1. Footwear: Black formal dress loafers
         if z < 0.11:
-            col = PALETTE["shoes"]
+            return PALETTE["shoes"]
 
         # 2. Black Salwar trousers: Ankles to waist
-        elif z < 0.52:
-            col = PALETTE["kurta_black"]
+        if z < 0.52:
+            return PALETTE["kurta_black"]
 
         # 3. Bilateral Arms & Hands (Continuous Arm Axis Projection)
-        elif ax > 0.24 and 0.75 < z < 1.45:
+        if ax > 0.22 and 0.70 < z < 1.45:
             side_name = "L" if x > 0 else "R"
             elbow_pt, vec, l2 = arm_axes[side_name]
             t = (Vector((x, y, z)) - elbow_pt).dot(vec) / l2
 
             # Upper arm: Black Kurta sleeve
             if t < 0.24:
-                col = PALETTE["kurta_black"]
+                return PALETTE["kurta_black"]
             # Rolled sleeve cuff rim
-            elif t < 0.27:
-                col = PALETTE["fabric_fold"]
+            if t < 0.27:
+                return PALETTE["fabric_fold"]
             # Forearm: Bare tan skin
-            elif t < 0.48:
-                col = PALETTE["skin"]
-            # Wrist Joint Narrowing: Bracelet zone (Right wrist has Salman's turquoise stone & silver chain)
-            elif t <= 0.56:
-                if side_name == "R":
-                    # Turquoise stone on anterior/outer face of wrist
-                    if y < 0.005:
-                        col = PALETTE["turquoise"]
-                    else:
-                        col = PALETTE["silver_chain"]
-                else:
-                    col = PALETTE["skin"]
+            if t < 0.38:
+                return PALETTE["skin"]
+            # Wrist Joint Narrowing: Bracelet zone strictly on Right wrist
+            if side_name == "R" and 0.38 <= t <= 0.44 and 1.06 <= z <= 1.10 and -0.02 <= y <= 0.08:
+                if y < 0.005 and x < -0.42:
+                    return PALETTE["turquoise"]  # Turquoise stone on outer wrist
+                return PALETTE["silver_chain"]    # Silver curb chain
             # Hand, Palm, Thumb & All 10 Fingers: 100% Clean Skin
-            else:
-                col = PALETTE["skin"]
+            return PALETTE["skin"]
 
         # 4. Torso: Black Pathani Kurta with buttons
-        elif z < 1.52:
+        if z < 1.535:
             # Front placket button accents
             if y < -0.08 and ax < 0.015 and z >= 1.08 and (abs((z - 1.18) % 0.08) < 0.015):
-                col = PALETTE["button"]
-            else:
-                col = PALETTE["kurta_black"]
+                return PALETTE["button"]
+            return PALETTE["kurta_black"]
 
-        # 5. Neck & Throat (Clean V-opening without black jagged spikes)
-        elif z < 1.58:
-            if y < 0.035 and ax < 0.065:
-                col = PALETTE["skin"]  # Smooth throat and neck
-            else:
-                col = PALETTE["kurta_black"]  # Mandarin collar around sides and back
+        # 5. Neck & Throat (Clean smooth transition without black jagged teeth)
+        if z < 1.58:
+            # Front throat and neck skin
+            if y < 0.035 and ax < 0.065 and z >= 1.535:
+                return PALETTE["skin"]
+            if y < -0.020 and ax < 0.035 and z >= 1.515:
+                return PALETTE["skin"]  # V-opening
+            return PALETTE["kurta_black"]  # Mandarin collar band
 
-        # 6. Chin & Jawline
-        elif z < 1.66:
-            if y < 0.01 and ax < 0.08:
-                col = PALETTE["skin"]  # Strong Salman Khan chin & jawline
-            else:
-                col = PALETTE["hair"]  # Back of head / nape
+        # 6. Chin, Jawline, Face & Hair (Z >= 1.58)
+        # Check if vertex belongs to facial zone for smooth photographic portrait sampling
+        is_face_zone = (1.57 <= z <= 1.825) and (y < -0.015) and (ax < 0.075)
+        if is_face_zone:
+            # Feathering weights for smooth seamless blending
+            wx = clamp((0.062 - ax) / 0.014)
+            wy = clamp((-0.015 - y) / 0.025)
+            wz_top = clamp((1.815 - z) / 0.025)
+            wz_bot = clamp((z - 1.570) / 0.020)
+            w = wx * wy * wz_top * wz_bot
 
-        # 7. Detailed Facial Features & Expressive Eyes
-        elif z < 1.82:
-            is_face_front = (y < -0.035) and (ax < 0.085)
-            if is_face_front:
-                # Calculate distance to Left and Right eye centers
-                d_eye_l = (Vector((x, y, z)) - Vector((0.0344, -0.0929, 1.7330))).length
-                d_eye_r = (Vector((x, y, z)) - Vector((-0.0339, -0.0908, 1.7324))).length
-                d_eye = min(d_eye_l, d_eye_r)
+            if w > 0.0:
+                tex_col = sample_portrait(x, y, z)
+                base_col = PALETTE["hair"] if z > 1.80 else PALETTE["skin"]
+                return lerp_color(base_col, tex_col, w)
 
-                # Expressive Eyes (Iris, Pupil, Sclera, Eyelid Line)
-                if d_eye < 0.015:
-                    if d_eye < 0.0055:
-                        col = PALETTE["pupil"]  # Intense dark brown iris & pupil
-                    elif z > 1.737:
-                        col = PALETTE["eyelid"]  # Eyelid crease & dark lash line
-                    else:
-                        col = PALETTE["eye_white"]  # Eye sclera white
+        # Hair, temples, and crown
+        if z > 1.81:
+            return PALETTE["hair"]
+        if y >= -0.015:
+            return PALETTE["hair"]
+        return PALETTE["skin"]
 
-                # Signature Dark Arched Eyebrows
-                elif (1.748 <= z <= 1.774) and (0.012 <= ax <= 0.062) and (y < -0.086):
-                    col = PALETTE["eyebrow"]
+    # Precompute per-vertex colors for high performance and smooth Gouraud shading
+    vert_colors = [compute_vertex_color(v.co.x, v.co.y, v.co.z) for v in me.vertices]
 
-                # Nostril Depth & Under-Nose Shadow
-                elif (1.666 <= z <= 1.685) and (ax <= 0.018) and (-0.126 <= y <= -0.108):
-                    col = PALETTE["nostril"]
-
-                # Natural Lips & Mouth Parting Crease
-                elif (1.632 <= z <= 1.658) and (ax <= 0.026) and (y < -0.090):
-                    if abs(z - 1.646) < 0.0035:
-                        col = PALETTE["mouth_line"]
-                    else:
-                        col = PALETTE["lips"]
-
-                # Subtle Rugged 5 o'clock Jawline Shadow
-                elif (1.58 <= z <= 1.64) and (y < 0.0) and (ax <= 0.065):
-                    col = PALETTE["skin_shadow"]
-
-                # Smooth Warm Tan Complexion
-                else:
-                    col = PALETTE["skin"]
-            else:
-                col = PALETTE["hair"]  # Temples, ears, and hair
-
-        # 8. Forehead Hairline & Slicked Dark Hair
-        else:
-            if z < 1.835 and y < -0.095 and ax < 0.045:
-                col = PALETTE["skin"]  # Upper forehead up to natural hairline
-            else:
-                col = PALETTE["hair"]  # Slicked black hairstyle
-
-        for li in poly.loop_indices:
-            attr.data[li].color = col
-
-        for li in poly.loop_indices:
-            attr.data[li].color = col
+    # Assign smooth vertex colors to all loop corners
+    for li, loop in enumerate(me.loops):
+        attr.data[li].color = vert_colors[loop.vertex_index]
 
     me.color_attributes.active_color = attr
     bpy.ops.object.shade_smooth()
