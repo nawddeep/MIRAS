@@ -202,7 +202,7 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
       <section className="space-y-3 rounded-2xl border border-line bg-white/60 p-4">
         <p className="font-medium">1. Pick up to {MAX} photos or short clips</p>
         <p className="text-sm text-ink-soft">
-          MIRAS takes one still frame from each, in your browser. Only those small frames are sent, once, and they are not saved on any server.
+          MIRAS takes one still frame from each, in your browser. Only those small frames are sent, once, to an AI model to write captions, and they are not stored on our server.
         </p>
         <input
           type="file"

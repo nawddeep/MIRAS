@@ -336,3 +336,13 @@ Times are IST.
 
 - `tests/e2e/design.spec.ts` now also saves `/roadmap` with the other screens: `docs/ui/360/roadmap.png` and `docs/ui/390/roadmap.png` (full page). No assertion changed.
 - New `docs/PITCH_NOTES.md`: the three sentences, the answers to "Why no payments?" and "Why no social features?" (from the page and `docs/PHASE6_NOT_BUILT.md`), and a short list of things not to say (for example, do not say Memories photos never leave the phone).
+
+## Privacy wording on Memories corrected: 2026-10-29 23:12
+
+- `app/memories/page.tsx` said "Your photos stay on this device." That was false: the browser shrinks the photos and the app sends a few small frames through `/api/memories/moments` to the AI model for captions. They are not stored on our server (`lib/services/memories.ts` zeroes them after use). The page now says: "Photos are resized on your phone. A few are sent to an AI model to write captions, and are not stored on our server. Your reel is saved on this device and you can delete it."
+- `components/MemoriesFlow.tsx` said the frames "are not saved on any server". True for our server, but what the AI provider does with them is not something this app can promise or has checked. It now says the frames are sent once to an AI model to write captions and are not stored on our server.
+- `lib/roadmap.ts` (the roadmap page) said memories "exist only as a reel on your own device". Now: "A visitor's memories reel is saved only on their own device."
+- Searched `app/`, `components/`, `lib/`, `docs/`, `README.md` and tests for similar claims and checked each against the code. These are true and were left alone: passport stamps "saved in this browser and nowhere else" (localStorage); 360 replay photo "not uploaded" (an object URL, no network call); audio walk location "never sent to MIRAS" (a geolocation watch, no fetch); plan "saved on this device only" (localStorage, no fetch); camera photo "used once, then discarded" (frame zeroed, never stored); Memories "saved only in this browser" (IndexedDB) and "your photos are still on this phone" after a failed send; README "frames never stored on the server".
+- No test asserted any of the old sentences, so none was changed. No behaviour changed.
+- Runs on a clean build: typecheck, lint, 215 unit tests, 93 browser tests, demo path 3 of 3: all passed.
+- Not verified: what the AI provider does with frames it receives. That depends on its own terms and is not something this repository can show.

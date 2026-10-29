@@ -13,7 +13,7 @@ export default async function MemoriesPage() {
     <div className="space-y-4">
       <h1 className="text-3xl">Memories</h1>
       <p className="text-ink-soft">
-        Turn up to five of your own photos or clips into a short in-app reel with captions and verified stories. Your photos stay on this device.
+        Turn up to five of your own photos or clips into a short in-app reel with captions and verified stories. Photos are resized on your phone. A few are sent to an AI model to write captions, and are not stored on our server. Your reel is saved on this device and you can delete it.
       </p>
       {!aiStatus().configured && (
         <p className="flex flex-wrap items-center gap-2 rounded-xl bg-saffron/15 p-3 text-sm">

@@ -50,7 +50,7 @@ export const ROADMAP: RoadmapItem[] = [
     name: "Live stories and real-time sync",
     status: "not_planned",
     what: "Moments and stories shared live between visitors.",
-    today: "Nothing is shared or live. Visitor memories exist only as a reel on your own device.",
+    today: "Nothing is shared or live. A visitor's memories reel is saved only on their own device.",
     before: ["Moderation before anything is published", "Storage rules for photos and faces", "A real server that supports live connections"],
     evidence: [],
   },
