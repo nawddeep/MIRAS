@@ -27,12 +27,12 @@ export function render(main) {
           <div class="m-badges" style="margin-bottom:20px">${tag('Demonstration profile', 'demo')}${statusBadge(a.verification)}<span class="m-muted m-body-sm">Last updated ${fmtDate(a.lastUpdated)}</span></div>
           <div class="m-actions"><a class="m-btn" href="#enquire">Send an enquiry</a>${ws.length ? `<a class="m-btn m-btn--ghost" href="/workshop/?id=${ws[0].id}">See the workshop</a>` : ''}</div>
         </div>
-        <div class="m-postcard" style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center">
+        <div class="m-postcard p-card-split">
           <div>
             <p class="m-hand" style="margin:0 0 10px">How the work is done</p>
             <p style="margin:0">${esc(a.process)}</p>
           </div>
-          <div class="m-doodle" style="width:110px">${art}</div>
+          <div class="m-doodle">${art}</div>
         </div>
       </div>
     </div></section>

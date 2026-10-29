@@ -413,3 +413,7 @@ html.past-hero body::after { opacity: 0; transition: opacity .6s ease; }
 .p-rights th, .p-rights td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 .p-rights th { font: 600 12px/1.2 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .p-table-scroll { overflow-x: auto; }
+
+.p-card-split { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 20px; align-items: center; }
+@media (max-width: 520px) { .p-card-split { grid-template-columns: 1fr; } .p-card-split > .m-doodle { width: 72px; order: -1; } }
+.m-kv dd { min-width: 0; overflow-wrap: anywhere; }
