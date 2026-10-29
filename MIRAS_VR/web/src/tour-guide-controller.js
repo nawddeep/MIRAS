@@ -96,6 +96,22 @@ export const GUIDES_CONFIG = {
       duration: 8500,
     },
   },
+  modi: {
+    id: 'modi',
+    name: 'Narendra Modi',
+    badge: 'PRIME MINISTER GUIDE',
+    title: 'Visionary National Leader',
+    glbUrl: 'assets/models/modi_tour_guide_rigged.glb',
+    stlUrl: 'assets/models/modi.glb',
+    themeColor: '#e87722',
+    welcomeStory: {
+      title: 'City Palace, Udaipur',
+      lead: 'Namaskar Mewar!',
+      body: 'Namaskar! Udaipur ki is pavitra dharohar, City Palace mein aap sabhi ka hardik swagat hai. Yeh sthan Mewar ke veerta, shaurya aur atulya sanskriti ka jeevant prateek hai.',
+      caption: 'Namaskar! Udaipur ki is pavitra dharohar, City Palace mein aap sabhi ka hardik swagat hai. Yeh sthan Mewar ke veerta, shaurya aur atulya sanskriti ka jeevant prateek hai.',
+      duration: 8500,
+    },
+  },
 };
 
 const BUBBLE_FADE_MS = 400;

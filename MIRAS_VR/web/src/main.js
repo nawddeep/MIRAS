@@ -73,6 +73,7 @@ const hudGuideBadge = $('hud-guide-badge');
 const guidePills = {
   trump: $('btn-select-trump'),
   salman: $('btn-select-salman'),
+  modi: $('btn-select-modi'),
 };
 
 function setActiveGuidePill(guideId) {
@@ -96,6 +97,13 @@ if (guidePills.salman) {
   guidePills.salman.addEventListener('click', async () => {
     setActiveGuidePill('salman');
     await guide.switchGuide('salman');
+  });
+}
+
+if (guidePills.modi) {
+  guidePills.modi.addEventListener('click', async () => {
+    setActiveGuidePill('modi');
+    await guide.switchGuide('modi');
   });
 }
 const hudButtons = {
