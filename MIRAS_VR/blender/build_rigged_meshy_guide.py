@@ -19,8 +19,8 @@ def log(msg):
     print(f"[MIRAS Meshy Rig] {msg}", flush=True)
 
 
-def build_rigged_meshy_character(input_glb, blend_path, glb_path):
-    log(f"Starting rigged guide build from Meshy model: {input_glb}")
+def build_rigged_meshy_character(input_glb, blend_path, glb_path, name="Tour_Guide"):
+    log(f"Starting rigged guide build ({name}) from model: {input_glb}")
     if not os.path.isfile(input_glb):
         raise SystemExit(f"ERROR: Input GLB file not found: {input_glb}")
 
@@ -38,10 +38,10 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path):
         if o != mesh_obj:
             bpy.data.objects.remove(o, do_unlink=True)
 
-    mesh_obj.name = mesh_obj.data.name = f"{NAME}_Mesh"
+    mesh_obj.name = mesh_obj.data.name = f"{name}_Mesh"
     bpy.context.view_layer.objects.active = mesh_obj
     me = mesh_obj.data
-    log(f"Imported Meshy mesh: {len(me.vertices)} vertices, {len(me.polygons)} faces")
+    log(f"Imported mesh: {len(me.vertices)} vertices, {len(me.polygons)} faces")
 
     # 2. Inspect and optimize materials/textures
     for mat in me.materials:
@@ -88,8 +88,8 @@ def build_rigged_meshy_character(input_glb, blend_path, glb_path):
     bpy.ops.object.shade_smooth()
 
     # 4. Construct Humanoid Armature Rig
-    arm_data = bpy.data.armatures.new(f"{NAME}_ArmatureData")
-    arm_obj = bpy.data.objects.new(f"{NAME}_Armature", arm_data)
+    arm_data = bpy.data.armatures.new(f"{name}_ArmatureData")
+    arm_obj = bpy.data.objects.new(f"{name}_Armature", arm_data)
     bpy.context.collection.objects.link(arm_obj)
     bpy.context.view_layer.objects.active = arm_obj
     bpy.ops.object.mode_set(mode="EDIT")
@@ -493,6 +493,7 @@ def main():
     parser.add_argument("--input", default=r"c:\Users\rkheu\Downloads\ABCW\meshy-model.glb", help="Path to input Meshy GLB file")
     parser.add_argument("--blend", default=r"c:\Users\rkheu\Downloads\ABCW\miras-repo\MIRAS_VR\blender\salman_guide_rigged.blend", help="Output .blend file path")
     parser.add_argument("--glb", default=r"c:\Users\rkheu\Downloads\ABCW\miras-repo\MIRAS_VR\web\public\assets\models\salman_tour_guide_rigged.glb", help="Output .glb file path")
+    parser.add_argument("--name", default="Salman_Tour_Guide", help="Character name for objects/armature")
     
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     args = parser.parse_args(argv)
@@ -501,6 +502,7 @@ def main():
         input_glb=os.path.abspath(args.input),
         blend_path=os.path.abspath(args.blend),
         glb_path=os.path.abspath(args.glb),
+        name=args.name,
     )
 
 
