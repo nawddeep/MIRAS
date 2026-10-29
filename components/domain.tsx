@@ -6,7 +6,7 @@ import { BookmarkPlace } from "./BookmarkPlace";
 import { ArrowIcon } from "./icons";
 import { HeroScene } from "./scene";
 import { StoryBody } from "./StoryBody";
-import { ConfirmedByMakerBadge, IllustrativeBadge, Label, NotRealLabel, SampleBadge, SourceTypeLabel, VerifiedSourceBadge } from "./ui";
+import { ConfirmedByMakerBadge, IllustrativeBadge, Label, NotRealLabel, SampleBadge, SampleMark, SourceTypeLabel, VerifiedSourceBadge } from "./ui";
 
 /** Plain <img> on purpose: media is local SVG/JPEG and next/image adds nothing for the demo. */
 export function MediaImage({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
@@ -54,7 +54,7 @@ export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang:
       <div className="relative aspect-[16/10]">
         {place.photos[0] ? <MediaImage src={place.photos[0]} alt="" /> : <HeroScene scene="dawn" className="h-full w-full" />}
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1">{place.isSample && <SampleBadge lang={lang} />}</div>
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1">{place.isSample && <SampleMark lang={lang} />}</div>
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
           <div className="min-w-0">
             <h2 className="t-heading group-hover:underline">{place.name}</h2>
@@ -83,7 +83,7 @@ export function StoryCard({ story, lang, placeName }: { story: StoryEntry; lang:
       <div className="space-y-2 p-4">
         <div className="flex flex-wrap gap-1.5">
           <SourceTypeLabel lang={lang} type={story.sourceType} />
-          {isVerifiedSource(story) ? <VerifiedSourceBadge lang={lang} /> : story.isSample && <SampleBadge lang={lang} />}
+          {isVerifiedSource(story) ? <VerifiedSourceBadge lang={lang} /> : story.isSample && <SampleMark lang={lang} />}
         </div>
         <h3 className="t-heading group-hover:underline">{story.title}</h3>
         {story.title_hi && (
@@ -153,7 +153,7 @@ export function ArtisanCard({ artisan, lang }: { artisan: Artisan; lang: Lang })
       <div className="min-w-0">
         <div className="flex flex-wrap gap-1">
           <Label tone="rose">{t(lang, "artisanChip")}</Label>
-          {artisan.isSample && <SampleBadge lang={lang} />}
+          {artisan.isSample && <SampleMark lang={lang} />}
         </div>
         <h3 className="t-heading mt-1">{artisan.name}</h3>
         <p className="text-sm text-muted-paper">
@@ -169,7 +169,7 @@ export function WorkshopCard({ workshop: w, lang }: { workshop: Workshop; lang: 
   const fmt = new Intl.DateTimeFormat(lang === "hi" ? "hi-IN" : "en-IN", { dateStyle: "medium" });
   return (
     <div className="rounded-card border border-line bg-paper-2 text-on-paper p-4">
-      <div className="flex flex-wrap items-center gap-2">{confirmed ? <ConfirmedByMakerBadge lang={lang} /> : w.isSample && <SampleBadge lang={lang} />}</div>
+      <div className="flex flex-wrap items-center gap-2">{confirmed ? <ConfirmedByMakerBadge lang={lang} /> : w.isSample && <SampleMark lang={lang} />}</div>
       <h3 className="t-heading mt-1">{w.title}</h3>
       <p className="mt-1">{w.description}</p>
       <dl className="tnum mt-2 grid grid-cols-2 gap-1 text-sm">

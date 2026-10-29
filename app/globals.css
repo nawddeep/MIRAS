@@ -285,13 +285,17 @@ h3 {
 :root { --font-display: var(--font-tiro); --font-body: var(--font-hind); }
 body.miras-body { background: #ddd7cb; color:var(--text-on-paper); }
 .miras-main { max-width:480px; background:var(--paper); min-height:100svh; padding-bottom:110px; }
-.miras-body > .demo-notice { display:none; }
+/* The "Demo data" pill is the app-level disclosure that replaced the dashed badge on list cards, so the strip must stay visible. */
+.miras-body > .demo-notice { width:100%; max-width:480px; margin:auto; }
 .miras-top { border:0; box-shadow:none; background:var(--paper); width:100%; max-width:480px; margin:auto; }
 .miras-top > div { padding:8px 12px; }
 .miras-top svg { stroke-width:1.8; }
 .miras-top a svg { display:none; }
 .miras-footer { max-width:480px; width:100%; margin:auto; background:var(--paper); }
 .miras-body:has(.hours-home) .miras-footer { display:none; }
+/* On Home only the sample-data note stays, so the "Demo data" pill has something to link to. */
+.miras-body:has(.hours-home) .miras-footer:has(#sample-data) { display:block; }
+.miras-body:has(.hours-home) .miras-footer:has(#sample-data) > :not(#sample-data) { display:none; }
 .miras-bottom { max-width:480px; margin:auto; background: #fff5e5; color:var(--ink); border-top:1px solid #ddcbb0; box-shadow:0 -3px 15px #2a1c1310; }
 .miras-bottom ul { height:72px; padding-bottom:10px; }
 .miras-bottom a { color:#52505a; }

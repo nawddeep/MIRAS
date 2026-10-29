@@ -58,6 +58,19 @@ export function SampleBadge({ lang }: { lang: Lang }) {
   );
 }
 
+/**
+ * Quiet marker for list cards: a small dashed dot plus a visually hidden "Sample content", so it is never colour alone.
+ * Detail pages keep the full SampleBadge, and the "Demo data" pill is on every screen.
+ */
+export function SampleMark({ lang }: { lang: Lang }) {
+  return (
+    <span title={t(lang, "sampleExplainer")} className="inline-flex items-center">
+      <span aria-hidden="true" className="inline-block size-2.5 rounded-full border border-dashed border-saffron-text bg-paper" />
+      <span className="sr-only">{t(lang, "sampleContent")}</span>
+    </span>
+  );
+}
+
 /** Labels for anything not real or not verified: Concept, Illustrative, Demo response, Estimate, Synthetic voice. */
 export function NotRealLabel({ lang, kind }: { lang: Lang; kind: "concept" | "illustrative" | "demoResponse" | "estimate" | "syntheticVoice" }) {
   return <Label tone="warn">{t(lang, kind)}</Label>;

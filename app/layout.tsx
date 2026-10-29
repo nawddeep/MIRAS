@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Hind, Tiro_Devanagari_Hindi } from "next/font/google";
+import { DemoStrip } from "@/components/DemoStrip";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -64,11 +65,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main-content" className="skip-link">Skip to content</a>
         <ServiceWorker />
         <InstallPrompt />
-        {demoMode && (
-          <div className="demo-notice bg-ink px-4 py-1.5 text-center text-xs text-on-dark">
-            Demo mode: sample content is shown and badged. Nothing marked sample is real.
-          </div>
-        )}
+        {demoMode && <DemoStrip />}
         <TopBar appName={t(lang, "appName")} right={<LanguageSwitch lang={lang} />} />
         <main id="main-content" className="miras-main mx-auto w-full max-w-3xl flex-1 px-5 py-5">{children}</main>
         <footer className="miras-footer pb-nav border-t border-line px-5 pt-6 text-center text-xs text-muted-paper">
@@ -95,6 +92,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </ul>
           </nav>
           <p>MIRAS by Team Impala. Stories show their source type: history, oral tradition or legend.</p>
+          {demoMode && (
+            <p id="sample-data" className="mt-1 scroll-mt-16">
+              Places, stories and makers marked as sample are placeholders. Nothing marked sample is real.
+            </p>
+          )}
           <p className="mt-1">
             <Link href="/onboard" className="underline">
               For artisans: create a listing
