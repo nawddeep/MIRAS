@@ -319,3 +319,15 @@ Times are IST.
 - Runs on a clean build: typecheck, lint, 208 unit tests, content:check (0 errors), 88 browser tests, demo path 3 of 3: all passed.
 
 - Note: the times in the S1 to S7 headings above were first written from estimates and are corrected to the real commit times (22:18 to 22:37).
+
+## Roadmap page: what is built and what comes next: 2026-10-29 23:08
+
+- New read-only pitch page `/roadmap` (`app/roadmap/page.tsx`), with all card data in one typed array in `lib/roadmap.ts`. Nine cards, one status label each (`Built (prototype)`, `Concept` or `Not planned yet`), a summary strip computed from the data, a closing block and a link back to Home. No buttons, forms, links to features, prices or images of working features. English only; the Hindi version is listed in `CONTENT_TODO.md` (added in `scripts/content-check.ts`, because that file is regenerated on every `content:check` run, so a hand-written line would be lost).
+- Linked from the footer line only (there is no separate About page). Not in the bottom navigation.
+- Every status was checked against the code. All nine statuses match the brief's table (4 Built (prototype), 0 Concept, 5 Not planned yet). Two "today" statements in the brief were wrong for what the code does and were corrected:
+  - Memories: the brief said the reel is built on the visitor's own phone. In fact photos are shrunk in the browser and sent through `app/api/memories/moments/route.ts` to the AI model for captions (not stored on the server); the reel is saved on the device and can be deleted (`components/MemoriesFlow.tsx`).
+  - Verified artisans hub: the brief said "no prices". Workshops have a required free-text `cost` field shown on the card (`lib/schemas.ts`, `components/domain.tsx`). There are still no products and no checkout.
+  - Smaller precision fixes: passport stamps come from reading or listening (`components/StoryBody.tsx`); the hidden-places form collects no coordinates at all (`components/PickForm.tsx`) and a sensitive pick never shows any (`lib/services/picks.ts`).
+- Existing issue found, not changed: `app/memories/page.tsx` says "Your photos stay on this device." That is not fully true, because frames are sent to the server and the AI model for captions.
+- 7 new unit tests and 5 new browser tests (nine cards, one label each, counts equal the data, no rupee sign or rating, no buttons or book/buy/pay/follow/rent/chat links, built cards name a route whose file exists, footer link only, no sideways scroll at 360 px).
+- Runs on a clean build: typecheck, lint, 215 unit tests, content:check (0 errors, 51 items), 93 browser tests, demo path 3 of 3: all passed.

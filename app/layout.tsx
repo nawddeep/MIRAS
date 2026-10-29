@@ -106,6 +106,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               Udaipur story
             </Link>
             {" · "}
+            <Link href="/roadmap" className="underline">
+              What comes next
+            </Link>
+            {" · "}
             <Link href="/admin" className="underline">
               Status
             </Link>

@@ -7,6 +7,8 @@ const root = process.cwd();
 const report = checkContent(path.join(root, "content"), path.join(root, "public"));
 // Draft Hindi UI copy is listed with the content so the team reviews it in one place.
 for (const key of HINDI_DRAFT_KEYS) report.todo.push({ kind: "copy", id: key, file: "lib/i18n.ts", note: `Hindi "${hindiDraft(key)}" needs native-speaker review` });
+// Pages written in English only, so the team knows a Hindi version is still owed.
+report.todo.push({ kind: "copy", id: "roadmap", file: "app/roadmap/page.tsx", note: "Roadmap page is English only; Hindi version needs a native speaker." });
 fs.writeFileSync(path.join(root, "CONTENT_TODO.md"), renderTodo(report, new Date()));
 
 console.log(`Content check: ${report.errors.length} error(s), ${report.todo.length} item(s) still sample or unverified.`);
