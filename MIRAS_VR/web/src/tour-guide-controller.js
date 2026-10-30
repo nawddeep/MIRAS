@@ -72,6 +72,30 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/trump_tour_guide_rigged.glb',
     stlUrl: 'assets/models/trump_tour_guide.stl',
     themeColor: '#e0893a',
+    voiceAudio: {
+      city_palace: 'assets/audio/voices/trump_city_palace.mp3',
+      moti_magri: 'assets/audio/voices/trump_moti_magri.mp3',
+      karni_mata: 'assets/audio/voices/trump_karni_mata.mp3',
+      pichola_lake: 'assets/audio/voices/trump_pichola_lake.mp3',
+    },
+    siteStories: {
+      city_palace: {
+        title: 'City Palace, Udaipur',
+        caption: 'Folks, welcome to City Palace, Udaipur! Believe me, this is one of the most incredible royal palaces in Rajasthan. Absolutely tremendous 400-year history on Lake Pichola.',
+      },
+      moti_magri: {
+        title: 'Moti Magri Pearl Hill',
+        caption: 'Look at this fantastic bronze statue of Maharana Pratap on his beloved Chetak atop Pearl Hill. Overlooking Fateh Sagar, absolutely magnificent courage.',
+      },
+      karni_mata: {
+        title: 'Shri Manshapurna Karni Mata',
+        caption: 'We are high above Udaipur at Karni Mata temple. The panoramic views of the lakes and Aravali hills are just tremendous, truly world-class.',
+      },
+      pichola_lake: {
+        title: 'Gangaur Ghat & Lake Pichola',
+        caption: 'Welcome to Gangaur Ghat on the shores of Lake Pichola. The historic ghats, palaces reflecting on the water - nobody does architecture like Mewar, believe me.',
+      },
+    },
     welcomeStory: {
       title: 'City Palace, Udaipur',
       lead: 'Courtyard Welcome',
@@ -88,6 +112,25 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/salman_tour_guide_rigged.glb',
     stlUrl: 'assets/models/salman_khan_guide.stl',
     themeColor: '#287277',
+    voiceAudio: null,
+    siteStories: {
+      city_palace: {
+        title: 'City Palace, Udaipur',
+        caption: 'Welcome to Udaipur! Hum yahan explore karenge Lake Pichola ke kinare khada 400 saal purana shandaar City Palace. Ek baar jo commitment kar di, toh poora tour karke hi jaayenge!',
+      },
+      moti_magri: {
+        title: 'Moti Magri Hill',
+        caption: 'Yeh hai Moti Magri, jahan Maharana Pratap aur unke Chetak ki shandaar murti hai. Mewar ka shaurya yahan saaf mehsoos hota hai!',
+      },
+      karni_mata: {
+        title: 'Karni Mata Mandir',
+        caption: 'Karni Mata temple se poore Udaipur ka 360-degree nazara dikhta hai. Behad khubsurat aur dil ko sukoon dene wali jagah!',
+      },
+      pichola_lake: {
+        title: 'Lake Pichola & Gangaur Ghat',
+        caption: 'Lake Pichola aur Gangaur Ghat... shaam ke waqt yahan ka nazara lajawab hota hai. Udaipur ki asli khubsurti yahi hai!',
+      },
+    },
     welcomeStory: {
       title: 'City Palace, Udaipur',
       lead: 'Swagat Hai Aapka!',
@@ -104,6 +147,30 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/modi_tour_guide_rigged.glb',
     stlUrl: 'assets/models/modi.glb',
     themeColor: '#e87722',
+    voiceAudio: {
+      city_palace: 'assets/audio/voices/modi_city_palace.mp3',
+      moti_magri: 'assets/audio/voices/modi_moti_magri.mp3',
+      karni_mata: 'assets/audio/voices/modi_karni_mata.mp3',
+      pichola_lake: 'assets/audio/voices/modi_pichola_lake.mp3',
+    },
+    siteStories: {
+      city_palace: {
+        title: 'City Palace, Udaipur',
+        caption: 'Namaskar! Udaipur ki is pavitra dharohar, City Palace mein aap sabhi ka hardik swagat hai. Yeh sthan Mewar ke veerta, shaurya aur atulya sanskriti ka jeevant prateek hai.',
+      },
+      moti_magri: {
+        title: 'Moti Magri Smarak',
+        caption: 'Veer Shiromani Maharana Pratap aur unke wafadaar ashwa Chetak ki yeh smriti humein swatantrata aur swabhiman ki prerana deti hai.',
+      },
+      karni_mata: {
+        title: 'Karni Mata Mandir',
+        caption: 'Mata Karni ka yeh pavitra sthan Udaipur ki jheelon aur sundar prakriti ke beech adhyatmik shanti ka adbhut sangam hai.',
+      },
+      pichola_lake: {
+        title: 'Gangaur Ghat & Lake Pichola',
+        caption: 'Pichola jheel ka tat aur yeh aitihasik ghat Mewar ki sanskritik dharohar aur jal sanrakshan ka anupam udaharan hain.',
+      },
+    },
     welcomeStory: {
       title: 'City Palace, Udaipur',
       lead: 'Namaskar Mewar!',
@@ -120,6 +187,25 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/babita_tour_guide_rigged.glb',
     stlUrl: 'assets/models/Babita.glb',
     themeColor: '#d63384',
+    voiceAudio: null,
+    siteStories: {
+      city_palace: {
+        title: 'City Palace, Udaipur',
+        caption: 'Namaste! Udaipur ke sundar City Palace mein aapka swagat hai. Yeh royal palace aur Lake Pichola ka nazara sach mein behad khubsurat aur dilkash hai!',
+      },
+      moti_magri: {
+        title: 'Moti Magri Garden',
+        caption: 'Moti Magri hill top par Maharana Pratap ka memorial hai. Yahan ka peaceful environment aur lush green garden bohot pyara hai!',
+      },
+      karni_mata: {
+        title: 'Karni Mata Temple',
+        caption: 'Machhla Magra hill par basa Karni Mata mandir Udaipur ki shaan hai. Ropeway se upar aakar yahan se sunrise aur sunset dekhna kamaal ka experience hai!',
+      },
+      pichola_lake: {
+        title: 'Gangaur Ghat & Lake Pichola',
+        caption: 'Gangaur Ghat par aakar Lake Pichola ke thande paani aur royal palaces ko dekhna sach mein magical experience deta hai!',
+      },
+    },
     welcomeStory: {
       title: 'City Palace, Udaipur',
       lead: 'Namaste Udaipur!',
@@ -205,6 +291,156 @@ export class TourGuideController {
     this.strafeIntensity = 0;
     this.speakIntensity = 0;
     this.speakPhase = 0;
+
+    // Authentic Voice Narration System
+    this.currentViewId = options.currentViewId || 'city_palace';
+    this.onVoiceStateChange = options.onVoiceStateChange;
+    this.initVoiceAudio();
+  }
+
+  /**
+   * Initialize HTML5 Audio element and listeners for character voice playback
+   */
+  initVoiceAudio() {
+    this.voiceAudio = new Audio();
+    this.voiceAudio.preload = 'auto';
+    this.voicePlaying = false;
+
+    this.voiceAudio.addEventListener('play', () => {
+      this.voicePlaying = true;
+      this.setState(TOUR_STATES.EXPLAINING);
+      if (this.onVoiceStateChange) {
+        this.onVoiceStateChange(true);
+      }
+    });
+
+    this.voiceAudio.addEventListener('ended', () => {
+      this.voicePlaying = false;
+      this.setState(TOUR_STATES.IDLE);
+      if (this.onVoiceStateChange) {
+        this.onVoiceStateChange(false);
+      }
+      setTimeout(() => {
+        if (!this.voicePlaying && !this.tourActive) {
+          this.bubble.hide();
+        }
+      }, 2000);
+    });
+
+    this.voiceAudio.addEventListener('pause', () => {
+      if (this.voiceAudio.currentTime === 0 || this.voiceAudio.ended) {
+        this.voicePlaying = false;
+        if (this.onVoiceStateChange) {
+          this.onVoiceStateChange(false);
+        }
+      }
+    });
+
+    this.voiceAudio.addEventListener('error', (e) => {
+      log('Voice audio event:', e);
+      this.voicePlaying = false;
+      if (this.onVoiceStateChange) {
+        this.onVoiceStateChange(false);
+      }
+    });
+  }
+
+  /**
+   * Set current view id
+   */
+  setView(viewId) {
+    if (viewId) {
+      this.currentViewId = viewId;
+    }
+  }
+
+  /**
+   * Play authentic character voice narration for current or designated site
+   */
+  playVoiceNarration(viewId) {
+    if (viewId) {
+      this.currentViewId = viewId;
+    }
+    const targetView = this.currentViewId || 'city_palace';
+    const guideDef = GUIDES_CONFIG[this.currentGuideId] || GUIDES_CONFIG.trump;
+    const story = (guideDef.siteStories && guideDef.siteStories[targetView]) || guideDef.welcomeStory || {
+      title: 'Heritage Site',
+      caption: 'Welcome to this historic Mewar heritage site.',
+    };
+
+    // Show speech bubble with appropriate guide styling
+    this.bubble.draw(story, guideDef);
+    this.bubble.show();
+
+    // Check if recorded character voice audio exists
+    const audioSrc = guideDef.voiceAudio && guideDef.voiceAudio[targetView];
+
+    if (audioSrc) {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      if (this.voiceAudio) {
+        this.voiceAudio.pause();
+        this.voiceAudio.currentTime = 0;
+        this.voiceAudio.src = audioSrc;
+        const playPromise = this.voiceAudio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch((err) => {
+            log('Audio autoplay blocked, awaiting interaction:', err);
+          });
+        }
+      }
+      this.setState(TOUR_STATES.POINTING);
+      setTimeout(() => {
+        if (this.voicePlaying || this.tourActive) {
+          this.setState(TOUR_STATES.EXPLAINING);
+        }
+      }, 2000);
+    } else {
+      // Fallback: Web Speech API synthesis for characters without recorded voice
+      this.setState(TOUR_STATES.POINTING);
+      setTimeout(() => {
+        this.setState(TOUR_STATES.EXPLAINING);
+      }, 1800);
+      speakNarration(story.caption);
+    }
+  }
+
+  /**
+   * Stop voice narration audio immediately
+   */
+  stopVoiceAudio() {
+    if (this.voiceAudio) {
+      this.voiceAudio.pause();
+      this.voiceAudio.currentTime = 0;
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    this.voicePlaying = false;
+    if (this.onVoiceStateChange) {
+      this.onVoiceStateChange(false);
+    }
+  }
+
+  /**
+   * Toggle voice narration playback
+   */
+  toggleVoiceNarration(viewId) {
+    if (this.isVoicePlaying()) {
+      this.stopVoiceAudio();
+      this.setState(TOUR_STATES.IDLE);
+      this.bubble.hide();
+    } else {
+      this.playVoiceNarration(viewId);
+    }
+  }
+
+  /**
+   * Check if voice narration is currently playing
+   */
+  isVoicePlaying() {
+    return this.voicePlaying || (this.voiceAudio && !this.voiceAudio.paused && !this.voiceAudio.ended);
   }
 
   /**
@@ -216,6 +452,8 @@ export class TourGuideController {
     if (!GUIDES_CONFIG[guideId] || this.currentGuideId === guideId) return;
 
     log(`Switching guide from ${this.currentGuideId} to ${guideId}`);
+    const wasPlaying = this.isVoicePlaying();
+    this.stopVoiceAudio();
     this.currentGuideId = guideId;
     const guideDef = GUIDES_CONFIG[guideId];
     this.glbUrl = guideDef.glbUrl;
@@ -455,10 +693,11 @@ export class TourGuideController {
   /**
    * Start automated waypoint tour
    */
-  startTour() {
+  startTour(viewId) {
     this.tourActive = true;
     this.currentWaypointIndex = 0;
     this.navigateToWaypoint(this.waypoints[0]);
+    this.playVoiceNarration(viewId || this.currentViewId);
   }
 
   /**
@@ -467,6 +706,7 @@ export class TourGuideController {
   stopTour() {
     this.tourActive = false;
     this.activeWaypoint = null;
+    this.stopVoiceAudio();
     this.setState(TOUR_STATES.IDLE);
     this.bubble.hide();
   }
@@ -492,7 +732,8 @@ export class TourGuideController {
     this.shownAt = now;
     this.duration = hotspot.duration || 9000;
 
-    this.bubble.draw(hotspot);
+    const guideDef = GUIDES_CONFIG[this.currentGuideId] || GUIDES_CONFIG.trump;
+    this.bubble.draw(hotspot, guideDef);
     this.bubble.show();
 
     // Sequence: Point at landmark for 2.2 seconds, then transition to Explain gestures
@@ -508,6 +749,7 @@ export class TourGuideController {
   }
 
   dismiss() {
+    this.stopVoiceAudio();
     if (this.currentHotspot) {
       this.bubble.hide();
       this.currentHotspot = null;
@@ -835,7 +1077,7 @@ class TourSpeechBubble {
     requestAnimationFrame(animate);
   }
 
-  draw(hotspot) {
+  draw(hotspot, guideDef = null) {
     const ctx = this.ctx;
     const w = this.canvas.width;
     const h = this.canvas.height;
@@ -866,14 +1108,16 @@ class TourSpeechBubble {
 
     const title = hotspot.title || 'Heritage Site';
     const caption = hotspot.caption || '';
+    const badgeName = guideDef ? `${guideDef.name.toUpperCase()} - ${guideDef.badge}` : 'HERITAGE TOUR GUIDE';
+    const themeColor = guideDef ? guideDef.themeColor : '#e0893a';
 
     ctx.textBaseline = 'top';
     let y = pad - 6;
 
     // Header Badge
     ctx.font = '700 24px "Helvetica Neue", system-ui, sans-serif';
-    ctx.fillStyle = '#e0893a';
-    ctx.fillText('[DONALD TRUMP · HERITAGE TOUR GUIDE]', pad, y);
+    ctx.fillStyle = themeColor;
+    ctx.fillText(`[${badgeName}]`, pad, y);
     y += 40;
 
     // Monument Title
@@ -883,7 +1127,7 @@ class TourSpeechBubble {
     y += 62;
 
     // Divider Line
-    ctx.fillStyle = '#e0893a';
+    ctx.fillStyle = themeColor;
     ctx.fillRect(pad, y, 70, 4);
     y += 24;
 

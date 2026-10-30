@@ -123,6 +123,7 @@ const hudButtons = {
   welcome: $('btn-guide-welcome'),
   look: $('btn-guide-look'),
   listen: $('btn-guide-listen'),
+  voice: $('btn-guide-voice'),
   tour: $('btn-guide-tour'),
 };
 
@@ -133,9 +134,28 @@ function setActiveHudBtn(activeId) {
   });
 }
 
+guide.onVoiceStateChange = (isPlaying) => {
+  if (hudButtons.voice) {
+    hudButtons.voice.classList.toggle('active', isPlaying);
+    hudButtons.voice.textContent = isPlaying ? 'Stop Voice' : 'Voice Narration';
+  }
+  if (isPlaying) {
+    setActiveHudBtn('explain');
+  } else if (!guide.tourActive) {
+    setActiveHudBtn('idle');
+  }
+};
+
+if (hudButtons.voice) {
+  hudButtons.voice.addEventListener('click', () => {
+    guide.toggleVoiceNarration(currentView?.id);
+  });
+}
+
 if (hudButtons.idle) {
   hudButtons.idle.addEventListener('click', () => {
     guide.stopTour();
+    guide.stopVoiceAudio();
     guide.setState(TOUR_STATES.IDLE);
     setActiveHudBtn('idle');
   });
@@ -175,12 +195,13 @@ if (hudButtons.idle) {
     setActiveHudBtn('listen');
   });
   hudButtons.tour.addEventListener('click', () => {
-    if (guide.tourActive) {
+    if (guide.tourActive || guide.isVoicePlaying()) {
       guide.stopTour();
+      guide.stopVoiceAudio();
       hudButtons.tour.textContent = 'Start Guided Tour';
       setActiveHudBtn('idle');
     } else {
-      guide.startTour();
+      guide.startTour(currentView?.id);
       hudButtons.tour.textContent = 'Stop Tour';
       setActiveHudBtn('tour');
     }
@@ -289,9 +310,13 @@ async function showView(view) {
         playButton.hidden = soundButton.hidden = true;
       }
       currentView = view;
+      guide.setView(view.id);
       gaze.setView(view.id);
       markers.update(0, performance.now());
       updateViewUi();
+      if (guide.tourActive) {
+        guide.playVoiceNarration(view.id);
+      }
       const q = new URLSearchParams(location.search);
       q.set('view', view.id); // keep other flags (dev, vrmenu) as they are
       history.replaceState(null, '', `?${q.toString().replace(/=(?=&|$)/g, '')}`);

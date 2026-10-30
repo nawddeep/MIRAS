@@ -78,8 +78,8 @@ export class TrumpCompanionGuide {
     this.controller.playAction(actionName, fadeDuration, timeScale);
   }
 
-  startTour() {
-    this.controller.startTour();
+  startTour(viewId) {
+    this.controller.startTour(viewId);
   }
 
   stopTour() {
@@ -88,6 +88,34 @@ export class TrumpCompanionGuide {
 
   get tourActive() {
     return this.controller.tourActive;
+  }
+
+  setView(viewId) {
+    this.controller.setView(viewId);
+  }
+
+  playVoiceNarration(viewId) {
+    this.controller.playVoiceNarration(viewId);
+  }
+
+  stopVoiceAudio() {
+    this.controller.stopVoiceAudio();
+  }
+
+  toggleVoiceNarration(viewId) {
+    this.controller.toggleVoiceNarration(viewId);
+  }
+
+  isVoicePlaying() {
+    return this.controller.isVoicePlaying();
+  }
+
+  set onVoiceStateChange(fn) {
+    this.controller.onVoiceStateChange = fn;
+  }
+
+  get onVoiceStateChange() {
+    return this.controller.onVoiceStateChange;
   }
 
   show(hotspot, now) {
