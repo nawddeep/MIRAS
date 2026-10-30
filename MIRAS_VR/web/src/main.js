@@ -60,6 +60,8 @@ const guide = new TrumpCompanionGuide(scene, camera, renderer, {
 });
 const gaze = new GazeHotspots(HOTSPOTS, {
   onActivate: (hotspot, now) => {
+    // Do not trigger or interrupt when voice audio narration is playing
+    if (guide.isVoicePlaying()) return;
     gaze.busy = true;
     guide.show(hotspot, now);
   },
@@ -283,24 +285,42 @@ function fadeTo(target) {
 }
 
 /** Fade to black, swap the panorama (and its hotspots), fade back in. */
+let pendingView = null;
+
 async function showView(view) {
-  if (switching) return switching;
+  if (!view) return;
+
+  // If already switching, remember the target view so we transition to it immediately when ready
+  if (switching) {
+    pendingView = view;
+    return switching;
+  }
+
   switching = (async () => {
     const wasPlaying = video ? !video.paused : true;
     const wasMuted = video ? video.muted : true;
+    const wasVoicePlaying = guide.isVoicePlaying() || guide.tourActive;
+
+    guide.stopVoiceAudio();
     guide.dismiss();
-    gaze.busy = true; // no hotspot triggers mid-transition
+    gaze.busy = true;
+
     await fadeTo(0);
     loader.hidden = viewCache.has(view.id);
     errorBox.hidden = true;
+
     try {
       const entry = await loadViewTexture(view, (p) => {
-        loaderText.textContent = `Loading ${view.name}… ${Math.round(p * 100)}%`;
+        loaderText.textContent = `Loading ${view.name}... ${Math.round(p * 100)}%`;
       });
-      video?.pause();
+
+      if (video && video !== entry.video) {
+        video.pause();
+      }
       video = entry.video;
       panorama.material.map = entry.texture;
       panorama.material.needsUpdate = true;
+
       if (video) {
         video.muted = wasMuted;
         video.currentTime = 0;
@@ -309,16 +329,20 @@ async function showView(view) {
       } else {
         playButton.hidden = soundButton.hidden = true;
       }
+
       currentView = view;
       guide.setView(view.id);
       gaze.setView(view.id);
       markers.update(0, performance.now());
       updateViewUi();
-      if (guide.tourActive) {
+
+      // If user had voice narration or guided tour active, automatically start the full authentic voice narration for the new place!
+      if (wasVoicePlaying) {
         guide.playVoiceNarration(view.id);
       }
+
       const q = new URLSearchParams(location.search);
-      q.set('view', view.id); // keep other flags (dev, vrmenu) as they are
+      q.set('view', view.id);
       history.replaceState(null, '', `?${q.toString().replace(/=(?=&|$)/g, '')}`);
       document.body.classList.add('ready');
       await fadeTo(1);
@@ -326,12 +350,19 @@ async function showView(view) {
       console.error('[MIRAS]', err);
       $('error-detail').textContent = err.message;
       errorBox.hidden = false;
+      await fadeTo(1);
     } finally {
       loader.hidden = true;
       gaze.busy = guide.active;
       switching = null;
+      if (pendingView && pendingView.id !== currentView.id) {
+        const next = pendingView;
+        pendingView = null;
+        showView(next);
+      }
     }
   })();
+
   return switching;
 }
 
@@ -345,13 +376,29 @@ for (const view of VIEWS) {
   b.dataset.view = view.id;
   b.setAttribute('role', 'tab');
   b.textContent = view.name;
-  b.addEventListener('click', () => view !== currentView && showView(view));
+  b.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (view.id !== currentView.id) {
+      showView(view);
+    }
+  });
   tabs.appendChild(b);
 }
 tabs.hidden = VIEWS.length < 2;
 
+// Connect HUD Location Pills
+document.querySelectorAll('.location-pill').forEach((pill) => {
+  pill.addEventListener('click', (e) => {
+    e.preventDefault();
+    const siteId = pill.dataset.site;
+    const target = VIEWS.find((v) => v.id === siteId);
+    if (target && target.id !== currentView.id) {
+      showView(target);
+    }
+  });
+});
+
 // The same switcher inside the headset: look down for a row of location buttons.
-// ?vrmenu shows it on desktop too (drag to look down), for testing without a headset.
 const vrMenu = new VrViewMenu(scene, renderer, camera, VIEWS, {
   onSelect: (view) => showView(view),
   forceDesktop: params.has('vrmenu'),
@@ -360,14 +407,19 @@ if (VIEWS.length < 2) vrMenu.forceDesktop = false;
 
 function updateViewUi() {
   vrMenu.setActive(currentView.id);
+  // Update top tabs
   for (const b of tabs.children) {
     const on = b.dataset.view === currentView.id;
     b.classList.toggle('active', on);
     b.setAttribute('aria-selected', String(on));
   }
-  $('view-name').textContent = `${currentView.name} · Udaipur · 360°`;
-  $('credit').textContent = `Prototype preview${currentView.credit ? ` · 360° source video: ${currentView.credit}` : ''}`;
-  document.title = `MIRAS — ${currentView.name}, Udaipur 360°`;
+  // Update HUD location pills
+  document.querySelectorAll('.location-pill').forEach((pill) => {
+    pill.classList.toggle('active', pill.dataset.site === currentView.id);
+  });
+  $('view-name').textContent = `${currentView.name} - Udaipur - 360`;
+  $('credit').textContent = `Prototype preview${currentView.credit ? ` - 360 source video: ${currentView.credit}` : ''}`;
+  document.title = `MIRAS - ${currentView.name}, Udaipur 360`;
 }
 
 // ---------------------------------------------------------------- video controls

@@ -33,31 +33,74 @@ export function loadPanoramaVideo(url, onProgress) {
   video.src = url;
   video.loop = true;
   video.muted = true;
-  video.playsInline = true; // no native fullscreen takeover on iOS / Quest
+  video.playsInline = true;
   video.crossOrigin = 'anonymous';
   video.preload = 'auto';
 
   return new Promise((resolve, reject) => {
-    const onError = () => {
-      const code = video.error?.code;
-      // MEDIA_ERR_SRC_NOT_SUPPORTED is also what a missing file (HTML 404 page) produces.
-      reject(new Error(code === 4 ? `Video not found or unsupported: ${url}` : `Video failed to load (code ${code}): ${url}`));
-    };
-    video.addEventListener('error', onError, { once: true });
-    video.addEventListener('progress', () => {
-      if (video.duration && video.buffered.length) onProgress?.(video.buffered.end(video.buffered.length - 1) / video.duration);
-    });
-    video.addEventListener('loadeddata', () => {
+    let resolved = false;
+    let timer = null;
+
+    const cleanup = () => {
+      if (timer) clearTimeout(timer);
       video.removeEventListener('error', onError);
-      const ratio = video.videoWidth / video.videoHeight;
+      video.removeEventListener('loadeddata', onReady);
+      video.removeEventListener('canplay', onReady);
+      video.removeEventListener('loadedmetadata', onMetadata);
+    };
+
+    const onReady = () => {
+      if (resolved) return;
+      resolved = true;
+      cleanup();
+      const ratio = video.videoWidth / (video.videoHeight || 1);
       if (Math.abs(ratio - 2) > 0.01) {
-        console.info(`[MIRAS] Video is ${video.videoWidth}x${video.videoHeight}; mapped as full 360x180 (as in Blender).`);
+        console.info(`[MIRAS] Video is ${video.videoWidth}x${video.videoHeight}; mapped as full 360x180.`);
       }
       const texture = new THREE.VideoTexture(video);
       texture.colorSpace = THREE.SRGBColorSpace;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
       video.play().catch((e) => console.warn('[MIRAS] Autoplay blocked; press Play.', e));
       resolve({ texture, video });
-    }, { once: true });
+    };
+
+    const onMetadata = () => {
+      if (video.videoWidth > 0 && video.readyState >= 1) {
+        onReady();
+      }
+    };
+
+    const onError = () => {
+      if (resolved) return;
+      resolved = true;
+      cleanup();
+      const code = video.error?.code;
+      reject(new Error(code === 4 ? `Video not found or unsupported: ${url}` : `Video failed to load (code ${code}): ${url}`));
+    };
+
+    video.addEventListener('error', onError, { once: true });
+    video.addEventListener('loadeddata', onReady, { once: true });
+    video.addEventListener('canplay', onReady, { once: true });
+    video.addEventListener('loadedmetadata', onMetadata);
+    video.addEventListener('progress', () => {
+      if (video.duration && video.buffered.length) {
+        onProgress?.(video.buffered.end(video.buffered.length - 1) / video.duration);
+      }
+    });
+
+    if (video.readyState >= 2) {
+      onReady();
+      return;
+    }
+
+    timer = setTimeout(() => {
+      if (!resolved) {
+        console.warn(`[MIRAS] loadPanoramaVideo timer fallback triggered for ${url}`);
+        onReady();
+      }
+    }, 4000);
+
     video.load();
   });
 }

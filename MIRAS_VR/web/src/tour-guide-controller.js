@@ -376,39 +376,40 @@ export class TourGuideController {
     const audioSrc = guideDef.voiceAudio && guideDef.voiceAudio[targetView];
 
     if (audioSrc) {
-      if (window.speechSynthesis) {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
       if (this.voiceAudio) {
         this.voiceAudio.pause();
         this.voiceAudio.currentTime = 0;
         this.voiceAudio.src = audioSrc;
+        this.voiceAudio.volume = 1.0;
         const playPromise = this.voiceAudio.play();
         if (playPromise && typeof playPromise.catch === 'function') {
           playPromise.catch((err) => {
-            log('Audio autoplay blocked, awaiting interaction:', err);
+            log('Audio autoplay prevented, user interaction required:', err);
           });
         }
       }
+      this.voicePlaying = true;
+      this._gestureTimer = 0;
+      this._gestureIndex = 0;
       this.setState(TOUR_STATES.POINTING);
       setTimeout(() => {
-        if (this.voicePlaying || this.tourActive) {
+        if (this.voicePlaying) {
           this.setState(TOUR_STATES.EXPLAINING);
         }
       }, 2000);
     } else {
-      // Fallback: Web Speech API synthesis for characters without recorded voice
+      // For guides without recorded audio: silent bubble presentation, no robotic TTS
+      this.voicePlaying = false;
       this.setState(TOUR_STATES.POINTING);
       setTimeout(() => {
         this.setState(TOUR_STATES.EXPLAINING);
       }, 1800);
-      speakNarration(story.caption);
     }
   }
 
-  /**
-   * Stop voice narration audio immediately
-   */
   stopVoiceAudio() {
     if (this.voiceAudio) {
       this.voiceAudio.pause();
@@ -728,6 +729,10 @@ export class TourGuideController {
    * @param {number} now
    */
   show(hotspot, now) {
+    if (this.voicePlaying) {
+      // Do not interrupt the active authentic character voice narration
+      return;
+    }
     this.currentHotspot = hotspot;
     this.shownAt = now;
     this.duration = hotspot.duration || 9000;
@@ -739,13 +744,10 @@ export class TourGuideController {
     // Sequence: Point at landmark for 2.2 seconds, then transition to Explain gestures
     this.setState(TOUR_STATES.POINTING, { landmarkPos: hotspot.worldPos });
     setTimeout(() => {
-      if (this.currentHotspot === hotspot) {
+      if (this.currentHotspot === hotspot && !this.voicePlaying) {
         this.setState(TOUR_STATES.EXPLAINING);
       }
     }, 2200);
-
-    // Speak narration via Web Speech API if supported
-    speakNarration(hotspot.caption);
   }
 
   dismiss() {
@@ -771,6 +773,18 @@ export class TourGuideController {
     // 1. Advance Skeletal Animation Mixer
     if (this.mixer) {
       this.mixer.update(delta);
+    }
+
+    // Dynamic gesture alternation during authentic voice narration:
+    // Keeps character expressively gesturing between Explain, Talk, and Point
+    if (this.voicePlaying) {
+      this._gestureTimer = (this._gestureTimer || 0) + delta;
+      if (this._gestureTimer > 6.5) {
+        this._gestureTimer = 0;
+        this._gestureIndex = ((this._gestureIndex || 0) + 1) % 3;
+        const gestures = ['Explain', 'Talk', 'Point'];
+        this.playAction(gestures[this._gestureIndex], 0.6);
+      }
     }
 
     // 2. Head position tracking
@@ -830,6 +844,10 @@ export class TourGuideController {
           // Turn to face visitor, point to landmark, and explain story
           this.setState(TOUR_STATES.TURNING);
           setTimeout(() => {
+            if (this.voicePlaying) {
+              // Preserve full MP3 narration
+              return;
+            }
             if (reachedWp.story) {
               this.show(reachedWp.story, performance.now());
             } else {
@@ -869,6 +887,7 @@ export class TourGuideController {
         // State & animation management during user movement:
         // Only override state if not in an active presentation (pointing / explaining)
         const isPresenting =
+          this.voicePlaying ||
           this.state === TOUR_STATES.EXPLAINING ||
           this.state === TOUR_STATES.POINTING;
 
@@ -1165,16 +1184,11 @@ function wrapText(ctx, text, maxW) {
  * Text-to-speech synthesis integration (Web Speech API)
  */
 function speakNarration(text) {
+  // Removed per user request: strictly authentic character MP3 voice narrations only.
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     try {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.02;
-      utterance.pitch = 0.96;
-      window.speechSynthesis.speak(utterance);
-    } catch (err) {
-      // Audio speech optional, silently ignore
-    }
+    } catch (err) {}
   }
 }
 
