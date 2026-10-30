@@ -368,6 +368,11 @@ export class TourGuideController {
       caption: 'Welcome to this historic Mewar heritage site.',
     };
 
+    // Ensure state and duration: NEVER auto-dismiss while audio is narrating
+    this.currentHotspot = null;
+    this.shownAt = performance.now();
+    this.duration = Infinity;
+
     // Show speech bubble with appropriate guide styling
     this.bubble.draw(story, guideDef);
     this.bubble.show();
@@ -696,8 +701,6 @@ export class TourGuideController {
    */
   startTour(viewId) {
     this.tourActive = true;
-    this.currentWaypointIndex = 0;
-    this.navigateToWaypoint(this.waypoints[0]);
     this.playVoiceNarration(viewId || this.currentViewId);
   }
 
@@ -920,14 +923,14 @@ export class TourGuideController {
       this.updateProceduralFallback(delta, now);
     }
 
-    // 5. Auto-dismiss story after duration
-    if (this.state === TOUR_STATES.EXPLAINING && now - this.shownAt >= this.duration) {
+    // 5. Auto-dismiss story after duration (ONLY for temporary hotspot plaques when voice audio is NOT playing)
+    if (!this.voicePlaying && this.currentHotspot && now - this.shownAt >= this.duration) {
       this.dismiss();
       // If on an automated tour, proceed to the next waypoint!
-      if (this.tourActive && this.waypoints.length > 0) {
+      if (this.tourActive && this.waypoints.length > 0 && !this.voicePlaying) {
         this.currentWaypointIndex = (this.currentWaypointIndex + 1) % this.waypoints.length;
         setTimeout(() => {
-          if (this.tourActive) {
+          if (this.tourActive && !this.voicePlaying) {
             this.navigateToWaypoint(this.waypoints[this.currentWaypointIndex]);
           }
         }, 1500);
