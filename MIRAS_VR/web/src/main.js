@@ -4,7 +4,8 @@ import { CONFIG } from './config.js';
 import { createPanorama, isVideoUrl, loadPanoramaTexture, loadPanoramaVideo } from './panorama.js';
 import { LookControls } from './look-controls.js';
 import { detectImmersiveVR, XRSessionController } from './xr.js';
-import { TrumpCompanionGuide, TOUR_STATES, GUIDES_CONFIG } from './companion-guide.js';
+import { TrumpCompanionGuide, TOUR_STATES, GUIDES_CONFIG, registerCustomGuide } from './companion-guide.js';
+import { createImageTo3DTask, pollImageTo3DTask, getSavedMeshyApiKey, saveMeshyApiKey } from './meshy-api.js';
 import { GazeHotspots } from './gaze.js';
 import { DevHud } from './dev-hud.js';
 import { HotspotMarkers } from './hotspot-markers.js';
@@ -116,6 +117,296 @@ if (guidePills.babita) {
   guidePills.babita.addEventListener('click', async () => {
     setActiveGuidePill('babita');
     await guide.switchGuide('babita');
+  });
+}
+
+// ---------------------------------------------------------------- meshy photo-to-3d guide modal
+const modalCreateGuide = $('modal-create-guide');
+const btnOpenCreateGuide = $('btn-open-create-guide');
+const btnCloseModal = $('btn-close-modal');
+const btnCancelModal = $('btn-cancel-modal');
+const formCreateGuide = $('form-create-guide');
+const photoDropzone = $('photo-dropzone');
+const inputGuidePhoto = $('input-guide-photo');
+const dropzoneEmpty = $('dropzone-empty');
+const dropzonePreview = $('dropzone-preview');
+const imgPhotoPreview = $('img-photo-preview');
+const btnRemovePhoto = $('btn-remove-photo');
+const labelGenderMale = $('label-gender-male');
+const labelGenderFemale = $('label-gender-female');
+const inputGuideName = $('input-guide-name');
+const inputMeshyKey = $('input-meshy-key');
+const genStatusBox = $('generation-status-box');
+const genStatusText = $('gen-status-text');
+const genProgressPercent = $('gen-progress-percent');
+const genProgressBar = $('gen-progress-bar');
+const genStatusSub = $('gen-status-sub');
+const genErrorBox = $('generation-error-box');
+const genErrorMessage = $('gen-error-message');
+const btnSubmitGenerate = $('btn-submit-generate');
+const btnDemoTest = $('btn-demo-test');
+
+let selectedPhotoDataUrl = null;
+
+function getSelectedGender() {
+  const radio = document.querySelector('input[name="guide-gender"]:checked');
+  return radio ? radio.value : 'male';
+}
+
+function setSelectedGender(gender) {
+  const maleRadio = document.querySelector('input[name="guide-gender"][value="male"]');
+  const femaleRadio = document.querySelector('input[name="guide-gender"][value="female"]');
+  if (gender === 'female') {
+    if (femaleRadio) femaleRadio.checked = true;
+    if (labelGenderFemale) labelGenderFemale.classList.add('active');
+    if (labelGenderMale) labelGenderMale.classList.remove('active');
+  } else {
+    if (maleRadio) maleRadio.checked = true;
+    if (labelGenderMale) labelGenderMale.classList.add('active');
+    if (labelGenderFemale) labelGenderFemale.classList.remove('active');
+  }
+}
+
+if (labelGenderMale) {
+  labelGenderMale.addEventListener('click', () => setSelectedGender('male'));
+}
+if (labelGenderFemale) {
+  labelGenderFemale.addEventListener('click', () => setSelectedGender('female'));
+}
+
+function showModalError(msg) {
+  if (genErrorBox && genErrorMessage) {
+    genErrorMessage.textContent = msg;
+    genErrorBox.hidden = false;
+  }
+}
+
+function clearModalError() {
+  if (genErrorBox) {
+    genErrorBox.hidden = true;
+  }
+}
+
+function handlePhotoFile(file) {
+  if (!file) return;
+  if (!file.type.match(/^image\/(png|jpeg|jpg|webp)$/)) {
+    showModalError('Please select a valid image file (PNG, JPG, or WebP).');
+    return;
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    showModalError('Image file is larger than 20 MB limit.');
+    return;
+  }
+
+  clearModalError();
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    selectedPhotoDataUrl = e.target.result;
+    if (imgPhotoPreview) imgPhotoPreview.src = selectedPhotoDataUrl;
+    if (dropzoneEmpty) dropzoneEmpty.hidden = true;
+    if (dropzonePreview) dropzonePreview.hidden = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+if (inputGuidePhoto) {
+  inputGuidePhoto.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    handlePhotoFile(file);
+  });
+}
+
+if (photoDropzone) {
+  ['dragenter', 'dragover'].forEach((evt) => {
+    photoDropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      photoDropzone.classList.add('dragover');
+    });
+  });
+  ['dragleave', 'drop'].forEach((evt) => {
+    photoDropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      photoDropzone.classList.remove('dragover');
+    });
+  });
+  photoDropzone.addEventListener('drop', (e) => {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    handlePhotoFile(file);
+  });
+}
+
+if (btnRemovePhoto) {
+  btnRemovePhoto.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectedPhotoDataUrl = null;
+    if (inputGuidePhoto) inputGuidePhoto.value = '';
+    if (imgPhotoPreview) imgPhotoPreview.src = '';
+    if (dropzonePreview) dropzonePreview.hidden = true;
+    if (dropzoneEmpty) dropzoneEmpty.hidden = false;
+  });
+}
+
+if (btnOpenCreateGuide && modalCreateGuide) {
+  btnOpenCreateGuide.addEventListener('click', () => {
+    if (inputMeshyKey) {
+      inputMeshyKey.value = getSavedMeshyApiKey();
+    }
+    clearModalError();
+    if (genStatusBox) genStatusBox.hidden = true;
+    modalCreateGuide.hidden = false;
+  });
+}
+
+function closeModal() {
+  if (modalCreateGuide) {
+    modalCreateGuide.hidden = true;
+  }
+}
+
+if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+if (btnCancelModal) btnCancelModal.addEventListener('click', closeModal);
+
+async function applyCustomGuide({ id = 'custom', name, gender, glbUrl }) {
+  const guideDef = registerCustomGuide({ id, name, gender, glbUrl });
+
+  // Add or update pill in the HUD guide list
+  let customPill = $('btn-select-' + id);
+  if (!customPill) {
+    const container = document.querySelector('.guide-switch-pills');
+    const openCreateBtn = $('btn-open-create-guide');
+    customPill = document.createElement('button');
+    customPill.id = 'btn-select-' + id;
+    customPill.type = 'button';
+    customPill.className = 'guide-pill';
+    customPill.dataset.guide = id;
+    customPill.textContent = guideDef.name;
+    customPill.title = `Select ${guideDef.name} (${guideDef.gender === 'female' ? 'Babita' : 'Salman'} Voice)`;
+
+    customPill.addEventListener('click', async () => {
+      setActiveGuidePill(id);
+      await guide.switchGuide(id);
+    });
+
+    if (container && openCreateBtn) {
+      container.insertBefore(customPill, openCreateBtn);
+    } else if (container) {
+      container.appendChild(customPill);
+    }
+    guidePills[id] = customPill;
+  } else {
+    customPill.textContent = guideDef.name;
+    customPill.title = `Select ${guideDef.name} (${guideDef.gender === 'female' ? 'Babita' : 'Salman'} Voice)`;
+  }
+
+  setActiveGuidePill(id);
+  closeModal();
+
+  await guide.switchGuide(id);
+
+  // Automatically trigger authentic voice narration for the current view
+  if (currentView && currentView.id) {
+    setTimeout(() => {
+      guide.playVoiceNarration(currentView.id);
+    }, 600);
+  }
+}
+
+// Quick Demo Test Button for instant verification without consuming credits
+if (btnDemoTest) {
+  btnDemoTest.addEventListener('click', async () => {
+    const gender = getSelectedGender();
+    const name = (inputGuideName && inputGuideName.value.trim()) || (gender === 'female' ? 'Demo Hostess' : 'Demo Companion');
+    const demoGlb = gender === 'female'
+      ? 'assets/models/babita_tour_guide_rigged.glb'
+      : 'assets/models/salman_tour_guide_rigged.glb';
+
+    await applyCustomGuide({
+      id: 'custom',
+      name,
+      gender,
+      glbUrl: demoGlb,
+    });
+  });
+}
+
+// Meshy API Task Creation & Polling workflow
+if (formCreateGuide) {
+  formCreateGuide.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearModalError();
+
+    if (!selectedPhotoDataUrl) {
+      showModalError('Please upload or drag & drop a portrait photo first.');
+      return;
+    }
+
+    const apiKey = inputMeshyKey ? inputMeshyKey.value.trim() : '';
+    if (!apiKey) {
+      showModalError('Please enter your Meshy API Key (msy_...). You can obtain one from meshy.ai.');
+      return;
+    }
+
+    saveMeshyApiKey(apiKey);
+
+    const gender = getSelectedGender();
+    const name = (inputGuideName && inputGuideName.value.trim()) || (gender === 'female' ? 'Custom Hostess' : 'Custom Guide');
+
+    // UI State: generation in progress
+    if (btnSubmitGenerate) btnSubmitGenerate.disabled = true;
+    if (btnDemoTest) btnDemoTest.disabled = true;
+    if (genStatusBox) genStatusBox.hidden = false;
+    if (genStatusText) genStatusText.textContent = 'Submitting photo to Meshy 3D API...';
+    if (genProgressPercent) genProgressPercent.textContent = '5%';
+    if (genProgressBar) genProgressBar.style.width = '5%';
+    if (genStatusSub) genStatusSub.textContent = 'Initiating Image to 3D task...';
+
+    try {
+      const { taskId } = await createImageTo3DTask({
+        apiKey,
+        imageUrl: selectedPhotoDataUrl,
+        aiModel: 'latest',
+        modelType: 'standard',
+      });
+
+      if (genStatusText) genStatusText.textContent = 'Task created. Generating 3D mesh & textures...';
+      if (genStatusSub) genStatusSub.textContent = `Task ID: ${taskId}. Polling generation status...`;
+
+      const result = await pollImageTo3DTask({
+        apiKey,
+        taskId,
+        onProgress: (progress, status) => {
+          const pct = Math.max(5, Math.min(100, progress));
+          if (genProgressPercent) genProgressPercent.textContent = `${pct}%`;
+          if (genProgressBar) genProgressBar.style.width = `${pct}%`;
+          if (genStatusText) {
+            genStatusText.textContent = status === 'SUCCEEDED'
+              ? '3D Model generation succeeded!'
+              : `Generating 3D character (${status} - ${pct}%)...`;
+          }
+        },
+      });
+
+      if (genStatusText) genStatusText.textContent = 'Loading custom 3D model into tour scene...';
+      if (genProgressPercent) genProgressPercent.textContent = '100%';
+      if (genProgressBar) genProgressBar.style.width = '100%';
+
+      await applyCustomGuide({
+        id: 'custom',
+        name,
+        gender,
+        glbUrl: result.glbUrl,
+      });
+
+    } catch (err) {
+      console.error('[Meshy 3D Generation Error]', err);
+      showModalError(err.message || 'An error occurred during 3D character generation.');
+      if (genStatusBox) genStatusBox.hidden = true;
+    } finally {
+      if (btnSubmitGenerate) btnSubmitGenerate.disabled = false;
+      if (btnDemoTest) btnDemoTest.disabled = false;
+    }
   });
 }
 const hudButtons = {

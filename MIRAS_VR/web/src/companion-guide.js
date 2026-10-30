@@ -13,9 +13,9 @@
  * - Strict Zero Emojis.
  */
 import * as THREE from 'three';
-import { TourGuideController, TOUR_STATES, GUIDES_CONFIG } from './tour-guide-controller.js';
+import { TourGuideController, TOUR_STATES, GUIDES_CONFIG, registerCustomGuide } from './tour-guide-controller.js';
 
-export { TOUR_STATES, GUIDES_CONFIG };
+export { TOUR_STATES, GUIDES_CONFIG, registerCustomGuide };
 
 export class TrumpCompanionGuide {
   constructor(scene, camera, renderer, options = {}) {

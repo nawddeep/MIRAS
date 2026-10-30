@@ -7,7 +7,16 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 export default defineConfig(({ mode }) => ({
   base: './', // relative asset URLs: the built dist/ works from any static HTTPS host or sub-path
   plugins: mode === 'https' ? [basicSsl()] : [],
-  server: { port: 5173 },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api/meshy': {
+        target: 'https://api.meshy.ai',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/meshy/, ''),
+      },
+    },
+  },
   // three.js alone is ~700 kB minified (~200 kB gzipped); one chunk is fine here.
   build: { outDir: 'dist', assetsInlineLimit: 0, chunkSizeWarningLimit: 1000 },
 }));

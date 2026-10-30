@@ -72,6 +72,7 @@
             <button id="btn-select-salman" type="button" class="guide-pill" data-guide="salman" title="Select Salman Khan as Tour Guide">Salman</button>
             <button id="btn-select-modi" type="button" class="guide-pill" data-guide="modi" title="Select Narendra Modi as Tour Guide">Modi</button>
             <button id="btn-select-babita" type="button" class="guide-pill" data-guide="babita" title="Select Babita Ji as Tour Guide">Babita</button>
+            <button id="btn-open-create-guide" type="button" class="guide-pill guide-pill-create" title="Upload Photo to create custom 3D character">+ Photo to 3D</button>
           </div>
         </div>
         <span class="hud-status" id="tour-guide-status">IDLE</span>
@@ -98,6 +99,104 @@
         <button id="btn-guide-tour" type="button" class="hud-btn hud-btn-tour" title="Start automated guided tour">Start Guided Tour</button>
       </div>
     </aside>
+
+    <!-- Meshy Photo to 3D Character Modal -->
+    <div id="modal-create-guide" class="modal-backdrop" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-guide-title">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2 id="modal-guide-title">Create 3D AI Tour Guide</h2>
+            <p class="modal-subtitle">Upload any person's photo to generate a 3D model via Meshy API with voice narration.</p>
+          </div>
+          <button id="btn-close-modal" type="button" class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+
+        <form id="form-create-guide" class="modal-body">
+          <!-- Photo Upload Dropzone -->
+          <div class="form-group">
+            <label class="form-label">Portrait Photo (PNG, JPG, WebP)</label>
+            <div id="photo-dropzone" class="photo-dropzone">
+              <input type="file" id="input-guide-photo" accept="image/png, image/jpeg, image/webp" class="file-input-hidden" />
+              <div id="dropzone-empty" class="dropzone-prompt">
+                <svg viewBox="0 0 24 24" class="dropzone-icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <p class="dropzone-text">Click to choose photo or drag & drop here</p>
+                <span class="dropzone-subtext">Clear front-facing portrait · Max 20 MB</span>
+              </div>
+              <div id="dropzone-preview" class="dropzone-preview" hidden>
+                <img id="img-photo-preview" src="" alt="Selected photo preview" />
+                <button type="button" id="btn-remove-photo" class="btn-remove-photo" title="Remove photo">Change Photo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gender & Voice Selection -->
+          <div class="form-group">
+            <label class="form-label">Character Gender & Voice Narration</label>
+            <div class="gender-radio-group">
+              <label class="gender-radio-card active" id="label-gender-male">
+                <input type="radio" name="guide-gender" value="male" checked />
+                <div class="gender-radio-content">
+                  <span class="gender-title">Male</span>
+                  <span class="voice-badge voice-badge-male">Salman Khan Voice</span>
+                  <span class="voice-desc">Energetic Hindi narration across all Udaipur heritage sites</span>
+                </div>
+              </label>
+
+              <label class="gender-radio-card" id="label-gender-female">
+                <input type="radio" name="guide-gender" value="female" />
+                <div class="gender-radio-content">
+                  <span class="gender-title">Female</span>
+                  <span class="voice-badge voice-badge-female">Babita Ji Voice</span>
+                  <span class="voice-desc">Sweet, welcoming Hindi narration across all Udaipur heritage sites</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Guide Name (Optional) -->
+          <div class="form-group">
+            <label for="input-guide-name" class="form-label">Character Name (Optional)</label>
+            <input type="text" id="input-guide-name" class="form-input" placeholder="e.g. My Guide, Alex, Priya" />
+          </div>
+
+          <!-- Meshy API Key -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="input-meshy-key" class="form-label">Meshy API Key</label>
+              <a href="https://meshy.ai" target="_blank" rel="noopener noreferrer" class="form-link">Get API Key (meshy.ai)</a>
+            </div>
+            <input type="password" id="input-meshy-key" class="form-input" placeholder="msy_..." autocomplete="off" />
+            <span class="form-help">Saved locally in your browser. Used to create and poll 3D tasks.</span>
+          </div>
+
+          <!-- Generation Status & Progress Indicator -->
+          <div id="generation-status-box" class="generation-status-box" hidden>
+            <div class="status-header">
+              <span id="gen-status-text" class="status-text">Submitting image to Meshy API...</span>
+              <span id="gen-progress-percent" class="status-percent">0%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div id="gen-progress-bar" class="progress-bar-fill"></div>
+            </div>
+            <p id="gen-status-sub" class="status-sub">3D generation takes approximately 1-2 minutes. Status updates in real time.</p>
+          </div>
+
+          <!-- Error Alert -->
+          <div id="generation-error-box" class="generation-error-box" hidden>
+            <span id="gen-error-message"></span>
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="modal-footer">
+            <button type="button" id="btn-cancel-modal" class="btn-secondary">Cancel</button>
+            <button type="button" id="btn-demo-test" class="btn-secondary" title="Test instantly using existing character model without API credits">Demo Test Model</button>
+            <button type="submit" id="btn-submit-generate" class="btn-primary">
+              <span>Generate 3D Character</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <script type="module" src="./src/main.js"></script>
   </body>

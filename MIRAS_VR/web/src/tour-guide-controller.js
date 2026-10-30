@@ -532,6 +532,22 @@ export class TourGuideController {
       this.model.name = `${this.currentGuideId}_Tour_Guide_Rigged_Model`;
       this.characterGroup.add(this.model);
 
+      // Check bounding box and normalize scale/position if model is custom or has arbitrary dimensions
+      const bbox = new THREE.Box3().setFromObject(this.model);
+      const size = bbox.getSize(new THREE.Vector3());
+      const currentGuide = GUIDES_CONFIG[this.currentGuideId];
+      if (currentGuide?.isCustom || (size.y > 0.05 && (size.y < 1.2 || size.y > 2.5))) {
+        const targetHeight = 1.75;
+        const scale = targetHeight / size.y;
+        this.model.scale.setScalar(scale);
+        this.model.updateMatrixWorld(true);
+        const newBbox = new THREE.Box3().setFromObject(this.model);
+        this.model.position.y = -newBbox.min.y;
+        this.model.position.x = -(newBbox.min.x + newBbox.max.x) / 2;
+        this.model.position.z = -(newBbox.min.z + newBbox.max.z) / 2;
+        log(`Normalized custom model scale (${scale.toFixed(3)}) and position for ${this.currentGuideId}`);
+      }
+
       // Setup AnimationMixer
       if (gltf.animations && gltf.animations.length > 0) {
         this.mixer = new THREE.AnimationMixer(this.model);
@@ -545,10 +561,16 @@ export class TourGuideController {
 
         // Play default Idle animation
         this.playAction('Idle', 0.2);
+        this.isRigged = true;
+        this.isStaticGlb = false;
+      } else {
+        this.isRigged = false;
+        this.isStaticGlb = true;
+        this._baseModelPosY = this.model.position.y;
+        log(`Loaded static 3D GLB mesh for ${this.currentGuideId}; procedural organic motion active.`);
       }
 
-      this.isRigged = true;
-      log(`Rigged Tour Guide (${this.currentGuideId}) loaded successfully from GLB`);
+      log(`Tour Guide (${this.currentGuideId}) loaded successfully from GLB`);
       return true;
     } catch (glbErr) {
       log('GLB load failed or unrigged, trying fallback STL:', glbErr);
@@ -787,6 +809,21 @@ export class TourGuideController {
     // 1. Advance Skeletal Animation Mixer
     if (this.mixer) {
       this.mixer.update(delta);
+    }
+
+    // Procedural life-like micro-movements and breathing for static 3D meshes
+    if (this.isStaticGlb && this.model) {
+      const breath = Math.sin(now * 0.0022) * 0.012;
+      const sway = Math.sin(now * 0.0012) * 0.025;
+      this.model.position.y = (this._baseModelPosY || 0) + breath;
+      if (this.voicePlaying) {
+        const gestureBob = Math.sin(now * 0.006) * 0.018;
+        const gestureTilt = Math.sin(now * 0.0035) * 0.035;
+        this.model.position.y += gestureBob;
+        this.model.rotation.z = gestureTilt;
+      } else {
+        this.model.rotation.z = sway * 0.2;
+      }
     }
 
     // Dynamic gesture alternation during authentic voice narration:
@@ -1451,4 +1488,50 @@ function applySalmanAttireColors(geometry) {
 
 function log(...args) {
   console.info('[MIRAS Tour Guide Controller]', ...args);
+}
+
+/**
+ * Dynamically registers a custom AI-generated 3D character into GUIDES_CONFIG.
+ * Assigns voice narrations according to user specifications:
+ * - Male: Salman Khan authentic voice tracks & site stories
+ * - Female: Babita Ji authentic voice tracks & site stories
+ * @param {Object} options
+ * @param {string} [options.id='custom']
+ * @param {string} [options.name]
+ * @param {('male'|'female')} [options.gender='male']
+ * @param {string} options.glbUrl
+ * @returns {Object} The registered guide configuration object
+ */
+export function registerCustomGuide({ id = 'custom', name, gender = 'male', glbUrl }) {
+  const isFemale = (gender || '').toLowerCase() === 'female';
+  const voiceSource = isFemale ? GUIDES_CONFIG.babita : GUIDES_CONFIG.salman;
+
+  const defaultName = isFemale ? 'AI Female Guide' : 'AI Male Guide';
+  const assignedName = name && name.trim() ? name.trim() : defaultName;
+  const badge = isFemale ? 'CUSTOM (BABITA VOICE)' : 'CUSTOM (SALMAN VOICE)';
+  const themeColor = isFemale ? '#e83e8c' : '#287277';
+
+  const guideDef = {
+    id,
+    name: assignedName,
+    badge,
+    title: 'Custom AI 3D Guide',
+    gender: isFemale ? 'female' : 'male',
+    glbUrl,
+    themeColor,
+    voiceAudio: { ...voiceSource.voiceAudio },
+    siteStories: { ...voiceSource.siteStories },
+    welcomeStory: {
+      title: 'City Palace, Udaipur',
+      lead: isFemale ? 'Namaste & Welcome!' : 'Swagat Hai Aapka!',
+      body: voiceSource.siteStories.city_palace.caption,
+      caption: voiceSource.siteStories.city_palace.caption,
+      duration: 8500,
+    },
+    isCustom: true,
+  };
+
+  GUIDES_CONFIG[id] = guideDef;
+  log(`Registered custom guide [${id}] (${guideDef.gender}) with voice source: ${isFemale ? 'Babita' : 'Salman'}`);
+  return guideDef;
 }
