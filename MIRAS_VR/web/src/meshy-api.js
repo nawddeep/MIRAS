@@ -171,3 +171,124 @@ export async function pollImageTo3DTask({
 
   throw new Error('Meshy 3D generation timed out after 10 minutes.');
 }
+
+/**
+ * Creates an auto-rigging task for a 3D character model on Meshy (via meshy-ai-mcp-server spec).
+ * @param {Object} params
+ * @param {string} params.apiKey
+ * @param {string} [params.inputTaskId] ID of completed image-to-3d task
+ * @param {string} [params.modelUrl] Direct GLB URL
+ * @param {number} [params.heightMeters=1.75]
+ * @returns {Promise<{taskId: string}>}
+ */
+export async function createRiggingTask({ apiKey, inputTaskId, modelUrl, heightMeters = 1.75 }) {
+  if (!apiKey || !apiKey.trim()) {
+    throw new Error('Meshy API key is required for rigging.');
+  }
+  if (!inputTaskId && !modelUrl) {
+    throw new Error('Either inputTaskId or modelUrl must be provided for rigging.');
+  }
+
+  const payload = {
+    height_meters: heightMeters,
+  };
+  if (inputTaskId) payload.input_task_id = inputTaskId;
+  if (modelUrl) payload.model_url = modelUrl;
+
+  const headers = {
+    'Authorization': `Bearer ${apiKey.trim()}`,
+    'Content-Type': 'application/json',
+  };
+
+  const proxyRiggingUrl = '/api/meshy/openapi/v1/rigging';
+  const directRiggingUrl = 'https://api.meshy.ai/openapi/v1/rigging';
+
+  let response = null;
+  try {
+    response = await fetch(proxyRiggingUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    // try direct
+  }
+
+  if (!response || (!response.ok && response.status === 404)) {
+    response = await fetch(directRiggingUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+  }
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const errorMsg = data.message || data.error || (data.task_error && data.task_error.message) || `HTTP ${response.status}`;
+    throw new Error(`Meshy Rigging Task Creation Failed: ${errorMsg}`);
+  }
+
+  const taskId = data.result;
+  return { taskId };
+}
+
+/**
+ * Polls an auto-rigging task until completion.
+ * @param {Object} params
+ * @param {string} params.apiKey
+ * @param {string} params.taskId
+ * @param {Function} [params.onProgress]
+ * @param {number} [params.intervalMs=3000]
+ * @returns {Promise<{glbUrl: string, raw: Object}>}
+ */
+export async function pollRiggingTask({
+  apiKey,
+  taskId,
+  onProgress = () => {},
+  intervalMs = 3000,
+  timeoutMs = 300000,
+}) {
+  const startTime = Date.now();
+  const headers = { 'Authorization': `Bearer ${apiKey.trim()}` };
+  const proxyUrl = `/api/meshy/openapi/v1/rigging/${taskId}`;
+  const directUrl = `https://api.meshy.ai/openapi/v1/rigging/${taskId}`;
+
+  while (Date.now() - startTime < timeoutMs) {
+    let response = null;
+    try {
+      response = await fetch(proxyUrl, { headers });
+    } catch (e) {
+      // fallback
+    }
+
+    if (!response || (!response.ok && response.status === 404)) {
+      response = await fetch(directUrl, { headers });
+    }
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      const msg = errData.message || `HTTP ${response.status}`;
+      throw new Error(`Meshy Rigging Poll Failed: ${msg}`);
+    }
+
+    const data = await response.json();
+    const status = (data.status || '').toUpperCase();
+    const progress = typeof data.progress === 'number' ? data.progress : 0;
+
+    onProgress(progress, status);
+
+    if (status === 'SUCCEEDED') {
+      const glbUrl = data.model_urls && data.model_urls.glb;
+      return { glbUrl, raw: data };
+    }
+
+    if (status === 'FAILED' || status === 'EXPIRED') {
+      const reason = (data.task_error && data.task_error.message) || status;
+      throw new Error(`Meshy rigging failed: ${reason}`);
+    }
+
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
+
+  throw new Error('Meshy rigging timed out.');
+}
