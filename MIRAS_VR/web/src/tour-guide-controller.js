@@ -192,7 +192,12 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/babita_tour_guide_rigged.glb',
     stlUrl: 'assets/models/Babita.glb',
     themeColor: '#d63384',
-    voiceAudio: null,
+    voiceAudio: {
+      city_palace: 'assets/audio/voices/babita_city_palace.mp3',
+      moti_magri: 'assets/audio/voices/babita_moti_magri.mp3',
+      karni_mata: 'assets/audio/voices/babita_karni_mata.mp3',
+      pichola_lake: 'assets/audio/voices/babita_pichola_lake.mp3',
+    },
     siteStories: {
       city_palace: {
         title: 'City Palace, Udaipur',
