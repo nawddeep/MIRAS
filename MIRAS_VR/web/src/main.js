@@ -126,6 +126,19 @@ const btnOpenCreateGuide = $('btn-open-create-guide');
 const btnCloseModal = $('btn-close-modal');
 const btnCancelModal = $('btn-cancel-modal');
 const formCreateGuide = $('form-create-guide');
+const tabBtnFree = $('tab-btn-free');
+const tabBtnApi = $('tab-btn-api');
+const sectionFreeGlb = $('section-free-glb');
+const sectionApiGenerate = $('section-api-generate');
+const btnSubmitLabel = $('btn-submit-label');
+
+const glbDropzone = $('glb-dropzone');
+const inputGuideGlb = $('input-guide-glb');
+const glbDropzoneEmpty = $('glb-dropzone-empty');
+const glbDropzonePreview = $('glb-dropzone-preview');
+const glbFileBadge = $('glb-file-badge');
+const btnRemoveGlb = $('btn-remove-glb');
+
 const photoDropzone = $('photo-dropzone');
 const inputGuidePhoto = $('input-guide-photo');
 const dropzoneEmpty = $('dropzone-empty');
@@ -146,7 +159,31 @@ const genErrorMessage = $('gen-error-message');
 const btnSubmitGenerate = $('btn-submit-generate');
 const btnDemoTest = $('btn-demo-test');
 
+let activeModalTab = 'free'; // default to free GLB upload
+let selectedGlbUrl = null;
+let selectedGlbName = null;
 let selectedPhotoDataUrl = null;
+
+function switchModalTab(tab) {
+  activeModalTab = tab;
+  clearModalError();
+  if (tab === 'free') {
+    if (tabBtnFree) tabBtnFree.classList.add('active');
+    if (tabBtnApi) tabBtnApi.classList.remove('active');
+    if (sectionFreeGlb) sectionFreeGlb.hidden = false;
+    if (sectionApiGenerate) sectionApiGenerate.hidden = true;
+    if (btnSubmitLabel) btnSubmitLabel.textContent = 'Load 3D Guide';
+  } else {
+    if (tabBtnApi) tabBtnApi.classList.add('active');
+    if (tabBtnFree) tabBtnFree.classList.remove('active');
+    if (sectionFreeGlb) sectionFreeGlb.hidden = true;
+    if (sectionApiGenerate) sectionApiGenerate.hidden = false;
+    if (btnSubmitLabel) btnSubmitLabel.textContent = 'Generate 3D Character';
+  }
+}
+
+if (tabBtnFree) tabBtnFree.addEventListener('click', () => switchModalTab('free'));
+if (tabBtnApi) tabBtnApi.addEventListener('click', () => switchModalTab('api'));
 
 function getSelectedGender() {
   const radio = document.querySelector('input[name="guide-gender"]:checked');
@@ -185,6 +222,59 @@ function clearModalError() {
   if (genErrorBox) {
     genErrorBox.hidden = true;
   }
+}
+
+function handleGlbFile(file) {
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.glb')) {
+    showModalError('Please select a valid .GLB 3D model file.');
+    return;
+  }
+  clearModalError();
+  selectedGlbName = file.name;
+  selectedGlbUrl = URL.createObjectURL(file);
+  if (glbFileBadge) glbFileBadge.textContent = file.name;
+  if (glbDropzoneEmpty) glbDropzoneEmpty.hidden = true;
+  if (glbDropzonePreview) glbDropzonePreview.hidden = false;
+}
+
+if (inputGuideGlb) {
+  inputGuideGlb.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    handleGlbFile(file);
+  });
+}
+
+if (glbDropzone) {
+  ['dragenter', 'dragover'].forEach((evt) => {
+    glbDropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      glbDropzone.classList.add('dragover');
+    });
+  });
+  ['dragleave', 'drop'].forEach((evt) => {
+    glbDropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      glbDropzone.classList.remove('dragover');
+    });
+  });
+  glbDropzone.addEventListener('drop', (e) => {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    handleGlbFile(file);
+  });
+}
+
+if (btnRemoveGlb) {
+  btnRemoveGlb.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectedGlbUrl = null;
+    selectedGlbName = null;
+    if (inputGuideGlb) inputGuideGlb.value = '';
+    if (glbDropzonePreview) glbDropzonePreview.hidden = true;
+    if (glbDropzoneEmpty) glbDropzoneEmpty.hidden = false;
+  });
 }
 
 function handlePhotoFile(file) {
@@ -254,6 +344,7 @@ if (btnOpenCreateGuide && modalCreateGuide) {
       inputMeshyKey.value = getSavedMeshyApiKey();
     }
     clearModalError();
+    switchModalTab('free');
     if (genStatusBox) genStatusBox.hidden = true;
     modalCreateGuide.hidden = false;
   });
@@ -331,12 +422,32 @@ if (btnDemoTest) {
   });
 }
 
-// Meshy API Task Creation & Polling workflow
+// Modal Form Submission: handles both Free .GLB upload and Meshy API generation
 if (formCreateGuide) {
   formCreateGuide.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearModalError();
 
+    const gender = getSelectedGender();
+
+    // Mode 1: 100% Free .GLB Upload
+    if (activeModalTab === 'free') {
+      if (!selectedGlbUrl) {
+        showModalError('Please upload or drag & drop a .GLB 3D model file first.');
+        return;
+      }
+      const name = (inputGuideName && inputGuideName.value.trim()) || (selectedGlbName ? selectedGlbName.replace(/\.glb$/i, '') : (gender === 'female' ? 'Custom Hostess' : 'Custom Guide'));
+
+      await applyCustomGuide({
+        id: 'custom',
+        name,
+        gender,
+        glbUrl: selectedGlbUrl,
+      });
+      return;
+    }
+
+    // Mode 2: Automated Meshy API Generation
     if (!selectedPhotoDataUrl) {
       showModalError('Please upload or drag & drop a portrait photo first.');
       return;
@@ -344,13 +455,12 @@ if (formCreateGuide) {
 
     const apiKey = inputMeshyKey ? inputMeshyKey.value.trim() : '';
     if (!apiKey) {
-      showModalError('Please enter your Meshy API Key (msy_...). You can obtain one from meshy.ai.');
+      showModalError('Please enter your Meshy API Key (msy_...). Meshy requires a paid plan for direct API access, or you can use the Free .GLB tab above.');
       return;
     }
 
     saveMeshyApiKey(apiKey);
 
-    const gender = getSelectedGender();
     const name = (inputGuideName && inputGuideName.value.trim()) || (gender === 'female' ? 'Custom Hostess' : 'Custom Guide');
 
     // UI State: generation in progress

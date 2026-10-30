@@ -106,26 +106,67 @@
         <div class="modal-header">
           <div class="modal-title-group">
             <h2 id="modal-guide-title">Create 3D AI Tour Guide</h2>
-            <p class="modal-subtitle">Upload any person's photo to generate a 3D model via Meshy API with voice narration.</p>
+            <p class="modal-subtitle">Load any 3D character with authentic character voice narrations (Male = Salman, Female = Babita).</p>
           </div>
           <button id="btn-close-modal" type="button" class="modal-close" aria-label="Close modal">&times;</button>
         </div>
 
+        <div class="modal-tab-bar">
+          <button type="button" id="tab-btn-free" class="modal-tab-btn active">Free .GLB Upload</button>
+          <button type="button" id="tab-btn-api" class="modal-tab-btn">Meshy API (Photo-to-3D)</button>
+        </div>
+
         <form id="form-create-guide" class="modal-body">
-          <!-- Photo Upload Dropzone -->
-          <div class="form-group">
-            <label class="form-label">Portrait Photo (PNG, JPG, WebP)</label>
-            <div id="photo-dropzone" class="photo-dropzone">
-              <input type="file" id="input-guide-photo" accept="image/png, image/jpeg, image/webp" class="file-input-hidden" />
-              <div id="dropzone-empty" class="dropzone-prompt">
-                <svg viewBox="0 0 24 24" class="dropzone-icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                <p class="dropzone-text">Click to choose photo or drag & drop here</p>
-                <span class="dropzone-subtext">Clear front-facing portrait · Max 20 MB</span>
+          <!-- Free GLB Upload Tab Section -->
+          <div id="section-free-glb" class="tab-pane active">
+            <div class="form-group">
+              <div class="form-label-row">
+                <label class="form-label">3D Model File (.GLB)</label>
+                <a href="https://app.meshy.ai" target="_blank" rel="noopener noreferrer" class="form-link">Generate free on meshy.ai</a>
               </div>
-              <div id="dropzone-preview" class="dropzone-preview" hidden>
-                <img id="img-photo-preview" src="" alt="Selected photo preview" />
-                <button type="button" id="btn-remove-photo" class="btn-remove-photo" title="Remove photo">Change Photo</button>
+              <div id="glb-dropzone" class="photo-dropzone">
+                <input type="file" id="input-guide-glb" accept=".glb,model/gltf-binary" class="file-input-hidden" />
+                <div id="glb-dropzone-empty" class="dropzone-prompt">
+                  <svg viewBox="0 0 24 24" class="dropzone-icon" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  <p class="dropzone-text">Click to choose .GLB or drag & drop here</p>
+                  <span class="dropzone-subtext">Free export from app.meshy.ai, Ready Player Me, or Sketchfab</span>
+                </div>
+                <div id="glb-dropzone-preview" class="dropzone-preview" hidden>
+                  <span id="glb-file-badge" class="glb-file-badge">my-model.glb</span>
+                  <button type="button" id="btn-remove-glb" class="btn-remove-photo">Change File</button>
+                </div>
               </div>
+              <span class="form-help">Tip: Create a free account at meshy.ai, use their free web Image-to-3D tool, download the GLB, and drop it here.</span>
+            </div>
+          </div>
+
+          <!-- Photo Upload & Meshy API Tab Section -->
+          <div id="section-api-generate" class="tab-pane" hidden>
+            <!-- Photo Upload Dropzone -->
+            <div class="form-group">
+              <label class="form-label">Portrait Photo (PNG, JPG, WebP)</label>
+              <div id="photo-dropzone" class="photo-dropzone">
+                <input type="file" id="input-guide-photo" accept="image/png, image/jpeg, image/webp" class="file-input-hidden" />
+                <div id="dropzone-empty" class="dropzone-prompt">
+                  <svg viewBox="0 0 24 24" class="dropzone-icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <p class="dropzone-text">Click to choose photo or drag & drop here</p>
+                  <span class="dropzone-subtext">Clear front-facing portrait · Max 20 MB</span>
+                </div>
+                <div id="dropzone-preview" class="dropzone-preview" hidden>
+                  <img id="img-photo-preview" src="" alt="Selected photo preview" />
+                  <button type="button" id="btn-remove-photo" class="btn-remove-photo" title="Remove photo">Change Photo</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Meshy API Key -->
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="input-meshy-key" class="form-label">Meshy API Key (Paid Plans)</label>
+                <a href="https://app.meshy.ai/settings/api" target="_blank" rel="noopener noreferrer" class="form-link">Meshy API Dashboard</a>
+              </div>
+              <input type="password" id="input-meshy-key" class="form-input" placeholder="msy_..." autocomplete="off" />
+              <span class="form-help">Requires a Meshy paid plan. If using the free tier, use the 'Free .GLB Upload' tab above.</span>
             </div>
           </div>
 
@@ -159,16 +200,6 @@
             <input type="text" id="input-guide-name" class="form-input" placeholder="e.g. My Guide, Alex, Priya" />
           </div>
 
-          <!-- Meshy API Key -->
-          <div class="form-group">
-            <div class="form-label-row">
-              <label for="input-meshy-key" class="form-label">Meshy API Key</label>
-              <a href="https://meshy.ai" target="_blank" rel="noopener noreferrer" class="form-link">Get API Key (meshy.ai)</a>
-            </div>
-            <input type="password" id="input-meshy-key" class="form-input" placeholder="msy_..." autocomplete="off" />
-            <span class="form-help">Saved locally in your browser. Used to create and poll 3D tasks.</span>
-          </div>
-
           <!-- Generation Status & Progress Indicator -->
           <div id="generation-status-box" class="generation-status-box" hidden>
             <div class="status-header">
@@ -191,7 +222,7 @@
             <button type="button" id="btn-cancel-modal" class="btn-secondary">Cancel</button>
             <button type="button" id="btn-demo-test" class="btn-secondary" title="Test instantly using existing character model without API credits">Demo Test Model</button>
             <button type="submit" id="btn-submit-generate" class="btn-primary">
-              <span>Generate 3D Character</span>
+              <span id="btn-submit-label">Load 3D Guide</span>
             </button>
           </div>
         </form>
