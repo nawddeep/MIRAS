@@ -761,11 +761,12 @@ export class TourGuideController {
   dismiss() {
     this.stopVoiceAudio();
     if (this.currentHotspot) {
+      const finished = this.currentHotspot;
       this.bubble.hide();
       this.currentHotspot = null;
       this.setState(TOUR_STATES.IDLE);
       if (this.onFinished) {
-        this.onFinished(this.currentHotspot, performance.now());
+        this.onFinished(finished, performance.now());
       }
     }
   }

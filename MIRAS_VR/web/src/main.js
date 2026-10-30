@@ -55,7 +55,9 @@ const guide = new TrumpCompanionGuide(scene, camera, renderer, {
   url: CONFIG.guide.url,
   onFinished: (hotspot, now) => {
     gaze.busy = false;
-    gaze.release(hotspot.id, now);
+    if (hotspot && hotspot.id) {
+      gaze.release(hotspot.id, now);
+    }
   },
 });
 const gaze = new GazeHotspots(HOTSPOTS, {
