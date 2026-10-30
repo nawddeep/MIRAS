@@ -360,3 +360,14 @@ Times are IST.
 - New `tests/e2e/ui-polish.spec.ts` (31 tests): 26 routes at 360 px with no sideways scroll and no target under 44 px, motion on and off, focus rings, both skeletons, and the empty states.
 - Runs on a clean build: typecheck, lint, 215 unit tests, content:check (0 errors), 124 browser tests, demo path 3 of 3: all passed.
 - Not verified: a real phone. Targets were measured in Chromium at 360 px, not on an iPhone or a real Android screen.
+
+## Demo polish item 2b: cleaner titles on cards: 2026-10-30 19:29
+
+- The rest of this polish prompt (Demo data pill, quiet markers, detail badges, demo mode off) was already built and tested in the earlier "Demo polish" entry. Only the new item 2b was added here.
+- New `lib/display-title.ts`: `displayTitle(title, isSample)` drops a leading "SAMPLE:" or "Sample " and capitalises what is left ("Sample Artisan 2" shows as "Artisan 2", "SAMPLE: history story 1 for Pichhola" as "History story 1 for Pichhola"). It changes only entries with `isSample: true`, so a real name that starts with "Sample" keeps it, and it never returns an empty title.
+- Used only in `components/domain.tsx`, on the four card titles: `PlaceCard`, `StoryCard`, `ArtisanCard`, `WorkshopCard`. Not used on the detail-page header, the story block on a place page, search moderation, `content:check`, `CONTENT_TODO.md` or any script. A unit test enforces that only `domain.tsx` imports it.
+- Display only: `/content`, the stored text, `isSample` and every schema are unchanged (a test reads the content files and asserts the prefixes are still there). The cards keep their quiet "Sample content" marker and the "Demo data" pill is still on every screen.
+- Left as it was, because it is not a title: the craft and area lines on makers cards still read "SAMPLE craft: ..." and "SAMPLE: area in Udaipur". Trail and event lists also still show "SAMPLE: ..." titles, because they are not one of the four card components.
+- Existing tests: none asserted a card title that changed, so none was changed. The events test that expects "SAMPLE: event title goes here" is untouched.
+- 6 new unit tests and 5 new browser tests (no visible card title starts with SAMPLE: or Sample, stored titles still do, every sample card still exposes "Sample content", detail pages show the full title, no sideways scroll at 360 px).
+- Runs on a clean build: typecheck, lint, 221 unit tests, content:check (0 errors), 129 browser tests, demo path 3 of 3: all passed.

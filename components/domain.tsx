@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { displayTitle } from "@/lib/display-title";
 import { pick, t, type Lang } from "@/lib/i18n";
 import { readMinutes } from "@/lib/read-time";
 import type { Artisan, Place, SourceType, StoryEntry, Workshop } from "@/lib/schemas";
@@ -57,7 +58,7 @@ export function PlaceCard({ place, lang, firstStoryType }: { place: Place; lang:
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">{place.isSample && <SampleMark lang={lang} />}</div>
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
           <div className="min-w-0">
-            <h2 className="t-heading group-hover:underline">{place.name}</h2>
+            <h2 className="t-heading group-hover:underline">{displayTitle(place.name, place.isSample)}</h2>
             {place.name_hi && (
               <p lang="hi" className="text-sm text-muted-dark">
                 {place.name_hi}
@@ -85,7 +86,7 @@ export function StoryCard({ story, lang, placeName }: { story: StoryEntry; lang:
           <SourceTypeLabel lang={lang} type={story.sourceType} />
           {isVerifiedSource(story) ? <VerifiedSourceBadge lang={lang} /> : story.isSample && <SampleMark lang={lang} />}
         </div>
-        <h3 className="t-heading group-hover:underline">{story.title}</h3>
+        <h3 className="t-heading group-hover:underline">{displayTitle(story.title, story.isSample)}</h3>
         {story.title_hi && (
           <p lang="hi" className="font-display text-muted-paper">
             {story.title_hi}
@@ -155,7 +156,7 @@ export function ArtisanCard({ artisan, lang }: { artisan: Artisan; lang: Lang })
           <Label tone="rose">{t(lang, "artisanChip")}</Label>
           {artisan.isSample && <SampleMark lang={lang} />}
         </div>
-        <h3 className="t-heading mt-1">{artisan.name}</h3>
+        <h3 className="t-heading mt-1">{displayTitle(artisan.name, artisan.isSample)}</h3>
         <p className="text-sm text-muted-paper">
           {artisan.craft} · {artisan.locationText}
         </p>
@@ -170,7 +171,7 @@ export function WorkshopCard({ workshop: w, lang }: { workshop: Workshop; lang: 
   return (
     <div className="rounded-card border border-line bg-paper-2 text-on-paper p-4">
       <div className="flex flex-wrap items-center gap-2">{confirmed ? <ConfirmedByMakerBadge lang={lang} /> : w.isSample && <SampleMark lang={lang} />}</div>
-      <h3 className="t-heading mt-1">{w.title}</h3>
+      <h3 className="t-heading mt-1">{displayTitle(w.title, w.isSample)}</h3>
       <p className="mt-1">{w.description}</p>
       <dl className="tnum mt-2 grid grid-cols-2 gap-1 text-sm">
         <dt className="text-muted-paper">{t(lang, "duration")}</dt>
