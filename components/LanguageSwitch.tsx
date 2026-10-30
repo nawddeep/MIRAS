@@ -15,7 +15,7 @@ export function LanguageSwitch({ lang }: { lang: Lang }) {
           type="button"
           onClick={() => set(l)}
           aria-pressed={lang === l}
-          className={`min-h-10 min-w-11 rounded-full px-3 ${lang === l ? "bg-saffron text-ink" : "text-current"}`}
+          className={`min-h-11 min-w-11 rounded-full px-3 ${lang === l ? "bg-saffron text-ink" : "text-current"}`}
         >
           {l === "en" ? "EN" : "हिं"}
         </button>

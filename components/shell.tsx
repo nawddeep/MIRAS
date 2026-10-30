@@ -21,7 +21,7 @@ export function TopBar({ appName, right }: { appName: string; right: ReactNode }
     <header className={`miras-top ${detail ? 'detail-toolbar' : ''} ${search ? 'search-open' : ''} sticky top-0 z-30 border-b border-line bg-paper/95 pt-[env(safe-area-inset-top)]`}>
       <div className="mx-auto flex max-w-3xl items-center gap-2 px-3 py-1.5">
         <button type="button" aria-label="Back" onClick={() => (window.history.length > 1 ? router.back() : router.push('/'))} className="toolbar-back grid h-11 w-11 place-items-center rounded-full"><BackIcon /></button>
-        <Link href="/" className="toolbar-title flex flex-1 flex-col font-display text-xl"><span>{title}</span>{hi && <small lang="hi">{hi}</small>}</Link>
+        <Link href="/" className="toolbar-title flex min-h-11 flex-1 flex-col justify-center font-display text-xl"><span>{title}</span>{hi && <small lang="hi">{hi}</small>}</Link>
         {hi ? <button type="button" aria-label="Search this collection" aria-expanded={search} className="toolbar-search grid h-11 w-11 place-items-center rounded-full" onClick={()=>setSearch(!search)}><SearchIcon size={22}/></button> : <div className="toolbar-language">{right}</div>}
       </div>
     </header>

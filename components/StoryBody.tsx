@@ -55,19 +55,19 @@ export function StoryBody({ story, lang }: { story: StoryEntry; lang: Lang }) {
       <p className="leading-relaxed whitespace-pre-line">{text}</p>
       <div className="flex flex-wrap items-center gap-2">
         {canSimple && (
-          <button type="button" onClick={() => setSimple(!simple)} className="min-h-9 rounded-full border border-ink/25 px-3 text-sm" aria-pressed={simple}>
+          <button type="button" onClick={() => setSimple(!simple)} className="min-h-11 rounded-full border border-ink/25 px-3 text-sm" aria-pressed={simple}>
             {simple ? t(lang, "fullVersion") : t(lang, "simpleVersion")}
           </button>
         )}
         {canSpeak && (
           <>
-            <button type="button" onClick={toggleSpeak} className="min-h-9 rounded-full border border-ink/25 px-3 text-sm" aria-pressed={speaking}>
+            <button type="button" onClick={toggleSpeak} className="min-h-11 rounded-full border border-ink/25 px-3 text-sm" aria-pressed={speaking}>
               {speaking ? t(lang, "stop") : t(lang, "listen")}
             </button>
             <Label tone="warn">{t(lang, "syntheticVoice")}</Label>
           </>
         )}
-        <button type="button" onClick={() => stamp("read")} className="min-h-9 px-1 text-sm underline" disabled={stamped}>
+        <button type="button" onClick={() => stamp("read")} className="min-h-11 px-1 text-sm underline" disabled={stamped}>
           {stamped ? "Passport stamp saved" : "Mark as read"}
         </button>
       </div>

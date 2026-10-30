@@ -1,4 +1,4 @@
-import { Card, EmptyState, SampleBadge } from "@/components/ui";
+import { ButtonLink, Card, EmptyState, SampleBadge } from "@/components/ui";
 import { t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
 import { formatIST, getVisibleEvents } from "@/lib/services/events";
@@ -40,7 +40,7 @@ export default async function EventsPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title={t(lang, "emptyTitle")} />
+        <EmptyState title={t(lang, "emptyTitle")}><ButtonLink href="/places" variant="secondary">{t(lang, "navPlaces")}</ButtonLink></EmptyState>
       )}
     </div>
   );

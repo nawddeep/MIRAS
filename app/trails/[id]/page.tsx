@@ -27,7 +27,7 @@ export default async function TrailPage({ params }: PageProps<"/trails/[id]">) {
         {stops.map(({ place }, i) => (
           <li key={place.id} className="flex items-center gap-3 rounded-xl border border-line bg-white/60 p-3">
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink text-sm text-paper">{i + 1}</span>
-            <Link href={`/places/${place.slug}`} className="flex-1 underline">
+            <Link href={`/places/${place.slug}`} className="inline-flex min-h-11 flex-1 items-center underline">
               {pick(lang, place.name, place.name_hi)}
             </Link>
             <span className="text-sm text-ink-soft">

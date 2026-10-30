@@ -61,7 +61,7 @@ export default async function ExplorePage({ searchParams }: PageProps<"/places">
               <Link
                 href={href(c)}
                 aria-current={c === cat ? "page" : undefined}
-                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-sm ${c === cat ? "border-ink bg-ink text-on-dark" : "border-line bg-paper-2"}`}
+                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-4 text-sm ${c === cat ? "border-ink bg-ink text-on-dark" : "border-line bg-paper-2"}`}
               >
                 {c || t(lang, "all")}
               </Link>

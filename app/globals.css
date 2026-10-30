@@ -329,7 +329,7 @@ body.miras-body { background: #ddd7cb; color:var(--text-on-paper); }
 .hours-shortcuts small {font-size:12px;color:var(--muted-on-paper);line-height:1.3;margin-top:2px;}
 .hours-section-heading {display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 9px;}
 .hours-section-heading h2 {font-family:var(--font-tiro);font-size:18px;}
-.hours-section-heading > a {font-size:13px;color:var(--saffron-text);min-height:44px;display:flex;align-items:center;}
+.hours-section-heading > a {font-size:13px;color:var(--saffron-text);min-height:44px;min-width:44px;justify-content:flex-end;display:flex;align-items:center;}
 .hours-feature-card {height:94px;border-radius:16px;overflow:hidden;background:#253d50;display:flex;align-items:center;color:#fff7e8;position:relative;}
 .hours-feature-card img {width:43%;height:100%;object-fit:cover;}
 .hours-feature-card > span {flex:1;min-width:0;padding:10px;}
@@ -467,3 +467,9 @@ body:has(.search-open) .explore-screen>form,body:has(.search-open) .stories-scre
 .hours-home[data-time=night] .hours-greeting{top:calc(48px + env(safe-area-inset-top));}
 .miras-splash{padding-top:calc(45px + env(safe-area-inset-top));}
 .detail-toolbar>div{padding-top:calc(18px + env(safe-area-inset-top));}
+
+/* UI polish: subtle 180 ms ease on interactive elements. The prefers-reduced-motion rule above turns these off. */
+a, button, summary, label, input, select, textarea {
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+}
+button:active:not(:disabled), a:active { opacity: .85; }

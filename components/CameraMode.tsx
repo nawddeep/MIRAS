@@ -141,11 +141,11 @@ export function CameraMode({
 
       <div className="camera-controls flex items-center justify-between gap-3">
         <div role="group" aria-label="Mode" className="flex rounded-full border border-line-dark p-1 text-sm">
-          <button type="button" onClick={startCamera} aria-pressed={live} className={`min-h-10 rounded-full px-4 ${live ? "bg-saffron text-ink" : ""}`}>
+          <button type="button" onClick={startCamera} aria-pressed={live} className={`min-h-11 rounded-full px-4 ${live ? "bg-saffron text-ink" : ""}`}>
             {t(lang, "scan")}
           </button>
           <label className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4">Photo<input type="file" accept="image/*" capture="environment" className="sr-only" onChange={e=>{const f=e.target.files?.[0];if(f) send({source:f});e.target.value='';}}/></label>
-          <label className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full px-4">
+          <label className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full px-4">
             <ImageIcon size={18} />
             {t(lang, "upload")}
             <input

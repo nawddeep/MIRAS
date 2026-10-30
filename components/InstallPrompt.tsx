@@ -92,7 +92,7 @@ export function InstallPrompt() {
           <button
             type="button"
             onClick={handleInstallClick}
-            className="inline-flex min-h-9 items-center justify-center rounded-full bg-ink px-3.5 text-xs font-semibold text-paper hover:bg-ink-soft"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-3.5 text-xs font-semibold text-paper hover:bg-ink-soft"
           >
             Install
           </button>

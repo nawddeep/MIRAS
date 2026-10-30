@@ -8,7 +8,7 @@ import { Label } from "./ui";
 export function DemoStrip() {
   return (
     <div className="demo-notice flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 bg-ink px-4 py-1 text-center text-xs text-on-dark">
-      <a href="#sample-data" className="inline-flex min-h-8 items-center" aria-label="Demo data. Read what this means.">
+      <a href="#sample-data" className="inline-flex min-h-11 items-center" aria-label="Demo data. Read what this means.">
         <Label tone="sample">Demo data</Label>
       </a>
       {/* Kept for screen readers; the visible explanation is the footer note the pill links to. */}

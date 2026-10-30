@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { idbAll, idbDelete } from "@/lib/client/idb";
 import type { Lang } from "@/lib/i18n";
 import { formatSavedAt, type OfflineRecord } from "./SaveOffline";
-import { Card, SampleBadge, SourceTypeLabel } from "./ui";
+import { ButtonLink, Card, EmptyState, SampleBadge, Skeleton, SourceTypeLabel } from "./ui";
 
 export function OfflineView({ lang }: { lang: Lang }) {
   const [records, setRecords] = useState<OfflineRecord[] | null>(null);
@@ -13,8 +13,23 @@ export function OfflineView({ lang }: { lang: Lang }) {
     load();
   }, []);
 
-  if (!records) return <p className="text-ink-soft">Loading saved copies…</p>;
-  if (!records.length) return <p className="text-ink-soft">Nothing saved yet. Use &ldquo;Save for offline&rdquo; on a place page while you are online.</p>;
+  if (!records)
+    return (
+      <div role="status" aria-busy="true" aria-label="Loading saved copies" className="space-y-3">
+        <Skeleton className="h-20" />
+        <Skeleton className="h-20" />
+        <Skeleton className="h-20" />
+      </div>
+    );
+  if (!records.length)
+    return (
+      <EmptyState title="Nothing saved yet.">
+        <p>Use &ldquo;Save for offline&rdquo; on a place page while you are online.</p>
+        <ButtonLink href="/places" variant="secondary" className="mt-3">
+          Browse places
+        </ButtonLink>
+      </EmptyState>
+    );
 
   const plan = records.find((r) => r.kind === "plan");
   const phrases = records.find((r) => r.kind === "phrases");
@@ -61,7 +76,7 @@ export function OfflineView({ lang }: { lang: Lang }) {
           ))}
           <button
             type="button"
-            className="mt-3 min-h-10 text-sm underline"
+            className="mt-3 min-h-11 text-sm underline"
             onClick={async () => {
               await idbDelete("offline", r.id);
               load();

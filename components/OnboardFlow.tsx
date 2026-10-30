@@ -394,7 +394,7 @@ export function OnboardFlow({ uploadTimeoutMs }: { uploadTimeoutMs: number }) {
             type="file"
             accept="image/*"
             capture="environment"
-            className="mt-3 block w-full text-sm"
+            className="mt-3 block min-h-11 w-full py-2 text-sm"
             onChange={(e) => onPhoto(e.target.files?.[0])}
             aria-label="Photo of your work"
           />

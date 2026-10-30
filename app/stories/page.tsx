@@ -65,7 +65,7 @@ export default async function StoriesPage({ searchParams }: PageProps<"/stories"
               <Link
                 href={href(ty)}
                 aria-current={ty === type ? "page" : undefined}
-                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-sm ${ty === type ? "border-ink bg-ink text-on-dark" : "border-line bg-paper-2"}`}
+                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-4 text-sm ${ty === type ? "border-ink bg-ink text-on-dark" : "border-line bg-paper-2"}`}
               >
                 {ty ? t(lang, `sourceType_${ty}` as DictKey) : t(lang, "all")}
               </Link>

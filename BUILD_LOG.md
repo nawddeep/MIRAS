@@ -346,3 +346,17 @@ Times are IST.
 - No test asserted any of the old sentences, so none was changed. No behaviour changed.
 - Runs on a clean build: typecheck, lint, 215 unit tests, 93 browser tests, demo path 3 of 3: all passed.
 - Not verified: what the AI provider does with frames it receives. That depends on its own terms and is not something this repository can show.
+
+## UI upgrade (Part C only), theme unchanged: 2026-10-30 19:18
+
+- Scope: the prompt says to build the concept screens (Part A) and the data layer (Part B) only after the real-phone test has passed on this branch, and otherwise to do only Part C. The phone test has not been run (no results were pasted), so **Parts A and B were not started**. No `/concepts` routes, concept data, `lib/services/concepts.ts`, import script or call links exist. Two prompts listed as coming first (get-app page, branch import) were also never supplied.
+- Measured first. A script visited 26 routes at 360 px. Before: 357 buttons and links under 44 px plus 100 small inline links, no sideways scroll, every tab stop had a focus ring, and the only saffron-on-light text was "See all" on Home, which is saffron on dark navy (fine). Most hits were a few shared components repeated on every page.
+- Tap targets raised to 44 px (class changes only, no behaviour change): the EN/हिं toggle, all footer links (including the four text links on the last footer line, now 44 px high and wide), the "Demo data" pill link, the top-bar title link, "Listen", "Simple version" and "Mark as read", the audio-walk stop buttons, the Memories place chooser and face buttons, the camera mode buttons, the install prompt button, the offline "remove" button, the "All" filter chips, the Home "See all" link, a few text links on trail, search and story pages, and the three file inputs (Memories, 360 replay, onboarding photo).
+- Motion: a global 180 ms ease transition on interactive elements. The existing `prefers-reduced-motion` rule already turned transitions and animations off; a test now proves it.
+- Loading skeletons (the existing `Skeleton` component, which nothing used) on the two lists that load after the page renders: saved offline copies and saved memories. Saved memories no longer flashes "Nothing saved yet" while loading.
+- Empty states with one next action: artisans, trails and events now offer a "Places" button; offline copies offer "Browse places"; saved memories say "To start, pick up to five photos or clips in step 1 above." The exact text "Nothing saved yet." that `tests/e2e/tier1.spec.ts` checks is kept.
+- Focus rings: already visible everywhere; checked, not changed. Saffron text on paper: none found, nothing to change.
+- Not changed: tokens, fonts, splash, time-of-day modes, layout rules, any label. No test assertion changed.
+- New `tests/e2e/ui-polish.spec.ts` (31 tests): 26 routes at 360 px with no sideways scroll and no target under 44 px, motion on and off, focus rings, both skeletons, and the empty states.
+- Runs on a clean build: typecheck, lint, 215 unit tests, content:check (0 errors), 124 browser tests, demo path 3 of 3: all passed.
+- Not verified: a real phone. Targets were measured in Chromium at 360 px, not on an iPhone or a real Android screen.

@@ -1,5 +1,5 @@
 import { ArtisanCard } from "@/components/domain";
-import { EmptyState } from "@/components/ui";
+import { ButtonLink, EmptyState } from "@/components/ui";
 import { t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
 import { getVisibleArtisans } from "@/lib/services/artisans";
@@ -20,7 +20,7 @@ export default async function ArtisansPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title={t(lang, "emptyTitle")} />
+        <EmptyState title={t(lang, "emptyTitle")}><ButtonLink href="/places" variant="secondary">{t(lang, "navPlaces")}</ButtonLink></EmptyState>
       )}
     </div>
   );

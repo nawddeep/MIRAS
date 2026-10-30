@@ -31,7 +31,7 @@ export function ReplayViewer({ lang }: { lang: Lang }) {
 
   return (
     <div className="space-y-3">
-      <input type="file" accept="image/*" aria-label="Your 360 photo" onChange={(e) => open(e.target.files?.[0])} className="block w-full text-sm" />
+      <input type="file" accept="image/*" aria-label="Your 360 photo" onChange={(e) => open(e.target.files?.[0])} className="block min-h-11 w-full py-2 text-sm" />
       <p className="text-xs text-ink-soft">Your photo is opened in this browser only. It is not uploaded.</p>
       {warning && (
         <p role="status" className="rounded-xl bg-saffron/15 p-3 text-sm">

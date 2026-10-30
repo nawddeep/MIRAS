@@ -6,7 +6,7 @@ import { compressImage, fetchWithTimeout, TimeoutError } from "@/lib/client/medi
 import { t, type Lang } from "@/lib/i18n";
 import type { SourceType } from "@/lib/schemas";
 import type { Moment } from "@/lib/services/memories";
-import { Button, Label, SourceTypeLabel } from "./ui";
+import { Button, Label, Skeleton, SourceTypeLabel } from "./ui";
 
 const MAX = 5;
 
@@ -114,7 +114,7 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
   const [result, setResult] = useState<{ demo: boolean; moments: Moment[] } | null>(null);
   const [faces, setFaces] = useState<Record<number, FaceChoice>>({});
   const [playing, setPlaying] = useState<ReelMoment[] | null>(null);
-  const [saved, setSaved] = useState<SavedMemory[]>([]);
+  const [saved, setSaved] = useState<SavedMemory[] | null>(null);
   const placeName = (id: string | null) => places.find((p) => p.id === id)?.name;
 
   const refreshSaved = () => idbAll<SavedMemory>("memories").then(setSaved, () => setSaved([]));
@@ -214,7 +214,7 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
             addFiles(e.target.files);
             e.target.value = "";
           }}
-          className="block w-full text-sm"
+          className="block min-h-11 w-full py-2 text-sm"
         />
         {items.length > 0 && (
           <ul className="space-y-2">
@@ -228,7 +228,7 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
                     aria-label={`Place for moment ${i + 1}`}
                     value={it.placeId}
                     onChange={(e) => setItems(items.map((x, j) => (j === i ? { ...x, placeId: e.target.value } : x)))}
-                    className="mt-1 min-h-10 w-full rounded-lg border border-ink/25 bg-white px-2 text-sm"
+                    className="mt-1 min-h-11 w-full rounded-lg border border-ink/25 bg-white px-2 text-sm"
                   >
                     <option value="">Place: not sure</option>
                     {places.map((p) => (
@@ -295,7 +295,7 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
                           type="button"
                           aria-pressed={choice === c}
                           onClick={() => setFaces({ ...faces, [m.frameIndex]: c })}
-                          className={`min-h-10 rounded-full border px-3 text-sm ${choice === c ? "border-ink bg-ink text-paper" : "border-ink/30"}`}
+                          className={`min-h-11 rounded-full border px-3 text-sm ${choice === c ? "border-ink bg-ink text-paper" : "border-ink/30"}`}
                         >
                           {c === "cut" ? "Cut this moment" : c === "blur" ? "Blur whole frame" : "Keep"}
                         </button>
@@ -322,7 +322,12 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
 
       <section className="space-y-2">
         <h2 className="text-2xl">Saved on this device</h2>
-        {saved.length ? (
+        {saved === null ? (
+          <div role="status" aria-busy="true" aria-label="Loading saved memories" className="space-y-2">
+            <Skeleton className="h-14" />
+            <Skeleton className="h-14" />
+          </div>
+        ) : saved.length ? (
           <ul className="space-y-2" data-testid="saved-memories">
             {saved.map((s) => (
               <li key={s.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-white/60 p-3">
@@ -346,7 +351,10 @@ export function MemoriesFlow({ lang, places, uploadTimeoutMs }: { lang: Lang; pl
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-ink-soft">Nothing saved yet.</p>
+          <div className="space-y-1">
+            <p className="text-sm text-ink-soft">Nothing saved yet.</p>
+            <p className="text-sm text-ink-soft">To start, pick up to five photos or clips in step 1 above.</p>
+          </div>
         )}
       </section>
     </div>

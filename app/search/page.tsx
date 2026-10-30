@@ -31,7 +31,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
           <h2 className="text-2xl">{t(lang, "stories")}</h2>
           {stories.map(({ story, place }) => (
             <div key={story.id} className="space-y-1">
-              <Link href={`/places/${place.slug}#stories`} className="text-sm underline">
+              <Link href={`/places/${place.slug}#stories`} className="inline-flex min-h-11 items-center text-sm underline">
                 {pick(lang, place.name, place.name_hi)}
               </Link>
               <StoryBlock story={story} lang={lang} />

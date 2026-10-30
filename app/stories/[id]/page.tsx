@@ -42,7 +42,7 @@ export default async function StoryPage({ params }: PageProps<"/stories/[id]">) 
         <div>
           <dt className="sr-only">{t(lang, "navPlaces")}</dt>
           <dd>
-            <Link href={`/places/${place.slug}`} className="font-semibold text-lake-deep underline">
+            <Link href={`/places/${place.slug}`} className="inline-flex min-h-11 items-center font-semibold text-lake-deep underline">
               {pick(lang, place.name, place.name_hi)}
             </Link>
           </dd>

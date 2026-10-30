@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EmptyState, SampleBadge } from "@/components/ui";
+import { ButtonLink, EmptyState, SampleBadge } from "@/components/ui";
 import { t } from "@/lib/i18n";
 import { getLang } from "@/lib/lang-server";
 import { getVisibleTrails } from "@/lib/services/trails";
@@ -26,7 +26,7 @@ export default async function TrailsPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title={t(lang, "emptyTitle")} />
+        <EmptyState title={t(lang, "emptyTitle")}><ButtonLink href="/places" variant="secondary">{t(lang, "navPlaces")}</ButtonLink></EmptyState>
       )}
     </div>
   );

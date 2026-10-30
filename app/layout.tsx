@@ -84,7 +84,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 ["/concept/ar", "Story view (concept)"],
               ].map(([href, label]) => (
                 <li key={href}>
-                  <Link href={href} className="inline-flex min-h-9 items-center underline">
+                  <Link href={href} className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 underline">
                     {label}
                   </Link>
                 </li>
@@ -97,20 +97,20 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               Places, stories and makers marked as sample are placeholders. Nothing marked sample is real.
             </p>
           )}
-          <p className="mt-1">
-            <Link href="/onboard" className="underline">
+          <p className="mt-1 flex flex-wrap items-center justify-center">
+            <Link href="/onboard" className="inline-flex min-h-11 items-center underline">
               For artisans: create a listing
             </Link>
             {" · "}
-            <Link href="/story" className="underline">
+            <Link href="/story" className="inline-flex min-h-11 items-center underline">
               Udaipur story
             </Link>
             {" · "}
-            <Link href="/roadmap" className="underline">
+            <Link href="/roadmap" className="inline-flex min-h-11 items-center underline">
               What comes next
             </Link>
             {" · "}
-            <Link href="/admin" className="underline">
+            <Link href="/admin" className="inline-flex min-h-11 min-w-11 items-center justify-center underline">
               Status
             </Link>
           </p>

@@ -99,7 +99,7 @@ export function AudioWalk({ chapters, lang }: { chapters: WalkChapter[]; lang: L
               type="button"
               onClick={() => go(n)}
               aria-current={n === i ? "step" : undefined}
-              className={`min-h-10 rounded-full border px-3 text-sm ${n === i ? "border-ink bg-ink text-paper" : "border-ink/25"}`}
+              className={`min-h-11 rounded-full border px-3 text-sm ${n === i ? "border-ink bg-ink text-paper" : "border-ink/25"}`}
             >
               {n + 1}. {ch.name}
             </button>
