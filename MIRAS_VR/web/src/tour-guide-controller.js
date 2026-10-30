@@ -112,7 +112,12 @@ export const GUIDES_CONFIG = {
     glbUrl: 'assets/models/salman_tour_guide_rigged.glb',
     stlUrl: 'assets/models/salman_khan_guide.stl',
     themeColor: '#287277',
-    voiceAudio: null,
+    voiceAudio: {
+      city_palace: 'assets/audio/voices/salman_city_palace.mp3',
+      moti_magri: 'assets/audio/voices/salman_moti_magri.mp3',
+      karni_mata: 'assets/audio/voices/salman_karni_mata.mp3',
+      pichola_lake: 'assets/audio/voices/salman_pichola_lake.mp3',
+    },
     siteStories: {
       city_palace: {
         title: 'City Palace, Udaipur',
