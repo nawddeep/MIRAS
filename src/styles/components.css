@@ -210,6 +210,7 @@
 .m-frame-img .m-art { position: absolute; inset: 0; display: grid; place-items: center; padding: 10% 12%; color: var(--heritage); }
 .m-frame-img .m-art svg { width: 100%; height: 100%; }
 .m-frame-img .m-art--doodle { padding: 24% 32%; }
+.m-frame-img .m-art[hidden] { display: none; }
 .m-frame-img.is-broken img { display: none; }
 .m-img-label {
   position: absolute; left: 8px; bottom: 8px; padding: 3px 7px; background: rgba(255, 255, 255, .92);

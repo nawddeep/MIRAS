@@ -6,6 +6,17 @@ const PROJECT_LICENCE = 'Not recorded in the repository';
 const GENERATED_NOTE =
   'Found in public/img/places with no creator, source or licence on record. It looks computer-generated, so it is shown only as a labelled illustration in the VR gallery, never as a photograph, and never as the image of a specific place (at least one file name does not match what it shows).';
 
+const APP_NOTE =
+  'Copied from the MIRAS app (public/media/pichhola). Supplied as a background sheet; the creator and rights are not recorded, and the images look computer-generated. Shown only with the label "Illustrative image, not a photograph". Small files, so they look soft when enlarged.';
+
+/** Images shared with the MIRAS app, listed as [file name, width, height, alt text]. @param {[string, number, number, string][]} rows */
+const appImages = (rows) =>
+  Object.fromEntries(rows.map(([name, width, height, alt]) => [`app-${name}`, /** @type {import('./types.js').MediaItem} */ ({
+    id: `app-${name}`, src: `/img/app/${name}.webp`, width, height, alt,
+    kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
+    licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: APP_NOTE,
+  })]));
+
 /** @type {Record<string, import('./types.js').MediaItem>} */
 export const media = {
   'hero-street': {
@@ -74,6 +85,22 @@ export const media = {
     kind: 'generated-illustration', label: 'Illustrative image, not a photograph', creator: 'Unknown',
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: GENERATED_NOTE,
   },
+  ...appImages([
+    ['palace', 358, 358, 'Illustrative image: a cream-coloured palace with domed turrets beside a lake under a blue sky'],
+    ['palace-wide', 358, 358, 'Illustrative image: a wide view of a cream-coloured palace along a lake under a blue sky'],
+    ['temple', 358, 358, 'Illustrative image: a tall carved stone temple spire above a flight of steps, with trees'],
+    ['camera', 358, 358, 'Illustrative image: a carved stone temple spire seen through a carved stone arch'],
+    ['garden', 358, 358, 'Illustrative image: a domed marble pavilion beside a lotus pool in a garden'],
+    ['golden', 358, 358, 'Illustrative image: a palace along a lake under an orange sunset sky'],
+    ['dawn', 358, 358, 'Illustrative image: a small boat on a lake in soft morning light, with a palace on the shore and hills behind'],
+    ['moonlight', 358, 358, 'Illustrative image: a full moon over a lit palace beside a lake at night'],
+    ['night', 358, 358, 'Illustrative image: a lit palace across a lake at blue dusk, with a small boat'],
+    ['splash', 358, 358, 'Illustrative image: a sunset over a lake and palace, seen through a carved stone arch, with a boat'],
+    ['story', 358, 358, 'Illustrative image: a palace and a covered boat on a lake at sunset, with mountains behind'],
+    ['artisan', 358, 358, 'Illustrative image: a hand painting a miniature with a fine brush, beside small pots of paint'],
+    ['artwork', 260, 165, 'Illustrative image: a detail of a miniature painting showing an elephant and figures'],
+    ['artwork-detail', 160, 100, 'Illustrative image: a blurred close detail of a colourful miniature painting'],
+  ]),
 };
 
 /** 360 / VR scenes. None of these is a real 360 capture. */
