@@ -32,7 +32,7 @@ export const PAGES = [
   ['memories/index.html', 'memories', 'Memories', 'Saved moments and a highlight-reel demonstration with consent and privacy steps.'],
   ['passport/index.html', 'passport', 'Heritage passport', 'Badges for learning and discovery, kept in this browser only.'],
   ['labels/index.html', 'labels', 'How we label things', 'What Verified, Unverified, Illustrative, Concept and Reconstructed mean on MIRAS.'],
-  ['app/index.html', 'app', 'Get the app', 'Open the MIRAS web app and add it to your phone’s home screen. Steps for Android and iPhone.'],
+  ['app/index.html', 'app', 'Get app', 'Open the MIRAS web app and add it to your phone’s home screen. Steps for Android and iPhone.'],
 ];
 
 export const FONTS = 'https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Noto+Sans+Devanagari:wght@400;500&family=Oswald:wght@300;400&display=swap';

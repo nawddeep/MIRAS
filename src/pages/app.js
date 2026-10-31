@@ -15,7 +15,7 @@ export function render(main) {
     : note('<p>The app has not been published at a public address yet, so there is nothing to open. This page will show the link as soon as it is.</p>', 'demo');
 
   main.innerHTML = `
-    ${pageHead({ label: 'Get the app', title: 'Take MIRAS with you', lead: 'MIRAS is a web app, so there is no app store to visit. You open it in your phone’s browser and add it to your home screen.', art: doodle.hands, extra: `<div class="m-actions" style="margin-top:24px">${open}</div>` })}
+    ${pageHead({ label: 'Get app', title: 'Take MIRAS with you', lead: 'MIRAS is a web app, so there is no app store to visit. You open it in your phone’s browser and add it to your home screen.', art: doodle.hands, extra: `<div class="m-actions" style="margin-top:24px">${open}</div>` })}
     <section class="m-section"><div class="m-wrap">
       ${status}
       <div class="p-split" style="margin-top:40px">
