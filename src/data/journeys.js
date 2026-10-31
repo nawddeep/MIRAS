@@ -74,4 +74,6 @@ export const badges = [
   { id: 'b-slow', title: 'Slow traveller', titleHi: 'धीमे यात्री', how: 'Save three places and plan no more than three stops in a day.', doodle: 'kulhad' },
   { id: 'b-respect', title: 'Respectful visitor', titleHi: 'सम्मानजनक यात्री', how: 'Read the responsible travel notes.', doodle: 'hands' },
   { id: 'b-listener', title: 'Listener', titleHi: 'श्रोता', how: 'Listen to a chapter of an audio walk.', doodle: 'ear' },
+  { id: 'b-craft', title: 'Craft curious', titleHi: 'हुनर की पहचान', how: 'Open a workshop and read how to join it.', doodle: 'pot' },
+  { id: 'b-quiet', title: 'Quiet corners', titleHi: 'शांत कोने', how: 'Read how Hidden Udaipur shares places with care.', doodle: 'arch' },
 ];

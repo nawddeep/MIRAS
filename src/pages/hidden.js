@@ -3,9 +3,11 @@ import { hiddenPlaces } from '../data/index.js';
 import { statusBadge, tag, note } from '../ui/components.js';
 import { pageHead, subNav, reveal } from '../ui/shell.js';
 import { doodle } from '../ui/icons.js';
+import { markProgress } from '../lib/store.js';
 
 /** @param {HTMLElement} main */
 export function render(main) {
+  markProgress('hidden');
   main.innerHTML = `
     ${pageHead({ label: 'Explore', title: 'Hidden Udaipur', titleHi: 'छुपा उदयपुर', lead: 'Lesser-known corners recommended by people who live here, shared carefully, and only in general terms.', art: doodle.arch })}
     ${subNav('explore')}

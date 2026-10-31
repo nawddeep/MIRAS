@@ -3,6 +3,7 @@ import { getWorkshop, getArtisan, getPlace } from '../data/index.js';
 import { statusBadge, tag, note } from '../ui/components.js';
 import { notFound } from '../ui/shell.js';
 import { icon, doodle } from '../ui/icons.js';
+import { markProgress } from '../lib/store.js';
 
 /** @param {HTMLElement} main */
 export function render(main) {
@@ -10,6 +11,7 @@ export function render(main) {
   if (!w) { main.innerHTML = notFound('workshop', '/workshops/', 'All workshops'); return; }
   const a = getArtisan(w.artisanId), p = getPlace(w.placeId);
   document.title = `${w.title} · MIRAS Udaipur`;
+  markProgress('workshop');
   const bookable = w.howToBook.includes('booking');
   main.innerHTML = `
     <section class="p-hero"><div class="m-wrap">

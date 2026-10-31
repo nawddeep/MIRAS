@@ -17,6 +17,8 @@ function earned() {
     'b-slow': !!p.saved3 && !!p.calmPlan,
     'b-respect': !!p.respect,
     'b-listener': !!p.listened,
+    'b-craft': !!p.workshop,
+    'b-quiet': !!p.hidden,
   };
 }
 
@@ -24,7 +26,7 @@ function earned() {
 export function render(main) {
   main.innerHTML = `
     ${pageHead({ label: 'Passport', title: 'Your heritage passport', titleHi: 'विरासत पासपोर्ट', lead: 'Stamps for things you learn: stories read, phrases tried, makers met. Never for rushing, crowds or going where you should not.', art: doodle.postcard })}
-    <section class="m-section"><div class="m-wrap" data-root></div></section>`;
+    <section class="m-section"><div class="m-wrap p-passport-scope" data-root></div></section>`;
   const root = /** @type {HTMLElement} */ (main.querySelector('[data-root]'));
 
   const draw = () => {
@@ -42,12 +44,20 @@ export function render(main) {
         </div>
         <div class="p-passport-page" aria-label="Stamps">
           ${on && !count ? `<div style="grid-column:1/-1">${emptyState({ title: 'New here? Start with a story.', body: 'Read any story to the end and your first stamp appears here. Then try a phrase, or meet a maker.', art: doodle.book, action: '<a class="m-btn" href="/stories/">Read a story</a>' })}</div>` : ''}
-          ${badges.map((b) => {
+          ${badges.map((b, i) => {
             const got = on && e[/** @type {keyof typeof e} */ (b.id)];
-            return `<div class="p-badge${got ? '' : ' is-locked'}" data-reveal>
-              <span class="m-stamp${b.id.length % 2 ? ' m-stamp--blue' : ''}">${doodle[/** @type {keyof typeof doodle} */ (b.doodle)] ?? ''}</span>
+            const tone = ['terracotta', 'heritage', 'leaf'][i % 3];
+            return `<div class="p-badge${got ? ' is-earned' : ' is-locked'}" data-reveal>
+              <span class="p-postage p-postage--${tone}">
+                <span class="p-postage-frame">
+                  <span class="p-postage-top">Udaipur</span>
+                  <span class="p-postage-art">${doodle[/** @type {keyof typeof doodle} */ (b.doodle)] ?? ''}</span>
+                  <span class="p-postage-no">№ ${String(i + 1).padStart(2, '0')}</span>
+                </span>
+                ${got ? '<span class="p-postmark" aria-hidden="true"><span>MIRAS</span><b>✓</b><span>Stamped</span></span>' : ''}
+              </span>
               <h3>${esc(b.title)}</h3><p lang="hi">${esc(b.titleHi)}</p>
-              <p>${esc(b.how)}</p>
+              <p class="p-badge-how">${esc(b.how)}</p>
               <span class="p-badge-state">${got ? '✓ Stamped' : 'Not yet'}</span>
             </div>`;
           }).join('')}
