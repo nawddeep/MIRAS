@@ -153,4 +153,53 @@ export const stories = [
     simple: 'Lac bangles are made from a soft resin. Makers heat it, colour it and shape it by hand. This is a sample entry.',
     audio: NO_AUDIO, lastUpdated: UPDATED,
   },
+  {
+    id: 's-palace-growth', title: 'How the City Palace grew over four centuries', placeId: 'city-palace',
+    sourceType: 'History', verification: 'Unverified', language: 'English',
+    sourceReference: 'Paraphrased from Wikipedia, "City Palace, Udaipur" (CC BY-SA 4.0), read 2026-10-31. Not yet checked against a primary source or by a second person. The article gives both 1553 and 1559 as the start, so no start year is stated here.',
+    dek: 'From one royal courtyard to a group of eleven palaces.',
+    body: [
+      'Maharana Udai Singh II of the Sisodia Rajputs began the City Palace as he moved his capital from Chittor to the new city of Udaipur. The first royal building was the Rai Angan, the royal courtyard.',
+      'Later Maharanas kept adding to it for about 400 years, until it became a group of eleven smaller palaces in granite and marble. Badi Pol dates to 1600 and the Tripolia gate to 1725.',
+      'In 1974 part of the palace and the Zenana Mahal became a museum.',
+    ],
+    simple: 'A ruler began the palace when he moved his capital to Udaipur. Many rulers added new parts over about 400 years. Part of it became a museum in 1974.',
+    audio: NO_AUDIO, lastUpdated: UPDATED,
+  },
+  {
+    id: 's-jagdish-built', title: 'The Jagdish Temple and its black stone Jagannath', placeId: 'jagdish-temple',
+    sourceType: 'History', verification: 'Unverified', language: 'English',
+    sourceReference: 'Paraphrased from Wikipedia, "Jagdish Temple" (CC BY-SA 4.0), read 2026-10-31. Not yet checked against a primary source or by a second person. The article gives 1651 and, in one caption, 1652.',
+    dek: 'Thirty-two marble steps, a brass Garuda and a single carved stone.',
+    body: [
+      'Maharana Jagat Singh built the Jagdish Temple and it was completed in 1651, though one caption in the source gives 1652. It stands on a high terrace and you climb 32 marble steps to the main shrine, which ends at a brass image of Garuda, the mount of Vishnu.',
+      'Inside is a four-armed image of Jagannath carved from a single black stone. Four smaller shrines to Ganesha, Surya, Shakti and Shiva stand around it. Worship has continued here since it was built.',
+    ],
+    simple: 'A ruler built this temple in about 1651. You climb 32 marble steps to reach it. The main statue is carved from one black stone, and people have prayed here ever since.',
+    audio: NO_AUDIO, lastUpdated: UPDATED,
+  },
+  {
+    id: 's-pichola-lake-palace', title: 'Lake Pichola and the Lake Palace', placeId: 'lake-pichola',
+    sourceType: 'History', verification: 'Unverified', language: 'English',
+    sourceReference: 'Paraphrased from Wikipedia, "Lake Pichola" (CC BY-SA 4.0), read 2026-10-31. Not yet checked against a primary source or by a second person. The article is inconsistent on who built the lake, so no builder is named for it.',
+    dek: 'A lake that was enlarged when the city was founded, and the marble palace on its island.',
+    body: [
+      'One source says Lake Pichola was created in 1362, but it is inconsistent about who built it. After Maharana Udai Singh founded Udaipur on its shore he enlarged the lake with a stone masonry dam at Badipol.',
+      'The Lake Palace stands on the island of Jag Niwas and was built in marble in 1746 by Maharana Jagat Singh II.',
+    ],
+    simple: 'The lake is older than the city. When the city was founded, a ruler made it bigger with a stone dam. The Lake Palace on the island was built in 1746.',
+    audio: NO_AUDIO, lastUpdated: UPDATED,
+  },
+  {
+    id: 's-sajjangarh-built', title: 'Why Sajjangarh was built on a hilltop', placeId: 'sajjangarh',
+    sourceType: 'History', verification: 'Unverified', language: 'English',
+    sourceReference: 'Paraphrased from Wikipedia, "Monsoon Palace" (CC BY-SA 4.0), read 2026-10-31. Not yet checked against a primary source or by a second person. The article contradicts itself on the number of storeys and on which lake it overlooks, so neither is stated here.',
+    dek: 'A hilltop planned for watching monsoon clouds.',
+    body: [
+      'Maharana Sajjan Singh of Mewar began Sajjangarh in 1884 on the Bansdara peak of the Aravalli Hills, about 944 metres above sea level. He planned a centre for watching monsoon clouds that would also give work to people and serve as a royal retreat.',
+      'His successor, Maharana Fateh Singh, completed it. It later became a monsoon palace and hunting lodge. The water supply proved too small for the palace and it was abandoned. The Sajjangarh Wildlife Sanctuary around it was set up in 1987.',
+    ],
+    simple: 'A ruler began this hilltop palace in 1884 to watch the monsoon clouds. It did not have enough water, so it was left. A wildlife sanctuary around it began in 1987.',
+    audio: NO_AUDIO, lastUpdated: UPDATED,
+  },
 ];

@@ -3,6 +3,7 @@
 
 const UPDATED = '2026-10-30';
 const SAMPLE_HOURS_NOTE = 'Sample hours for this demonstration, not the real timetable. Confirm at the site before you go.';
+const LISTING_HOURS_NOTE = 'From travel listings, not an official timetable. Unconfirmed: check at the site before you go.';
 const OPEN_SPACE_NOTE = 'Open public space. The planner uses a sample daylight window; it is not an official time.';
 const FACTS_SOURCE = 'Widely published details, not yet checked against a primary source by MIRAS.';
 
@@ -19,8 +20,8 @@ export const places = [
   {
     id: 'city-palace', name: 'City Palace', nameHi: 'सिटी पैलेस', category: 'Palace',
     interests: ['architecture', 'art', 'photography'], area: 'Old City, east bank of Lake Pichola',
-    coords: { lat: 24.5764, lng: 73.6835, precision: 'approximate' }, visitMinutes: 150,
-    hours: { status: 'Illustrative', note: SAMPLE_HOURS_NOTE, days: week([['09:30', '17:30']]) },
+    coords: { lat: 24.5761, lng: 73.6836, precision: 'approximate' }, visitMinutes: 150,
+    hours: { status: 'Unverified', note: LISTING_HOURS_NOTE, days: week([['09:30', '17:30']]) },
     summary: 'A long run of courtyards, balconies and painted rooms built up over several reigns, looking straight down onto Lake Pichola.',
     facts: [
       { label: 'Begun', value: 'Mid-16th century, under Maharana Udai Singh II (commonly given as 1559)' },
@@ -31,7 +32,7 @@ export const places = [
     visitTips: ['Go soon after opening, before tour groups and the midday heat.', 'Ticket and camera rules change; check them at the gate.', 'Wear shoes you can climb narrow stairs in.'],
     etiquette: { status: 'Unverified', items: ['Some rooms may not allow photography. Follow the signs and the staff.'] },
     accessibility: null,
-    storyIds: ['s-palace-founding'], popular: true,
+    storyIds: ['s-palace-founding', 's-palace-growth'], popular: true,
     quieter: { placeId: 'bagore-ki-haveli', time: 'Early morning, soon after opening', basis: 'Estimate from sample data. No live crowd information is used.' },
     artKey: 'palace', imageId: null, sceneId: 'scene-palace-hill',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
@@ -39,7 +40,7 @@ export const places = [
   {
     id: 'lake-pichola', name: 'Lake Pichola', nameHi: 'पिछोला झील', category: 'Lake',
     interests: ['lakes', 'photography', 'family'], area: 'Old City waterfront',
-    coords: { lat: 24.5720, lng: 73.6790, precision: 'approximate' }, visitMinutes: 75,
+    coords: { lat: 24.5696, lng: 73.6722, precision: 'approximate' }, visitMinutes: 75,
     hours: { status: 'Illustrative', note: OPEN_SPACE_NOTE, days: week([['06:00', '19:30']]) },
     summary: 'The old city\'s lake, ringed by ghats, havelis and island palaces. Most people see it from a boat; the ghats are better for sitting.',
     facts: [
@@ -51,7 +52,7 @@ export const places = [
     visitTips: ['Late afternoon light is soft; boats get busy close to sunset.', 'Carry water and a hat on the open ghats.'],
     etiquette: { status: 'Unverified', items: ['Ghats are where people bathe, wash and pray. Keep a respectful distance and ask before photographing anyone.'] },
     accessibility: null,
-    storyIds: ['s-pichola-name', 's-ghat-morning'], popular: true,
+    storyIds: ['s-pichola-name', 's-pichola-lake-palace', 's-ghat-morning'], popular: true,
     quieter: { placeId: 'ambrai-ghat', time: 'Early morning on the ghats', basis: 'Estimate from sample data. No live crowd information is used.' },
     artKey: 'pichola', imageId: null, sceneId: 'scene-pichola',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light', 'first-day'],
@@ -59,8 +60,8 @@ export const places = [
   {
     id: 'jagdish-temple', name: 'Jagdish Temple', nameHi: 'जगदीश मंदिर', category: 'Temple',
     interests: ['architecture', 'spiritual', 'art'], area: 'Jagdish Chowk, Old City',
-    coords: { lat: 24.5797, lng: 73.6838, precision: 'approximate' }, visitMinutes: 45,
-    hours: { status: 'Illustrative', note: SAMPLE_HOURS_NOTE + ' Temples often close in the early afternoon.', days: week([['05:30', '13:00'], ['16:00', '21:00']]) },
+    coords: { lat: 24.5798, lng: 73.6839, precision: 'approximate' }, visitMinutes: 45,
+    hours: { status: 'Unverified', note: LISTING_HOURS_NOTE + ' Listings disagree on temple timings, and the temple usually closes for a few hours around midday.', days: week([['06:00', '13:00']]) },
     summary: 'A carved temple to Vishnu at the top of a steep flight of steps, right in the middle of the busiest chowk in the old city.',
     facts: [
       { label: 'Built', value: 'Mid-17th century (commonly given as 1651), under Maharana Jagat Singh I' },
@@ -71,7 +72,7 @@ export const places = [
     visitTips: ['The steps are steep and have no shade.', 'Morning and evening aarti are the busiest times.'],
     etiquette: { status: 'Unverified', items: ['This is a working temple. Remove footwear where asked.', 'Dress with shoulders and knees covered.', 'Ask before photographing people at prayer.'] },
     accessibility: { status: 'Unverified', items: ['The entrance is up a long flight of steps. No step-free route is recorded.'] },
-    storyIds: ['s-jagdish-steps', 's-jagdish-bell'], popular: true,
+    storyIds: ['s-jagdish-steps', 's-jagdish-built', 's-jagdish-bell'], popular: true,
     quieter: { time: 'Mid-morning, between the busier prayer times', basis: 'Estimate from sample data. No live crowd information is used.' },
     artKey: 'jagdish', imageId: null, sceneId: 'scene-old-city',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
@@ -144,8 +145,8 @@ export const places = [
   {
     id: 'saheliyon-ki-bari', name: 'Saheliyon Ki Bari', nameHi: 'सहेलियों की बाड़ी', category: 'Garden',
     interests: ['family', 'photography', 'architecture'], area: 'Near Fateh Sagar',
-    coords: { lat: 24.6034, lng: 73.6857, precision: 'approximate' }, visitMinutes: 60,
-    hours: { status: 'Illustrative', note: SAMPLE_HOURS_NOTE, days: week([['09:00', '18:00']]) },
+    coords: { lat: 24.6031, lng: 73.6855, precision: 'approximate' }, visitMinutes: 60,
+    hours: { status: 'Unverified', note: LISTING_HOURS_NOTE, days: week([['09:00', '19:00']]) },
     summary: 'A walled garden of fountains, lawns and marble pavilions. Good with children and on hot afternoons.',
     facts: [{ label: 'Name', value: '"Garden of the companions"' }, { label: 'Built', value: '18th century' }],
     factsSource: FACTS_SOURCE,
@@ -158,15 +159,15 @@ export const places = [
   {
     id: 'sajjangarh', name: 'Sajjangarh (Monsoon Palace)', nameHi: 'सज्जनगढ़', category: 'Viewpoint',
     interests: ['photography', 'architecture'], area: 'Hilltop, west of the city',
-    coords: { lat: 24.5947, lng: 73.6417, precision: 'approximate' }, visitMinutes: 120,
-    hours: { status: 'Illustrative', note: SAMPLE_HOURS_NOTE, days: week([['09:00', '18:00']]) },
+    coords: { lat: 24.5932, lng: 73.6395, precision: 'approximate' }, visitMinutes: 120,
+    hours: { status: 'Unverified', note: LISTING_HOURS_NOTE + ' The palace is run by the Forest Department; confirm at the base gate.', days: week([['09:00', '18:00']]) },
     summary: 'A palace on a hilltop inside a wildlife sanctuary, with the lakes and old city laid out below.',
     facts: [{ label: 'Built', value: 'Late 19th century (commonly given as 1884), under Maharana Sajjan Singh' }],
     factsSource: FACTS_SOURCE,
     visitTips: ['Transport up the hill is arranged at the gate; plan the trip back before dark.', 'Wind picks up at the top; bring a layer.'],
     etiquette: null,
     accessibility: { status: 'Unverified', items: ['Steep hill road and uneven ground at the top. No step-free route is recorded.'] },
-    storyIds: ['s-sajjangarh'], popular: true,
+    storyIds: ['s-sajjangarh', 's-sajjangarh-built'], popular: true,
     quieter: { time: 'Late morning rather than sunset', basis: 'Estimate from sample data. No live crowd information is used.' },
     artKey: 'sajjangarh', imageId: null, sceneId: null,
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['evening-light'],
