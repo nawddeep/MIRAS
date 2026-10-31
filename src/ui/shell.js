@@ -13,6 +13,7 @@ export const NAV = [
   { key: 'plan', label: 'Plan', href: '/plan/' },
   { key: 'memories', label: 'Memories', href: '/memories/' },
   { key: 'passport', label: 'Passport', href: '/passport/' },
+  { key: 'app', label: 'Get the app', href: '/app/' },
 ];
 
 /** Second-level navigation for each section. */
@@ -71,7 +72,7 @@ export function footerHTML() {
       ${col('Explore', [['Discover places', '/explore/'], ['Nearby', '/explore/nearby/'], ['Markets', '/explore/markets/'], ['Hidden Udaipur', '/explore/hidden/'], ['Phrase help', '/explore/phrases/']])}
       ${col('Stories & makers', [['Stories', '/stories/'], ['AR & VR views', '/stories/immersive/'], ['Artisans', '/artisans/'], ['Join by voice', '/artisans/join/'], ['Camera story', '/explore/camera/']])}
       ${col('Do & plan', [['Workshops', '/workshops/'], ['Events', '/events/'], ['Trip planner', '/plan/'], ['Trails & walks', '/plan/trails/'], ['Travel responsibly', '/plan/responsible/']])}
-      ${col('Keep', [['Memories', '/memories/'], ['Passport', '/passport/'], ['Offline pack', '/plan/offline/'], ['Booking demo', '/book/'], ['How we label things', '/labels/']])}
+      ${col('Keep', [['Memories', '/memories/'], ['Passport', '/passport/'], ['Offline pack', '/plan/offline/'], ['Get the app', '/app/'], ['How we label things', '/labels/']])}
     </div>
     <div class="m-footer-legend" aria-label="Labels used on this site">
       <p>Every story shows its source type:</p>${sourceBadge('History')}${sourceBadge('Oral tradition')}${sourceBadge('Legend')}

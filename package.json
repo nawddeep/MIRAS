@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -p jsconfig.json",
     "lint": "eslint .",
-    "test": "node tests/planner.test.mjs",
+    "test": "node tests/planner.test.mjs && node tests/app-link.test.mjs",
     "check": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "repository": {

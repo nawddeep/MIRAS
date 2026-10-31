@@ -38,6 +38,7 @@ const PAGES = /** @type {Record<string, [string, () => Promise<{render: (main: H
   memories: ['memories', () => import('./pages/memories.js')],
   passport: ['passport', () => import('./pages/passport.js')],
   labels: ['', () => import('./pages/labels.js')],
+  app: ['app', () => import('./pages/app.js')],
 });
 
 async function boot() {
