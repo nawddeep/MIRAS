@@ -34,7 +34,7 @@ export const places = [
     accessibility: null,
     storyIds: ['s-palace-founding', 's-palace-growth'], popular: true,
     quieter: { placeId: 'bagore-ki-haveli', time: 'Early morning, soon after opening', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'palace', imageId: 'app-palace', sceneId: 'scene-palace-hill',
+    artKey: 'palace', imageId: 'app-palace', gallery: ['app-palace-wide', 'app-splash'], sceneId: 'scene-palace-hill',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
   },
   {
@@ -54,7 +54,7 @@ export const places = [
     accessibility: null,
     storyIds: ['s-pichola-name', 's-pichola-lake-palace', 's-ghat-morning'], popular: true,
     quieter: { placeId: 'ambrai-ghat', time: 'Early morning on the ghats', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'pichola', imageId: 'app-golden', sceneId: 'scene-pichola',
+    artKey: 'pichola', imageId: 'app-golden', gallery: ['app-dawn', 'app-story', 'app-moonlight', 'app-night'], sceneId: 'scene-pichola',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['waters-edge', 'evening-light', 'first-day'],
   },
   {
@@ -74,7 +74,7 @@ export const places = [
     accessibility: { status: 'Unverified', items: ['The entrance is up a long flight of steps. No step-free route is recorded.'] },
     storyIds: ['s-jagdish-steps', 's-jagdish-built', 's-jagdish-bell'], popular: true,
     quieter: { time: 'Mid-morning, between the busier prayer times', basis: 'Estimate from sample data. No live crowd information is used.' },
-    artKey: 'jagdish', imageId: 'app-temple', sceneId: 'scene-old-city',
+    artKey: 'jagdish', imageId: 'app-temple', gallery: ['app-camera'], sceneId: 'scene-old-city',
     verification: 'Unverified', lastUpdated: UPDATED, collections: ['carved-in-stone', 'first-day'],
   },
   {

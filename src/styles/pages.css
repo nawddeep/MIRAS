@@ -190,6 +190,13 @@ html.past-hero body::after { opacity: 0; transition: opacity .6s ease; }
 .p-hero .m-lead { margin-bottom: 22px; }
 .p-hero-media { display: grid; gap: 10px; }
 .p-hero-media .m-frame-img { border: 1px solid var(--line); }
+.p-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; list-style: none; margin: 0; padding: 0; }
+.p-gallery .m-frame-img { aspect-ratio: 1 / 1; }
+.p-shots { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 240px); gap: 20px; margin: 0; padding: 0 0 12px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; }
+.p-shots li { scroll-snap-align: start; }
+.p-shots figure { margin: 0; display: grid; gap: 10px; }
+.p-shots img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 22px; }
+.p-shots figcaption { font-size: .9rem; }
 @media (max-width: 860px) { .p-hero-grid { grid-template-columns: 1fr; } }
 .p-hours { width: 100%; border-collapse: collapse; font-size: 15px; }
 .p-hours th, .p-hours td { text-align: left; padding: 7px 0; border-bottom: 1px solid var(--line); font-weight: 400; vertical-align: top; }

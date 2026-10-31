@@ -12,7 +12,7 @@
  * @property {string} alt
  * @property {number} [width]
  * @property {number} [height]
- * @property {'ink-illustration' | 'generated-illustration' | 'code-drawing' | 'placeholder'} kind
+ * @property {'ink-illustration' | 'generated-illustration' | 'code-drawing' | 'app-screenshot' | 'placeholder'} kind
  * @property {string} label          Short label shown next to the image
  * @property {string} creator
  * @property {string} licence
@@ -58,6 +58,7 @@
  * @property {{placeId?: string, time?: string, basis: string} | null} quieter
  * @property {string} artKey          Key into the line drawings in src/art.js
  * @property {string | null} imageId  Key into media
+ * @property {string[]} [gallery]     More media keys, shown as small thumbnails under the main image
  * @property {string | null} sceneId  Key into scenes (360 preview)
  * @property {Verification} verification
  * @property {string} lastUpdated

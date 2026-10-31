@@ -1,8 +1,12 @@
 import { esc } from '../lib/dom.js';
 import { appLink } from '../lib/app-link.js';
+import { getMedia } from '../data/index.js';
 import { note } from '../ui/components.js';
 import { pageHead, reveal } from '../ui/shell.js';
 import { icon, doodle } from '../ui/icons.js';
+
+/** @type {[string, string][]} */
+const SCREENS = [['home', 'Home'], ['explore', 'Explore'], ['place', 'Place guide'], ['plan', 'Plan your day'], ['profile', 'Your saved places']];
 
 /** @param {HTMLElement} main */
 export function render(main) {
@@ -18,6 +22,10 @@ export function render(main) {
     ${pageHead({ label: 'Get app', title: 'Take MIRAS with you', lead: 'MIRAS is a web app, so there is no app store to visit. You open it in your phone’s browser and add it to your home screen.', art: doodle.hands, extra: `<div class="m-actions" style="margin-top:24px">${open}</div>` })}
     <section class="m-section"><div class="m-wrap">
       ${status}
+      <section style="margin-top:40px" data-reveal aria-labelledby="a0"><h2 class="m-h2" id="a0">What the app looks like</h2>
+        <p class="m-body-sm m-muted">Screenshots of the demo version. It shows sample content and says so on screen.</p>
+        <ul class="p-shots">${SCREENS.map(([key, caption]) => { const m = getMedia(`screen-${key}`); return m ? `<li><figure><img src="${m.src}" alt="${esc(m.alt)}" width="${m.width}" height="${m.height}" loading="lazy" decoding="async"><figcaption>${esc(caption)}</figcaption></figure></li>` : ''; }).join('')}</ul>
+      </section>
       <div class="p-split" style="margin-top:40px">
         <section class="p-box" data-reveal aria-labelledby="a1"><h3 id="a1">On an Android phone (Chrome)</h3>
           <ol>

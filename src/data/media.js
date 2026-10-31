@@ -17,6 +17,18 @@ const appImages = (rows) =>
     licence: 'Unknown', permittedUse: 'Internal demonstration only until rights are confirmed', notes: APP_NOTE,
   })]));
 
+const SCREEN_NOTE =
+  'Screenshot of the MIRAS app running in demo mode (public/img/app-screens, taken 2026-10-31). The app shows sample content and illustrative images, and says so on screen.';
+
+/** Screenshots of the MIRAS app, listed as [file name, alt text]. @param {[string, string][]} rows */
+const appScreens = (rows) =>
+  Object.fromEntries(rows.map(([name, alt]) => [`screen-${name}`, /** @type {import('./types.js').MediaItem} */ ({
+    id: `screen-${name}`, src: `/img/app-screens/${name}.jpg`, width: 780, height: 1688, alt,
+    kind: 'app-screenshot', label: 'App screenshot, sample content', creator: 'Team Impala',
+    licence: 'Own work. The pictures inside it are illustrative with unknown rights.',
+    permittedUse: 'MIRAS website, to show what the app looks like', notes: SCREEN_NOTE,
+  })]));
+
 /** @type {Record<string, import('./types.js').MediaItem>} */
 export const media = {
   'hero-street': {
@@ -100,6 +112,13 @@ export const media = {
     ['artisan', 358, 358, 'Illustrative image: a hand painting a miniature with a fine brush, beside small pots of paint'],
     ['artwork', 260, 165, 'Illustrative image: a detail of a miniature painting showing an elephant and figures'],
     ['artwork-detail', 160, 100, 'Illustrative image: a blurred close detail of a colourful miniature painting'],
+  ]),
+  ...appScreens([
+    ['home', 'The MIRAS app home screen: a search box, quick links and a featured place'],
+    ['explore', 'The MIRAS app Explore screen: a grid of features such as Places, Stories and Walking trails, with some marked Not planned yet or Concept'],
+    ['place', 'The MIRAS app place guide for City Palace, marked Illustrative and Sample content, with Add to my day and Save buttons'],
+    ['plan', 'The MIRAS app planner: a seven-day strip, a start time, walk or drive, and a list of places to choose from'],
+    ['profile', 'The MIRAS app profile screen: saved places on this device, with Saved, Memories and Badges tabs'],
   ]),
 };
 

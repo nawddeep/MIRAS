@@ -61,7 +61,7 @@ export function render(main) {
     colinfo.innerHTML = col ? `<div class="m-note m-note--paper" style="margin-bottom:22px">${icon.info}<div><p><strong>${esc(col.title)}</strong> <span lang="hi" class="m-muted">${esc(col.titleHi)}</span> · ${esc(col.blurb)}</p></div></div>` : '';
     count.textContent = `${list.length} ${list.length === 1 ? 'place' : 'places'}${q ? ` matching “${state.q.trim()}”` : ''}`;
     results.innerHTML = list.length
-      ? `<div class="m-grid m-grid--3${!q && group.id === 'all' && !col ? ' m-grid--lead' : ''}">${list.map((p) => placeCard(p, { saved: isSaved(p.id) })).join('')}</div>`
+      ? `<div class="m-grid m-grid--3${!q && group.id === 'all' && !col ? ' m-grid--lead' : ''}">${list.map((p) => placeCard(p, { saved: isSaved(p.id), useImage: true })).join('')}</div>`
       : emptyState({
         title: 'Nothing matches that yet',
         body: `We couldn't find a place for “${esc(state.q.trim())}”${group.id !== 'all' ? ` in ${esc(group.label)}` : ''}${col ? ` within ${esc(col.title)}` : ''}. Try a broader word, or clear the filters.`,

@@ -51,6 +51,7 @@ export function render(main) {
         <div class="p-hero-media">
           ${frameImage({ mediaId: p.imageId, artKey: p.artKey, alt: p.name, ratio: '8 / 5', eager: true })}
           ${p.imageId ? '<p class="m-body-sm m-muted" style="margin:0">Illustrative image with unknown rights; not a photograph of the place. <a href="/labels/#rights">Image rights</a></p>' : '<p class="m-body-sm m-muted" style="margin:0">Line drawing. No photograph with cleared rights yet.</p>'}
+          ${p.gallery?.length ? `<ul class="p-gallery" aria-label="More illustrations of ${esc(p.name)}">${p.gallery.map((id) => `<li>${frameImage({ mediaId: id, alt: '', ratio: '1 / 1', showLabel: false })}</li>`).join('')}</ul>` : ''}
         </div>
       </div>
     </div></section>
